@@ -9,9 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.capston.R
-import com.example.capston.BreedDTO
-import com.example.capston.BreedItemClick
 
 class BreedAdapter(var onItemClick: BreedItemClick, var persons: ArrayList<BreedDTO>, var con: Context) :
     RecyclerView.Adapter<BreedAdapter.ViewHolder>(),Filterable  {

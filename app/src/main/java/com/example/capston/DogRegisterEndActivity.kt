@@ -1,11 +1,12 @@
 package com.example.capston
 
-
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.example.capston.DogRegisterActivity
 import com.example.capston.databinding.ActivityDogRegisterEndBinding
+import kotlinx.android.synthetic.main.activity_dog_register.*
 
 class DogRegisterEndActivity : AppCompatActivity() {
 
@@ -19,6 +20,10 @@ class DogRegisterEndActivity : AppCompatActivity() {
         viewBinding.backButton.setOnClickListener {
             val intent = Intent(this, DogRegisterActivity::class.java)
             startActivity(intent)
+        }
+
+        if(intent.hasExtra("dogname")) {
+            receive_name_txt.text = intent.getStringExtra("dogname")
         }
 
         viewBinding.goHomepageBtn.setOnClickListener {

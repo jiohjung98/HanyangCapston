@@ -2,21 +2,29 @@ package com.example.capston
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityLoginBinding
-import kotlin.math.log2
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthErrorCause
+import com.kakao.sdk.user.UserApiClient
+import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : AppCompatActivity() {
-
-    lateinit var viewBinding: ActivityLoginBinding
-
+class LoginActivity: AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
+    private var auth: FirebaseAuth? = null
     var DB: DBHelper? = null
 
     var validId: Boolean= false
@@ -24,35 +32,101 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         DB = DBHelper(this)
+        auth = Firebase.auth
 
-        viewBinding.loginBtn!!.setOnClickListener {
-            val user = viewBinding.etId!!.text.toString()
-            val pass = viewBinding.etPw!!.text.toString()
-            if (user == "" || pass == "") Toast.makeText(
-                this@LoginActivity,
-                "회원정보를 전부 입력해주세요",
-                Toast.LENGTH_SHORT
-            ).show() else {
-                val checkUserpass = DB!!.checkUserPass(user, pass)
-                if (checkUserpass) {
-                    Toast.makeText(this@LoginActivity, "로그인 되었습니다", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                }
-                else {
-                    Toast.makeText(this@LoginActivity, "회원정보가 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+//        // 카카오 로그인 정보 확인
+//        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+//            if (error != null) {
+//                Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(this, LoginActivity::class.java)
+//                startActivty(intent.addFlags((Intent.FLAG_ACTIVITY_CLEAR_TOP)))
+//                finish()
+//            }
+//            else if (tokenInfo != null) {
+//                Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+//                finish()
+//            }
+//        }
+        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            if (error != null) {
+                when {
+                    error.toString() == AuthErrorCause.AccessDenied.toString() -> {
+                        Toast.makeText(this, "접근이 거부 됨(동의 취소)", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.InvalidClient.toString() -> {
+                        Toast.makeText(this, "유효하지 않은 앱", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.InvalidGrant.toString() -> {
+                        Toast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.InvalidRequest.toString() -> {
+                        Toast.makeText(this, "요청 파라미터 오류", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.InvalidScope.toString() -> {
+                        Toast.makeText(this, "유효하지 않은 scope ID", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.Misconfigured.toString() -> {
+                        Toast.makeText(this, "설정이 올바르지 않음(android key hash)", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.ServerError.toString() -> {
+                        Toast.makeText(this, "서버 내부 에러", Toast.LENGTH_SHORT).show()
+                    }
+                    error.toString() == AuthErrorCause.Unauthorized.toString() -> {
+                        Toast.makeText(this, "앱이 요청 권한이 없음", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> { // Unknown
+                        Toast.makeText(this, "기타 에러", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+
+            else if (token != null) {
+                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                finish()
+            }
         }
-        viewBinding.registerBtn.setOnClickListener {
-            val loginIntent = Intent(this@LoginActivity, RegisterActivity::class.java)
-            startActivity(loginIntent)
+        val kakao_login_button = findViewById<ImageButton>(R.id.kakao_login_button) // 로그인 버튼
+        kakao_login_button.setOnClickListener {
+            if(UserApiClient.instance.isKakaoTalkLoginAvailable(this)){
+                UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
+            }else{
+                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+            }
         }
 
-        viewBinding.etId.addTextChangedListener(object : TextWatcher {
+
+        binding.loginBtn.setOnClickListener {
+
+            var id = binding.etId.text.toString() // 아이디
+            var pw = binding.etPw.text.toString() // 비번
+
+            if(id.isNotEmpty() && id.isNotBlank() && pw.isNotEmpty() && pw.isNotBlank()){
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }else{
+                binding.warningText.visibility = View.VISIBLE
+            }
+            signIn(id, pw)
+        }
+
+        binding.infoBtn.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.findBtn.setOnClickListener {
+            val intent = Intent(this, FindPwActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.etId.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validId = editable.isNotEmpty()
                 checkValid(validId, validPw)
@@ -66,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
             }
         } )
 
-        viewBinding.etPw.addTextChangedListener(object : TextWatcher {
+        binding.etPw.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validPw = editable.isNotEmpty()
                 checkValid(validId, validPw)
@@ -79,25 +153,51 @@ class LoginActivity : AppCompatActivity() {
 //                p0?.let { highlightText(it as Editable) }
             }
         })
+
+    }
+
+    private fun signIn(id: String, pw: String) {
+        if (id.isNotEmpty() && pw.isNotEmpty()) {
+            auth?.signInWithEmailAndPassword(id, pw)
+                ?.addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        moveMainPage(auth?.currentUser)
+                    } else {
+                        binding.warningText.visibility = View.VISIBLE
+                    }
+                }
+        }
+    }
+
+    fun moveMainPage(user: FirebaseUser?) {
+        if (user != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
     }
 
     private fun checkValid(v1:Boolean, v2:Boolean){
         Log.d("Valid", (v1 && v2).toString())
         if(v1 && v2){
-            viewBinding.loginBtn.isClickable = true
-            viewBinding.loginBtn.isEnabled = true
-            viewBinding.loginBtn.setBackgroundResource(R.drawable.start_button)
+            binding.loginBtn.isClickable = true
+            binding.loginBtn.isEnabled = true
+            binding.loginBtn.setBackgroundResource(R.drawable.start_button)
         }
         else {
-            viewBinding.loginBtn.isEnabled = false
-            viewBinding.loginBtn.isClickable = false
-            viewBinding.loginBtn.setBackgroundResource(R.drawable.disabled_button)
+            binding.loginBtn.isEnabled = false
+            binding.loginBtn.isClickable = false
+            binding.loginBtn.setBackgroundResource(R.drawable.disabled_button)
         }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        et_id.clearFocus()
+        et_pw.clearFocus()
+        binding.warningText.visibility = View.INVISIBLE
         return true
     }
+
+
 }

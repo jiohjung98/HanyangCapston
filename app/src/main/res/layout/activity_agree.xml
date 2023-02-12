@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<!-- 메인으로 보여질 화면 -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/back_button"
+        android:layout_width="8.5dp"
+        android:layout_height="16.5dp"
+        android:background="@drawable/backbtn"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/constraintLayout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/constraintLayout2"-->
+<!--        >-->
+<!--        -->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="35dp"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="75dp"
+            android:layout_height="56dp"
+            android:background="@drawable/logo1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+        <TextView
+            android:id="@+id/logotext1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="약관동의"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/logotext2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="멍플래닛 사용을 위해 약관에 동의해주세요."
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            app:layout_constraintStart_toStartOf="@+id/logotext1"
+            app:layout_constraintTop_toBottomOf="@+id/logotext1"
+            android:textStyle="normal"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/agree_rectangle"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/all_agree"
+                android:layout_marginStart="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="약관 전체동의"
+                android:textStyle="bold"
+                android:textColor="#574444" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="29dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:text="약관 전체동의"-->
+<!--                android:textColor="#574444"-->
+<!--                android:textSize="15dp" />-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="60dp"
+                android:background="#574444" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="16dp">
+
+            <CheckBox
+                android:id="@+id/agree1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="이용약관 동의(필수)"
+                android:textColor="#574444" />
+
+            <TextView
+                android:id="@+id/contentbtn1"
+                android:layout_width="7dp"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="45dp"
+                android:gravity="center"
+                android:background="@drawable/confirm_btn"
+                 />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="35dp">
+
+            <CheckBox
+                android:id="@+id/agree2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="개인정보 수집 및 이용동의(필수)"
+                android:textColor="#574444" />
+
+            <TextView
+                android:id="@+id/contentbtn2"
+                android:layout_width="7dp"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="45dp"
+                android:gravity="center"
+                android:background="@drawable/confirm_btn" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp">
+
+            <CheckBox
+                android:id="@+id/agree3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="E-mail 및 SMS 광고성 정보 수신동의(선택)"
+                android:textColor="#574444" />
+
+            <TextView
+                android:id="@+id/contentbtn3"
+                android:layout_width="7dp"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="45dp"
+                android:gravity="center"
+                android:background="@drawable/confirm_btn" />
+        </RelativeLayout>
+
+
+        <android.widget.Button
+            android:id="@+id/next_page_btn"
+            android:layout_width="340dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="71dp"
+            android:layout_marginBottom="57dp"
+            android:visibility="invisible"
+            android:enabled="false"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 메인으로 보여질 화면 -->
+
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/main"
+        android:visibility="gone"
+        android:weightSum="3"
+        >
+
+
+        <RelativeLayout
+            android:id="@+id/top_frag"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="#F8F4EA">
+
+
+            <LinearLayout
+                android:id="@+id/frag_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="40dp"
+                >
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dsadasdasdas" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_frag"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:layout_gravity="top"
+            android:background="@drawable/agree_rectangle_frag"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="29dp"
+                    android:layout_marginTop="20dp"
+                    android:text="약관 전체동의"
+                    android:textColor="#574444"
+                    android:textSize="15dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="60dp"
+                    android:background="#574444" />
+
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--재사용 예정-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal|bottom"
+        android:background="#00000000">
+
+        <android.widget.Button
+            android:id="@+id/agree_btn"
+            style="@style/ColoredButton"
+            android:layout_width="320dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginBottom="52dp"
+            android:layout_gravity="center"
+            android:background="@drawable/agree_nextbtn_color"
+            android:enabled="false"
+            android:stateListAnimator="@null"
+            android:text="다음으로" />
+
+
+    </LinearLayout>
+
+</FrameLayout>

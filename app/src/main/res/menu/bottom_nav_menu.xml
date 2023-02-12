@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/bottom_nav_selector_home"
+        android:checkable="false"
+        android:title="산책" />
+
+
+    <item
+        android:id="@+id/navigation_community"
+        android:icon="@drawable/bottom_nav_selector_calendar"
+        android:checkable="false"
+        android:title="실종" />
+
+    <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/bottom_nav_selector_community"
+        android:checkable="false"
+        android:title="커뮤니티" />
+
+    <item
+        android:id="@+id/navigation_mypage"
+        android:icon="@drawable/bottom_nav_selector_mypage"
+        android:checkable="false"
+        android:title="마이페이지" />
+
+</menu>
