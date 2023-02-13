@@ -82,7 +82,7 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.12.1"
 
     // kakaomap
-//    implementation files('libs/libDaumMapAndroid.jar')
-//    implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation files('libs/libDaumMapAndroid.jar')
+    implementation files('libs/libDaumMapAndroid.jar')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/libDaumMapAndroid.jar')
 }

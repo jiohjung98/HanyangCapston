@@ -19,6 +19,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kakao.sdk.common.util.Utility
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.android.map.MapView
 
 class MainActivity : AppCompatActivity(), CustomDialog {
     lateinit var binding: ActivityMainBinding

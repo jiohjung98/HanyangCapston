@@ -1,8 +1,8 @@
 package com.example.capston.homepackage
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +12,17 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
-import com.example.capston.MainActivity
-import com.example.capston.R
+import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import kotlinx.android.synthetic.main.activity_dog_register.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.android.synthetic.main.fragment_walk.*
+import net.daum.mf.map.api.MapView
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 var RecordPage = HomeRecord()
+val walkFragment = WalkFragment()
 
 class NaviHomeFragment : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
@@ -38,10 +38,7 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
-
     }
 
 
@@ -53,20 +50,32 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
     ): View? {
         _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        binding.recordbtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().apply {
+                replace(R.id.main_frm, walkFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
         return view
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        binding.recordbtn.setOnClickListener{
-            onClick(view)
-
-        }
+//        binding.recordbtn.setOnClickListener{
+//            onClick(view)
+//        }
     }
 
     // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+
+//        val mapView = MapView(context)
+//        binding.kakaoMapView.addView(mapView)
+
+
     }
 
     lateinit var mainActivity: MainActivity
@@ -86,25 +95,11 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
             .commit()
     }
 
-
-
-
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NaviHomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             NaviHomeFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
     }

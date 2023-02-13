@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.capston" >
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-permission android:name="android.permission.CAMERA"/> <!-- 카메라 사용권한 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!--저장소 읽기 권한-->
@@ -19,7 +22,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Capston"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31" >
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="830d2ef983929904f477a09ea75d91cc" />
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

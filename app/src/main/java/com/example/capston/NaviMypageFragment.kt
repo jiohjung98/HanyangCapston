@@ -65,8 +65,7 @@ class NaviMypageFragment : Fragment() {
 //                commit()
 //            }
             parentFragmentManager.beginTransaction().apply {
-                setCustomAnimations(R.anim.to_right, R.anim.to_right)
-                    .replace(R.id.main_frm, serviceFragment)
+                    replace(R.id.main_frm, serviceFragment)
                     .addToBackStack(null)
                     .commit()
             }

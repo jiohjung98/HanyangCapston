@@ -106,13 +106,12 @@ class LoginActivity: AppCompatActivity() {
 
             var id = binding.etId.text.toString() // 아이디
             var pw = binding.etPw.text.toString() // 비번
-
-            if(id.isNotEmpty() && id.isNotBlank() && pw.isNotEmpty() && pw.isNotBlank()){
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }else{
-                binding.warningText.visibility = View.VISIBLE
-            }
+//            if(id.isNotEmpty() && id.isNotBlank() && pw.isNotEmpty() && pw.isNotBlank()){
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
+//            }else{
+//                binding.warningText.visibility = View.VISIBLE
+//            }
             signIn(id, pw)
         }
 
@@ -157,7 +156,7 @@ class LoginActivity: AppCompatActivity() {
     }
 
     private fun signIn(id: String, pw: String) {
-        if (id.isNotEmpty() && pw.isNotEmpty()) {
+        if ((id.isNotEmpty() && id.isNotBlank() && pw.isNotEmpty() && pw.isNotBlank())) {
             auth?.signInWithEmailAndPassword(id, pw)
                 ?.addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
@@ -167,6 +166,16 @@ class LoginActivity: AppCompatActivity() {
                     }
                 }
         }
+    }
+
+    fun login(email:String,pw1:String){
+        auth?.signInWithEmailAndPassword(email,pw1) // 로그인
+            ?.addOnCompleteListener { result->
+                if(result.isSuccessful){
+                    var intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                }
+            }
     }
 
     fun moveMainPage(user: FirebaseUser?) {

@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_find_pw.*
 import kotlinx.android.synthetic.main.activity_find_pw.next_page_btn
 import kotlinx.android.synthetic.main.activity_info.*
 import kotlinx.android.synthetic.main.fragment_navi_mypage.*
+import net.daum.mf.map.api.MapView
 import java.util.regex.Pattern
 
 class FindPwActivity : AppCompatActivity() {
@@ -28,7 +29,6 @@ class FindPwActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityFindPwBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         binding.nameEdtText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
