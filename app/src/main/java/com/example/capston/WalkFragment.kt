@@ -49,9 +49,6 @@ class WalkFragment : Fragment() {
     ): View? {
         _binding = FragmentWalkBinding.inflate(inflater, container, false)
         val view = binding.root
-//        val mapView = MapView(activity)
-//        val mapViewContainer: ViewGroup = view.findViewById(R.id.kakaoMapView)
-//        mapViewContainer.addView(mapView)
 
         return view
     }
@@ -61,8 +58,13 @@ class WalkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
+//        val mapView = MapView(activity)
+//        val mapViewContainer: ViewGroup = view.findViewById(R.id.kakaoMapView)
+//        mapViewContainer.addView(mapView)
+
+
         binding.startBtn.setOnClickListener {
-            Log.d("text","dd")
+            Log.d("text", "dd")
             if (checkLocationService()) {
                 permissionCheck()
             }
@@ -97,11 +99,9 @@ class WalkFragment : Fragment() {
                 }
             }
     }
-
-
     // 위치 권한 확인
     private fun permissionCheck() {
-        val preference = this.requireActivity().getPreferences(0)
+        val preference = this.requireActivity().getPreferences(MODE_PRIVATE)
         val isFirstCheck = preference.getBoolean("isFirstPermissionCheck", true)
         if (ContextCompat.checkSelfPermission(
                 context as Activity,
@@ -144,7 +144,7 @@ class WalkFragment : Fragment() {
                     builder.setPositiveButton("설정으로 이동") { dialog, which ->
                         val intent = Intent(
                             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.parse("package:com.example.capston")
+                            Uri.parse("http://www.google.com")
                         )
                         startActivity(intent)
                     }

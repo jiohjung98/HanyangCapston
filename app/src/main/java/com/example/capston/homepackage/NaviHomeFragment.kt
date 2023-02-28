@@ -1,30 +1,35 @@
 package com.example.capston.homepackage
 
-import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import android.util.TypedValue
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.example.capston.*
+import com.example.capston.MainActivity
+import com.example.capston.R
+import com.example.capston.WalkFragment
 import com.example.capston.databinding.FragmentNaviHomeBinding
-import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.fragment_walk.*
-import net.daum.mf.map.api.MapView
+import java.text.SimpleDateFormat
+import java.util.*
 
 var RecordPage = HomeRecord()
 val walkFragment = WalkFragment()
 
 class NaviHomeFragment : Fragment(), View.OnClickListener {
+
+    var mNow: Long = 0
+    var mDate: Date? = null
+    var mFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+    var mTextView: TextView? = null
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -51,6 +56,10 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
         _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        //bind view
+//        mTextView = binding.day
+//        getTime()
+
         binding.recordbtn.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
                 replace(R.id.main_frm, walkFragment)
@@ -71,6 +80,9 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+
+        setupData()
+        setupStatusHandler()
 
 //        val mapView = MapView(context)
 //        binding.kakaoMapView.addView(mapView)
@@ -109,7 +121,6 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
         _binding = null
     }
 
-
     private fun setupData() {
 
         val statusData = resources.getStringArray(R.array.spinner_ddong)
@@ -119,10 +130,12 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
                 val v = super.getView(position, convertView, parent)
+                var tv = v as TextView
+                tv.setTextSize(/* size = */ 16F)
                 if (position == count) {
 
                     (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
-                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = "정보없멍"
+                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
 
                 }
                 return v
@@ -134,19 +147,21 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
 
         }
 
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         statusAdapter.addAll(statusData.toMutableList())
-        statusAdapter.add("정보없멍")
+        statusAdapter.add(" 선택")
 
         _binding!!.dogDdongSpinner.adapter = statusAdapter
 
-        dog_gender_spinner.setSelection(statusAdapter.count)
-        dog_gender_spinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+        dog_ddong_spinner.setSelection(statusAdapter.count)
+        dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
     }
 
 
     private fun setupStatusHandler() {
         _binding?.dogDdongSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 when(position) {
                     0 -> {
 
@@ -172,6 +187,13 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
             resources.displayMetrics
         )
     }
+
+//    private fun getTime(): String? {
+//        mNow = System.currentTimeMillis()
+//        mDate = Date(mNow)
+//        mTextView?.text = getTime();
+//        return mFormat.format(mDate)
+//    }
 
 
     override fun onClick(view: View?) {

@@ -112,6 +112,9 @@
         <activity
             android:name=".PostingActivity"
             android:exported="true" />
+        <activity
+            android:name=".FindIdActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

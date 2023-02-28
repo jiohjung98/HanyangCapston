@@ -13,10 +13,10 @@ class FindActivity : AppCompatActivity() {
         binding = ActivityFindBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.findidBtn.setOnClickListener {
-            val intent = Intent(this, FindIdActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.findidBtn.setOnClickListener {
+//            val intent = Intent(this, FindIdActivity::class.java)
+//            startActivity(intent)
+//        }
 
         binding.findpwBtn.setOnClickListener {
             val intent = Intent(this, FindPwActivity::class.java)

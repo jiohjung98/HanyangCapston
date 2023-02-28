@@ -104,7 +104,8 @@
             android:src="@drawable/vector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></ImageView>
+            app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
 
         <TextView
             android:id="@+id/warning"
@@ -125,7 +126,7 @@
 
     <Button
         android:id="@+id/login_btn"
-        android:layout_width="233dp"
+        android:layout_width="200dp"
         android:layout_height="45dp"
         android:layout_gravity="center|bottom"
         android:layout_marginTop="45dp"
@@ -139,11 +140,11 @@
 
     <ImageButton
         android:id="@+id/kakao_login_button"
-        android:layout_width="233dp"
+        android:layout_width="200dp"
         android:layout_height="45dp"
         android:layout_gravity="center|bottom"
         android:layout_marginTop="15dp"
-        android:background="@drawable/login_google_act"
+        android:background="@drawable/kakao"
         android:outlineProvider="none"
         android:paddingLeft="54dp"
         android:paddingRight="48dp"
@@ -180,9 +181,8 @@
             android:layout_marginStart="4dp"
             android:layout_toRightOf="@id/text"
             android:text="회원가입"
-            android:textColor="@color/btn_info"
+            android:textColor="#d4bbaf"
             android:textSize="12dp" />
-
     </RelativeLayout>
 
     <TextView
