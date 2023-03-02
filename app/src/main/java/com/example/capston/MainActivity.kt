@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         Log.d("Hash", keyHash)
 
 
-        replaceFragment(NaviCommunityFragment())
+        replaceFragment(NaviWalkFragment())
 
         deleteToolbar(NaviMypageFragment())
 
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), CustomDialog {
                     }
                     R.id.navigation_community -> {
                         main_bnv.itemIconTintList = null
-                        NaviCommunityFragment()
+                        NaviWalkFragment()
                         // Respond to navigation item 2 click
                     }
                     R.id.navigation_calendar -> {

@@ -14,12 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.FragmentNaviMypageBinding
 import com.kakao.sdk.user.UserApiClient
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 val serviceFragment = ServiceFragment()
 val changePwFragment = ChangePwFragment()
 val wroteFragment = WroteFragment()
@@ -43,10 +37,6 @@ class NaviMypageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -153,10 +143,6 @@ class NaviMypageFragment : Fragment() {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             NaviMypageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
             }
     }
 }

@@ -1,7 +1,15 @@
 package com.example.capston.homepackage
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -9,71 +17,58 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.capston.MainActivity
 import com.example.capston.R
 import com.example.capston.WalkFragment
 import com.example.capston.databinding.FragmentNaviHomeBinding
+import com.example.capston.databinding.FragmentWalkBinding
+import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.mf.map.api.MapPOIItem
+import net.daum.mf.map.api.MapPoint
+import net.daum.mf.map.api.MapView
 import java.text.SimpleDateFormat
 import java.util.*
 
 var RecordPage = HomeRecord()
 val walkFragment = WalkFragment()
 
-class NaviHomeFragment : Fragment(), View.OnClickListener {
+class NaviHomeFragment : Fragment() {
+    val PERMISSIONS_REQUEST_CODE = 100
+    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+    private val ACCESS_FINE_LOCATION = 1000
 
-    var mNow: Long = 0
-    var mDate: Date? = null
-    var mFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-    var mTextView: TextView? = null
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var _binding: FragmentNaviHomeBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentWalkBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
         }
     }
 
-
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentWalkBinding.inflate(inflater, container, false)
+
         val view = binding.root
 
-        //bind view
-//        mTextView = binding.day
-//        getTime()
+//        val mapView = MapView(activity)
+//
+//        val mapViewContainer = map_view as ViewGroup
+//
+//        mapViewContainer.addView(mapView)
 
-        binding.recordbtn.setOnClickListener {
-            parentFragmentManager.beginTransaction().apply {
-                replace(R.id.main_frm, walkFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        }
         return view
-    }
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-//        binding.recordbtn.setOnClickListener{
-//            onClick(view)
-//        }
     }
 
     // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
@@ -81,12 +76,42 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
-        setupData()
-        setupStatusHandler()
+//        val mapView = MapView(activity)
+//        val mapViewContainer = kakaoMapView as ViewGroup
+//        mapViewContainer.addView(mapView)
 
+        //수원 화성의 위도, 경도
+        val mapPoint = MapPoint.mapPointWithGeoCoord(37.28730797086605, 127.01192716921177)
+
+        //지도의 중심점을 수원 화성으로 설정, 확대 레벨 설정 (값이 작을수록 더 확대됨)
+        kakaoMapView.setMapCenterPoint(mapPoint, true)
+        kakaoMapView.setZoomLevel(1, true)
+
+        //마커 생성
+        val marker = MapPOIItem()
+        marker.itemName = "이곳이 수원 화성입니다"
+        marker.mapPoint = mapPoint
+        marker.markerType = MapPOIItem.MarkerType.BluePin
+        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+
+        kakaoMapView.addPOIItem(marker)
+
+
+//        val mapView = MapView(activity)
+//        val mapViewContainer: ViewGroup = view.findViewById(R.id.kakaoMapView)
+//        mapViewContainer.addView(mapView)
+
+//        binding.startBtn.setOnClickListener {
+//            Log.d("text", "dd")
+//            if (checkLocationService()) {
+//                permissionCheck()
+//            }
+//        }
 //        val mapView = MapView(context)
-//        binding.kakaoMapView.addView(mapView)
+//        binding.kakaoMapView.addView
 
+//        val mapView = MapView(requireActivity())
+//        binding.kakaoMapView.(mapView)
 
     }
 
@@ -96,112 +121,122 @@ class NaviHomeFragment : Fragment(), View.OnClickListener {
         super.onAttach(context)
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
-
     }
 
-    fun goRecordPage(){
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.main_frm, RecordPage)
-            .addToBackStack(null)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
+    //메모리 누수 방지
+    override fun onDestroyView() {
+        super.onDestroyView()
+        this._binding = null
     }
 
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            NaviHomeFragment().apply {
+            WalkFragment().apply {
                 arguments = Bundle().apply {
                 }
             }
     }
-    //메모리 누수 방지
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+
+    override fun onDestroy() {
+//        mapView.removeView(kakaoMapView)
+        super.onDestroy()
     }
-
-    private fun setupData() {
-
-        val statusData = resources.getStringArray(R.array.spinner_ddong)
-
-        val statusAdapter = object : ArrayAdapter<String>(requireContext(),R.layout.gender_spinner) {
-
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
-                val v = super.getView(position, convertView, parent)
-                var tv = v as TextView
-                tv.setTextSize(/* size = */ 16F)
-                if (position == count) {
-
-                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
-                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
-
-                }
-                return v
-            }
-
-            override fun getCount(): Int {
-                return super.getCount() - 1
-            }
-
-        }
-
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        statusAdapter.addAll(statusData.toMutableList())
-        statusAdapter.add(" 선택")
-
-        _binding!!.dogDdongSpinner.adapter = statusAdapter
-
-        dog_ddong_spinner.setSelection(statusAdapter.count)
-        dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
-    }
-
-
-    private fun setupStatusHandler() {
-        _binding?.dogDdongSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                when(position) {
-                    0 -> {
-
-                    }
-                    else -> {
-
-                    }
-                }
-
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-
-            }
-        }
-    }
-
-
-    private fun dipToPixels(dipValue: Float): Float {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dipValue,
-            resources.displayMetrics
-        )
-    }
-
-//    private fun getTime(): String? {
-//        mNow = System.currentTimeMillis()
-//        mDate = Date(mNow)
-//        mTextView?.text = getTime();
-//        return mFormat.format(mDate)
+//    // 위치 권한 확인
+//    private fun permissionCheck() {
+//        val preference = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val isFirstCheck = preference.getBoolean("isFirstPermissionCheck", true)
+//        if (ContextCompat.checkSelfPermission(
+//                context as Activity,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // 권한이 없는 상태
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(
+//                    context as Activity,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                )
+//            ) {
+//                // 권한 거절 (다시 한 번 물어봄)
+//                val builder = AlertDialog.Builder(context as Activity)
+//                builder.setMessage("현재 위치를 확인하시려면 위치 권한을 허용해주세요.")
+//                builder.setPositiveButton("확인") { dialog, which ->
+//                    ActivityCompat.requestPermissions(
+//                        context as Activity,
+//                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                        ACCESS_FINE_LOCATION
+//                    )
+//                }
+//                builder.setNegativeButton("취소") { dialog, which ->
+//
+//                }
+//                builder.show()
+//            } else {
+//                if (isFirstCheck) {
+//                    // 최초 권한 요청
+//                    preference.edit().putBoolean("isFirstPermissionCheck", false).apply()
+//                    ActivityCompat.requestPermissions(
+//                        context as Activity,
+//                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                        ACCESS_FINE_LOCATION
+//                    )
+//                } else {
+//                    // 다시 묻지 않음 클릭 (앱 정보 화면으로 이동)
+//                    val builder = AlertDialog.Builder(context as Activity)
+//                    builder.setMessage("현재 위치를 확인하시려면 설정에서 위치 권한을 허용해주세요.")
+//                    builder.setPositiveButton("설정으로 이동") { dialog, which ->
+//                        val intent = Intent(
+//                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+//                            Uri.parse("http://www.google.com")
+//                        )
+//                        startActivity(intent)
+//                    }
+//                    builder.setNegativeButton("취소") { dialog, which ->
+//                    }
+//                    builder.show()
+//                }
+//            }
+//        } else {
+//            // 권한이 있는 상태
+//            startTracking()
+//        }
 //    }
-
-
-    override fun onClick(view: View?) {
-        val dlg = MyDialog(mainActivity)
-
-        dlg.setOnOKClickedListener{ content ->
-            binding.recordbtn.text = content
-        }
-        dlg.show()
-    }
+//    // 권한 요청 후 행동
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == ACCESS_FINE_LOCATION) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // 권한 요청 후 승인됨 (추적 시작)
+//                Toast.makeText(context, "위치 권한이 승인되었습니다", Toast.LENGTH_SHORT).show()
+//                startTracking()
+//            } else {
+//                // 권한 요청 후 거절됨 (다시 요청 or 토스트)
+//                Toast.makeText(context, "위치 권한이 거절되었습니다", Toast.LENGTH_SHORT).show()
+//                permissionCheck()
+//            }
+//        }
+//    }
+//
+//    // GPS가 켜져있는지 확인
+//    private fun checkLocationService(): Boolean {
+//        val locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//    }
+//
+//    //     위치추적 시작
+//    private fun startTracking() {
+//        binding.kakaoMapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+//    }
+//
+//    //     위치추적 중지
+//    private fun stopTracking() {
+//        binding.kakaoMapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+//
+//    }
+//
+//    override fun onDestroy() {
+//        stopTracking()
+////        binding.kakaoMapView.remove(mapView)
+//        super.onDestroy()
+//    }
 }
