@@ -379,6 +379,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             RequestPermissionCode
         )
         this.recreate()
+
     }
 
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
