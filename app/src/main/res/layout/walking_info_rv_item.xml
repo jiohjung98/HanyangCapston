@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/orange_shape"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/walkingDateTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산책날짜"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/walkingLocationTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산책위치"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/walkingTimeTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산책시간"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/walkingDistanceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산책거리"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/walkingCalTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="소모칼로리"
+            android:layout_weight="1"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

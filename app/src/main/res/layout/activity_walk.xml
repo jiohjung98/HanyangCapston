@@ -24,15 +24,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
-
         <ImageView
             android:id="@+id/runningDogImg"
             android:layout_width="150dp"
             android:layout_height="120dp"
-            android:background="@drawable/movedog"
+            android:background="@drawable/running_dog_1"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -250,7 +250,7 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="37dp"
             android:layout_weight="1"
             android:gravity="center">
 
@@ -260,14 +260,14 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/reset_icon"
-                android:backgroundTint="#626262"
-                />
+                android:backgroundTint="#626262" />
+
             <Button
                 android:id="@+id/pauseFab"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/pause_icon"
-                android:backgroundTint="#626262"/>
+                android:backgroundTint="#626262" />
 
         </RelativeLayout>
 

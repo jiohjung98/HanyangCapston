@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="server_url">http://192.168.0.23:3000</string>
+    <string name="openwheather_api_key">5a776ecc3c3d6779a5e5cc4713808c5a</string>
+    <string name="google_oauth_client_id">306765369077-9nnf5f93saec5gfdcrunuc4qb7r6es18.apps.googleusercontent.com</string>
+    <string name="kakao_app_key">830d2ef983929904f477a09ea75d91cc</string>
+    <string name="android_hash_key">lraZSRo81EYPIIAJxDVkIXTxuCQ=</string>
+    <string name="access_token">pk.eyJ1Ijoicm5qc3JudGtkOTUiLCJhIjoiY2thZjBkZ3d4Mm5vYzJ5cG01NmpkZjV1YSJ9.pRtDkbhdwn4LO3q7b4P1BQ</string>
+</resources>

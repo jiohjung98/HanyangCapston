@@ -1,49 +1,67 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.example.capston.MainActivity
 import com.example.capston.R
 import com.example.capston.WalkFragment
-import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.FragmentWalkBinding
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import net.daum.mf.map.api.MapPOIItem
-import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapView
-import java.text.SimpleDateFormat
+import net.daum.mf.map.api.*
 import java.util.*
+import kotlin.concurrent.timer
+import kotlin.math.*
 
 var RecordPage = HomeRecord()
 val walkFragment = WalkFragment()
 
-class NaviHomeFragment : Fragment() {
-    val PERMISSIONS_REQUEST_CODE = 100
+class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
+    MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
+
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val ACCESS_FINE_LOCATION = 1000
+
+    private val RequestPermissionCode = 1
+    private var mapView: MapView? = null
+    private var polyline: MapPolyline? = null
+    private var mapPoint: MapPoint? = null
+    private var prevLat: Double? = null
+    private var prevLon: Double? = null
+    private var walkingDistance: Double = 0.0
+    private var walkingCalorie: Double = 0.0
+    private var isStart: Boolean = false
+    private var isPause: Boolean = false
+    private var tapTimer: Timer? = null
+    private val route = ArrayList<ArrayList<Double>>()
+    private val toiletLoc = ArrayList<ArrayList<Double>>()
+    private val walkingAmounts = ArrayList<Double>()
+    private var walkingTimer: Timer? = null
+    private var runningDogImageTimer: Timer? = null
+    private var runningDogImage = arrayOf(
+        R.drawable.running_dog_1, R.drawable.running_dog_2
+        , R.drawable.running_dog_3, R.drawable.running_dog_4, R.drawable.running_dog_5
+        , R.drawable.running_dog_6, R.drawable.running_dog_7, R.drawable.running_dog_8
+    )
+    private var runningDogImageCounter: Int = 1
+    private var time = 0
+    private var isTimerRunning: Boolean = false
+    private var getAddress: Boolean = false
+    private var addressAdmin: String = ""
+    private var addressLocality: String = ""
+    private var addressThoroughfare: String = ""
+    private var animal = ArrayList<String>()
+    private var fullAmount = ArrayList<Double>()
 
     private var _binding: FragmentWalkBinding? = null
     private val binding get() = _binding!!
@@ -60,6 +78,10 @@ class NaviHomeFragment : Fragment() {
     ): View? {
         _binding = FragmentWalkBinding.inflate(inflater, container, false)
 
+        binding.startBtn.setOnClickListener {
+//            marker()
+        }
+
         val view = binding.root
 
 //        val mapView = MapView(activity)
@@ -69,6 +91,30 @@ class NaviHomeFragment : Fragment() {
 //        mapViewContainer.addView(mapView)
 
         return view
+    }
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
+    }
+
+//    private fun marker() {
+//        var marker = MapPOIItem()
+////        val mapPoint = MapPoint.mapPointWithGeoCoord(1, 1)
+//        marker.itemName = "ㅇㅇ"
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        kakaoMapView!!.addPOIItem(marker)
+//
+//    }
+
+
+    fun findAddress() {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
@@ -80,9 +126,29 @@ class NaviHomeFragment : Fragment() {
 //        val mapViewContainer = kakaoMapView as ViewGroup
 //        mapViewContainer.addView(mapView)
 
+        isSetLocationPermission()
+        kakaoMapView!!.setMapViewEventListener(this)
+        kakaoMapView!!.setZoomLevel(0, true)
+        kakaoMapView!!.setCustomCurrentLocationMarkerTrackingImage(
+            R.drawable.labrador_icon,
+            MapPOIItem.ImageOffset(50, 50)
+        )
+        kakaoMapView!!.setCustomCurrentLocationMarkerImage(
+            R.drawable.labrador_icon,
+            MapPOIItem.ImageOffset(50, 50)
+        )
+        kakaoMapView!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+        Log.d("트래킹", kakaoMapView!!.currentLocationTrackingMode.toString())
+        kakaoMapView!!.setCurrentLocationEventListener(this)
+        polyline = MapPolyline()
+        polyline!!.tag = 1000
+        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+
+
         //수원 화성의 위도, 경도
         val mapPoint = MapPoint.mapPointWithGeoCoord(37.28730797086605, 127.01192716921177)
-
+//
         //지도의 중심점을 수원 화성으로 설정, 확대 레벨 설정 (값이 작을수록 더 확대됨)
         kakaoMapView.setMapCenterPoint(mapPoint, true)
         kakaoMapView.setZoomLevel(1, true)
@@ -115,14 +181,6 @@ class NaviHomeFragment : Fragment() {
 
     }
 
-    lateinit var mainActivity: MainActivity
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // 2. Context를 액티비티로 형변환해서 할당
-        mainActivity = context as MainActivity
-    }
-
     //메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
@@ -142,6 +200,188 @@ class NaviHomeFragment : Fragment() {
 //        mapView.removeView(kakaoMapView)
         super.onDestroy()
     }
+
+    // 위치 권한 설정 확인 함수
+    private fun isSetLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermission()
+        }
+    }
+
+    // 위치 권한 설정
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            mainActivity,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            RequestPermissionCode
+        )
+        mainActivity.recreate()
+    }
+
+    override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
+    }
+
+    override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+
+        if (!isStart || isPause) {
+            return
+        }
+        val lat = p1!!.mapPointGeoCoord.latitude
+        val lon = p1!!.mapPointGeoCoord.longitude
+
+        route.add(arrayListOf(lat, lon))
+
+        mapPoint = p1
+        polyline!!.addPoint(p1)
+        p0!!.removePolyline(polyline)
+        p0.addPolyline(polyline)
+
+        if (prevLat == null && prevLon == null) {
+            prevLat = lat
+            prevLon = lon
+            return
+        } else {
+            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+            // 이동 거리 표시
+            walkingDistance += distance
+            if (walkingDistance < 1000) {
+                distanceId.text = String.format("%.1f", walkingDistance)
+            } else {
+                digitId.text = "km"
+                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+            }
+            // 소모 칼로리 표시
+            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+            calorieView.text = String.format("%.2f", walkingCalorie)
+            // 충족량 표시
+            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
+                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
+            }
+
+            if (prevLat != 0.0) {
+                prevLat = lat
+                prevLon = lon
+            }
+        }
+        // 변환 주소 가져오기
+        if (!getAddress) {
+            findAddress()
+        }
+    }
+
+    override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
+    }
+
+    override fun onCurrentLocationUpdateFailed(p0: MapView?) {
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+        //마커 생성
+        Log.d("gooooooo", p1.toString())
+//        val marker = MapPOIItem()
+//        marker.itemName = "실종"
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+//
+//        kakaoMapView.addPOIItem(marker)
+
+    }
+
+    override fun onMapViewInitialized(p0: MapView?) {
+    }
+
+    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        if (p0!!.currentLocationTrackingMode.toString() == "TrackingModeOff") {
+            return
+        }
+        p0!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+
+        if (tapTimer != null) {
+            tapTimer!!.cancel()
+        }
+        tapTimer = timer(period = 3000, initialDelay = 3000) {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+            cancel()
+        }
+    }
+
+    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+        kakaoMapView.setMapCenterPoint(p1,true)
+        val marker = MapPOIItem()
+
+
+//        marker.itemName = "배변"
+//        marker.isShowCalloutBalloonOnTouch = false
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.customImageResourceId =
+//            R.drawable.toilet_activity
+//        marker.isCustomImageAutoscale = false
+//        marker.setCustomImageAnchor(0.5f, 1.0f)
+//        kakaoMapView!!.addPOIItem(marker)
+    }
+
+    override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
+    }
+
+    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
+        getAddress = true
+        val address = p1!!.split(" ")
+        addressAdmin = address[0]
+        addressLocality = address[1]
+        addressThoroughfare = address[2]
+        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val pref = getSharedPreferences("pref", AppCompatActivity.MODE_PRIVATE)
+        val edit = pref.edit()
+        edit.putString("addressAdmin", address[0])
+        edit.putString("addressLocality", address[1])
+        edit.putString("addressThoroughfare", address[2])
+        edit.apply()
+    }
+
+    // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
+    private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val r = 6372.8;
+        val dLat = Math.toRadians(lat2 - lat1);
+        val dLon = Math.toRadians(lon2 - lon1);
+        val rLat1 = Math.toRadians(lat1);
+        val rLat2 = Math.toRadians(lat2);
+        var dist = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2);
+        dist = 2 * asin(sqrt(dist))
+
+        return r * dist * 1000
+    }
+
+    private fun meterToKillo(meter: Double): Double {
+        return meter / 1000
+    }
+
 //    // 위치 권한 확인
 //    private fun permissionCheck() {
 //        val preference = this.requireActivity().getPreferences(Context.MODE_PRIVATE)

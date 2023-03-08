@@ -177,19 +177,19 @@
                 app:layout_constraintStart_toEndOf="@id/weight_text"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+
+            <EditText
                 android:id="@+id/weight_input"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="체중"
+                android:hint="입력하세요."
                 android:textColor="#767676"
-                android:textSize="15.5dp"
+                android:textSize="11dp"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/weight_line"
+                app:layout_constraintEnd_toEndOf="@id/weight_box"
                 app:layout_constraintStart_toStartOf="@id/weight_line"
-
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/weight_line" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
