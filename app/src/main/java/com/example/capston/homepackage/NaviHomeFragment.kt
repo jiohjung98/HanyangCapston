@@ -334,7 +334,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
         kakaoMapView.setMapCenterPoint(p1,true)
         val marker = MapPOIItem()
-
+        marker.itemName = "실ㅇ"
+        marker.mapPoint = p1
+        marker.markerType =MapPOIItem.MarkerType.BluePin
+        kakaoMapView!!.addPOIItem(marker)
 
 //        marker.itemName = "배변"
 //        marker.isShowCalloutBalloonOnTouch = false

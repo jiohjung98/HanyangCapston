@@ -138,6 +138,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         }
         toiletFab.setOnClickListener {
+            Log.d("dsdsdsds", "dd")
             if (isStart && mapPoint != null) {
                 toiletActivity()
             }
@@ -174,54 +175,55 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
 //        mapView!!.setMapViewEventListener(this)
 
-        mapView.setMapViewEventListener(object : MapView.MapViewEventListener {
-            override fun onMapViewInitialized(mapView: MapView?) {
-                Log.i("디테일로그", "onMapViewInitialized")
-            }
-
-            override fun onMapViewCenterPointMoved(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewCenterPointMoved")
-            }
-
-            override fun onMapViewZoomLevelChanged(mapView: MapView?, i: Int) {
-                Log.i("디테일로그", "onMapViewZoomLevelChanged")
-            }
-
-            override fun onMapViewSingleTapped(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewSingleTapped")
-            }
-
-            override fun onMapViewDoubleTapped(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewDoubleTapped")
-            }
-
-            override fun onMapViewLongPressed(mapView: MapView?, mapPoint: MapPoint?) {
-                mapView!!.setMapCenterPoint(mapPoint,true)
-                val marker = MapPOIItem()
-                marker.itemName = "배변"
-                marker.isShowCalloutBalloonOnTouch = false
-                marker.mapPoint = mapPoint
-                marker.markerType = MapPOIItem.MarkerType.BluePin
-                marker.customImageResourceId =
-                    R.drawable.toilet_activity
-                marker.isCustomImageAutoscale = false
-                marker.setCustomImageAnchor(0.5f, 1.0f)
-                mapView!!.addPOIItem(marker)
-                Log.i("디테일로그", "onMapViewLongPressed")
-            }
-
-            override fun onMapViewDragStarted(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewDragStarted")
-            }
-
-            override fun onMapViewDragEnded(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewDragEnded")
-            }
-
-            override fun onMapViewMoveFinished(mapView: MapView?, mapPoint: MapPoint?) {
-                Log.i("디테일로그", "onMapViewMoveFinished")
-            }
-        })
+//        mapView.setMapViewEventListener(object : MapView.MapViewEventListener {
+//            override fun onMapViewInitialized(mapView: MapView?) {
+//                Log.i("디테일로그", "onMapViewInitialized")
+//            }
+//
+//            override fun onMapViewCenterPointMoved(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewCenterPointMoved")
+//            }
+//
+//            override fun onMapViewZoomLevelChanged(mapView: MapView?, i: Int) {
+//                Log.i("디테일로그", "onMapViewZoomLevelChanged")
+//            }
+//
+//            override fun onMapViewSingleTapped(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewSingleTapped")
+//            }
+//
+//            override fun onMapViewDoubleTapped(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewDoubleTapped")
+//            }
+//
+//            override fun onMapViewLongPressed(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.d("mapView", "good")
+//                mapView?.setMapCenterPoint(mapPoint,true)
+//                val marker = MapPOIItem()
+//                marker.itemName = "배변"
+////                marker.isShowCalloutBalloonOnTouch = false
+//                marker.mapPoint = mapPoint
+//                marker.markerType = MapPOIItem.MarkerType.BluePin
+////        marker.customImageResourceId =
+////            R.drawable.toilet_activity
+////        marker.isCustomImageAutoscale = false
+////        marker.setCustomImageAnchor(0.5f, 1.0f)
+//                mapView?.addPOIItem(marker)
+//                Log.i("디테일로그", "onMapViewLongPressed")
+//            }
+//
+//            override fun onMapViewDragStarted(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewDragStarted")
+//            }
+//
+//            override fun onMapViewDragEnded(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewDragEnded")
+//            }
+//
+//            override fun onMapViewMoveFinished(mapView: MapView?, mapPoint: MapPoint?) {
+//                Log.i("디테일로그", "onMapViewMoveFinished")
+//            }
+//        })
         // 현위치 트래킹 모드 ON
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
@@ -331,30 +333,45 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                         finish()
                         cancel()
                     }
-
                 }
             }
         })
     }
 
+
     // 배변활동 표시
     private fun toiletActivity() {
-        val marker = MapPOIItem()
-        marker.itemName = "배변"
+        onMapViewLongPressed(mapView, mapPoint)
+        Log.d("ddㄲㄲㄲ", "토일렉엑티비티")
+//        mapView?.setMapCenterPoint(mapPoint, true)
+//        val marker = MapPOIItem()
+//        marker.itemName = "배변"
 //        marker.isShowCalloutBalloonOnTouch = false
-        marker.mapPoint = mapPoint
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.customImageResourceId =
-//            R.drawable.toilet_activity
-//        marker.isCustomImageAutoscale = false
-//        marker.setCustomImageAnchor(0.5f, 1.0f)
-        mapView!!.addPOIItem(marker)
-        toiletLoc.add(
-            arrayListOf(
-                marker.mapPoint.mapPointGeoCoord.latitude,
-                marker.mapPoint.mapPointGeoCoord.longitude
-            )
-        )
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+////        marker.customImageResourceId =
+////            R.drawable.toilet_activity
+////        marker.isCustomImageAutoscale = false
+////        marker.setCustomImageAnchor(0.5f, 1.0f)
+//        mapView?.addPOIItem(marker)
+//        Log.i("디테일로그", "onMapViewLongPressed")
+
+//        val marker = MapPOIItem()
+//        marker.itemName = "배변"
+////        marker.isShowCalloutBalloonOnTouch = false
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+////        marker.customImageResourceId =
+////            R.drawable.toilet_activity
+////        marker.isCustomImageAutoscale = false
+////        marker.setCustomImageAnchor(0.5f, 1.0f)
+//        mapView!!.addPOIItem(marker)
+//        toiletLoc.add(
+//            arrayListOf(
+//                marker.mapPoint.mapPointGeoCoord.latitude,
+//                marker.mapPoint.mapPointGeoCoord.longitude
+//            )
+//        )
     }
     // 위치 권한 설정 확인 함수
     private fun isSetLocationPermission() {
@@ -386,50 +403,50 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-        if (!isStart || isPause) {
-            return
-        }
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
-
-        mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
-
-        if (prevLat == null && prevLon == null) {
-            prevLat = lat
-            prevLon = lon
-            return
-        } else {
-            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-            // 이동 거리 표시
-            walkingDistance += distance
-            if (walkingDistance < 1000) {
-                distanceId.text = String.format("%.1f", walkingDistance)
-            } else {
-                digitId.text = "km"
-                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-            }
-            // 소모 칼로리 표시
-            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-            calorieView.text = String.format("%.2f", walkingCalorie)
-            // 충족량 표시
-            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-            }
-
-            if (prevLat != 0.0) {
-                prevLat = lat
-                prevLon = lon
-            }
-        }
-        // 변환 주소 가져오기
-        if (!getAddress) {
-            findAddress()
-        }
+//        if (!isStart || isPause) {
+//            return
+//        }
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+//
+//        route.add(arrayListOf(lat, lon))
+//
+//        mapPoint = p1
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
+//
+//        if (prevLat == null && prevLon == null) {
+//            prevLat = lat
+//            prevLon = lon
+//            return
+//        } else {
+//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+//            // 이동 거리 표시
+//            walkingDistance += distance
+//            if (walkingDistance < 1000) {
+//                distanceId.text = String.format("%.1f", walkingDistance)
+//            } else {
+//                digitId.text = "km"
+//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+//            }
+//            // 소모 칼로리 표시
+//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+//            calorieView.text = String.format("%.2f", walkingCalorie)
+//            // 충족량 표시
+//            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
+//                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
+//            }
+//
+//            if (prevLat != 0.0) {
+//                prevLat = lat
+//                prevLon = lon
+//            }
+//        }
+//        // 변환 주소 가져오기
+//        if (!getAddress) {
+//            findAddress()
+//        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -566,19 +583,18 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-        p0!!.setMapCenterPoint(p1,true)
+        Log.d("logpress", "맵뷰롱프레스트")
+        p0?.setMapCenterPoint(p1,true)
         val marker = MapPOIItem()
-
-
         marker.itemName = "배변"
         marker.isShowCalloutBalloonOnTouch = false
-        marker.mapPoint = mapPoint
+        marker.mapPoint = p1
         marker.markerType = MapPOIItem.MarkerType.BluePin
         marker.customImageResourceId =
             R.drawable.toilet_activity
         marker.isCustomImageAutoscale = false
         marker.setCustomImageAnchor(0.5f, 1.0f)
-        p0!!.addPOIItem(marker)
+        p0?.addPOIItem(marker)
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {

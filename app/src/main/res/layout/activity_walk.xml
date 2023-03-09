@@ -142,8 +142,6 @@
         android:layout_weight="0.5"
         android:gravity="center">
 
-
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -241,12 +239,7 @@
                 android:layout_height="30dp"
                 android:background="@drawable/toilet_icon"
                 android:backgroundTint="#626262" />
-
-
-
-
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -268,7 +261,6 @@
                 android:layout_height="30dp"
                 android:background="@drawable/pause_icon"
                 android:backgroundTint="#626262" />
-
         </RelativeLayout>
 
 
@@ -284,8 +276,5 @@
                 android:background="@drawable/camera"
                 android:backgroundTint="#626262"/>
         </LinearLayout>
-
     </LinearLayout>
-
-
 </LinearLayout>
