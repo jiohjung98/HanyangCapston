@@ -1,6 +1,7 @@
 package com.example.capston.homepackage
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -9,6 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -29,8 +33,11 @@ val walkFragment = WalkFragment()
 class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
+    var listen: MarkerEventListener? = null
+
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val ACCESS_FINE_LOCATION = 1000
+//    private val eventListener = MarkerEventListener(mainActivity)
 
     private val RequestPermissionCode = 1
     private var mapView: MapView? = null
@@ -83,15 +90,16 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
 
         val view = binding.root
-
+//
 //        val mapView = MapView(activity)
 //
-//        val mapViewContainer = map_view as ViewGroup
+//        val mapViewContainer = kakaoMapView as ViewGroup
 //
 //        mapViewContainer.addView(mapView)
 
         return view
     }
+
     lateinit var mainActivity: MainActivity
 
     override fun onAttach(context: Context) {
@@ -99,6 +107,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
     }
+
+//    private var eventListener = MarkerEventListener(mainActivity)
 
 //    private fun marker() {
 //        var marker = MapPOIItem()
@@ -126,6 +136,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        val mapViewContainer = kakaoMapView as ViewGroup
 //        mapViewContainer.addView(mapView)
 
+        listen = MarkerEventListener()
+        kakaoMapView.setPOIItemEventListener(listen)
+
         isSetLocationPermission()
         kakaoMapView!!.setMapViewEventListener(this)
         kakaoMapView!!.setZoomLevel(0, true)
@@ -147,20 +160,23 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
         //수원 화성의 위도, 경도
-        val mapPoint = MapPoint.mapPointWithGeoCoord(37.28730797086605, 127.01192716921177)
+//        val mapPoint = MapPoint.mapPointWithGeoCoord(37.28730797086605, 127.01192716921177)
+////
+//        //지도의 중심점을 수원 화성으로 설정, 확대 레벨 설정 (값이 작을수록 더 확대됨)
+//        kakaoMapView.setMapCenterPoint(mapPoint, true)
+//        kakaoMapView.setZoomLevel(1, true)
+
+//        //마커 생성
+//        val marker = MapPOIItem()
+//        marker.itemName = "이곳이 수원 화성입니다"
+//        marker.mapPoint = mapPoint
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
 //
-        //지도의 중심점을 수원 화성으로 설정, 확대 레벨 설정 (값이 작을수록 더 확대됨)
-        kakaoMapView.setMapCenterPoint(mapPoint, true)
-        kakaoMapView.setZoomLevel(1, true)
+//        kakaoMapView.addPOIItem(marker)
 
-        //마커 생성
-        val marker = MapPOIItem()
-        marker.itemName = "이곳이 수원 화성입니다"
-        marker.mapPoint = mapPoint
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-
-        kakaoMapView.addPOIItem(marker)
+        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+//        kakaoMapView.setPOIItemEventListener(MarkerEventListener(mainActivity))
 
 
 //        val mapView = MapView(activity)
@@ -179,6 +195,26 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        val mapView = MapView(requireActivity())
 //        binding.kakaoMapView.(mapView)
 
+    }
+
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
+        val address: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_address)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 마커 클릭 시 나오는 말풍선
+            name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
+            address.text = "getCalloutBalloon"
+            return mCalloutBalloon
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            address.text = "getPressedCalloutBalloon"
+            return mCalloutBalloon
+        }
     }
 
     //메모리 누수 방지
@@ -334,7 +370,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
         kakaoMapView.setMapCenterPoint(p1,true)
         val marker = MapPOIItem()
-        marker.itemName = "실ㅇ"
+        marker.itemName = "실종견"
         marker.mapPoint = p1
         marker.markerType =MapPOIItem.MarkerType.BluePin
         kakaoMapView!!.addPOIItem(marker)
@@ -384,6 +420,40 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private fun meterToKillo(meter: Double): Double {
         return meter / 1000
     }
+}
+// 마커 클릭 이벤트 리스너
+class MarkerEventListener: MapView.POIItemEventListener {
+    override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+        // 마커 클릭 시
+        Log.d("markerClick", "ok")
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+        // 말풍선 클릭 시 (Deprecated)
+        // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+        // 말풍선 클릭 시
+        Log.d("ballonClick", "okok")
+//        val builder = AlertDialog.Builder(context)
+//        val itemList = arrayOf("토스트", "마커 삭제", "취소")
+//        builder.setTitle("${poiItem?.itemName}")
+//        builder.setItems(itemList) { dialog, which ->
+//            when(which) {
+//                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
+//                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
+//                2 -> dialog.dismiss()   // 대화상자 닫기
+//            }
+//        }
+//        builder.show()
+    }
+
+    override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
+        // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
+    }
+}
+
 
 //    // 위치 권한 확인
 //    private fun permissionCheck() {
@@ -482,4 +552,4 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 ////        binding.kakaoMapView.remove(mapView)
 //        super.onDestroy()
 //    }
-}
+

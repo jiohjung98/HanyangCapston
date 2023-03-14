@@ -237,6 +237,4 @@ class InfoActivity: AppCompatActivity() {
         super.onDestroy()
         _binding = null
     }
-
-
 }
