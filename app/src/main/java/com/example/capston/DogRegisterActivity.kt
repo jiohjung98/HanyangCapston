@@ -21,6 +21,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.ActivityDogRegisterBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.breed_spinner.*
 
@@ -36,7 +40,9 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     lateinit var breed:ArrayList<BreedDTO>
     lateinit var BreedSearch: SearchView
 
+    private lateinit var auth: FirebaseAuth
 
+    var pet_info = PetInfo()
 
     private lateinit var viewBinding: ActivityDogRegisterBinding
 
@@ -46,6 +52,8 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         setContentView(viewBinding.root)
         BreedSearch = findViewById(R.id.breed_search)
         breed_recycleR = findViewById(R.id.rv_phone_book)
+
+        auth = FirebaseAuth.getInstance()
 
         viewBinding.dogNameEdtText.setOnTouchListener(OnTouchListener { v, event ->
             when (event.action) {
@@ -72,9 +80,16 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             }
         })
 
+
+
         viewBinding.nextPageBtn.setOnClickListener {
             val intent = Intent(this, DogRegisterEndActivity::class.java)
 //            intent.putExtra("dogname", dog_name_edt_text.text.toString())
+
+            pet_info.pet_name = viewBinding.dogNameEdtText.text.toString()
+            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
+            addDogToDB(pet_info)
+
             startActivity(intent)
         }
 
@@ -129,7 +144,15 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     }
 
 
+    private fun addDogToDB(pet_info : PetInfo){
+        val database: DatabaseReference =
+            Firebase.database.reference.child("users")
 
+        val pet_info_array = ArrayList<PetInfo>()
+        pet_info_array.add(pet_info)
+
+        database.child(auth.currentUser!!.uid).child("pet_list").setValue(pet_info_array)
+    }
 
 
     // -- 스피너 높이 조절 코드인데 잘 안되네요 --
@@ -253,7 +276,12 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                     }
                 }
                 checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3)
-
+                // 성별 저장
+//                Log.d("GENDER", "${position.toString()}")
+                if(position==1) // 수
+                    pet_info.gender = 1
+                else            // 암
+                    pet_info.gender = 0
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -316,6 +344,11 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                     }
                 }
                 checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3)
+
+                // 출생년도 저장
+                pet_info.born = dog_age_spinner.selectedItem.toString()
+//                Log.d("BORN YEAR", "${pet_info.born}")
+
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 validSpinner3 = false
@@ -351,7 +384,9 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             editText.setHintTextColor(Color.BLACK)
             breedSearchView.clearFocus() // 포커스 초기화
             viewBinding.dogNameEdtText.clearFocus()
-            Log.d("네임",breedAdapter.choose_breed)
+            Log.d("견종이름",breedAdapter.choose_breed)
+            //견종 저장
+            pet_info.breed = breedAdapter.choose_breed
             breed_recycleR.visibility=View.INVISIBLE
             validSpinner1 = true
         }
