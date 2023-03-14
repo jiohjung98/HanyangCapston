@@ -280,33 +280,33 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         p0!!.removePolyline(polyline)
         p0.addPolyline(polyline)
 
-        if (prevLat == null && prevLon == null) {
-            prevLat = lat
-            prevLon = lon
-            return
-        } else {
-            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-            // 이동 거리 표시
-            walkingDistance += distance
-            if (walkingDistance < 1000) {
-                distanceId.text = String.format("%.1f", walkingDistance)
-            } else {
-                digitId.text = "km"
-                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-            }
-            // 소모 칼로리 표시
-            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-            calorieView.text = String.format("%.2f", walkingCalorie)
-            // 충족량 표시
-            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-            }
-
-            if (prevLat != 0.0) {
-                prevLat = lat
-                prevLon = lon
-            }
-        }
+//        if (prevLat == null && prevLon == null) {
+//            prevLat = lat
+//            prevLon = lon
+//            return
+//        } else {
+//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+//            // 이동 거리 표시
+//            walkingDistance += distance
+//            if (walkingDistance < 1000) {
+//                distanceId.text = String.format("%.1f", walkingDistance)
+//            } else {
+//                digitId.text = "km"
+//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+//            }
+//            // 소모 칼로리 표시
+//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+//            calorieView.text = String.format("%.2f", walkingCalorie)
+//            // 충족량 표시
+//            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
+//                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
+//            }
+//
+//            if (prevLat != 0.0) {
+//                prevLat = lat
+//                prevLon = lon
+//            }
+//        }
         // 변환 주소 가져오기
         if (!getAddress) {
             findAddress()
@@ -437,7 +437,7 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
         // 말풍선 클릭 시
         Log.d("ballonClick", "okok")
         val builder = AlertDialog.Builder(context)
-        val itemList = arrayOf("토스트", "마커 삭제", "취소")
+        val itemList = arrayOf("정보", "마커 삭제", "취소")
         builder.setTitle("${poiItem?.itemName}")
         builder.setItems(itemList) { dialog, which ->
             when(which) {

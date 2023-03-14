@@ -66,7 +66,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
-
+//
 //        var weights: ArrayList<String>? = null
 //        val extra = intent.extras
 //
@@ -90,7 +90,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 //            return
 //        }
 ////
-//        weights.forEach(fun(weight) {
+//        weights!!.forEach(fun(weight) {
 //            fullAmount.add(((weight.toDouble()*30)+70)*1.4 / 2)
 //        })
 
@@ -112,7 +112,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             toiletFab.visibility = View.VISIBLE
             playFab.visibility = View.GONE
             resetFab.visibility = View.GONE
-
         }
         pauseFab.setOnClickListener {
             isPause = true
@@ -140,6 +139,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         toiletFab.setOnClickListener {
             Log.d("dsdsdsds", "dd")
             if (isStart && mapPoint != null) {
+                Log.d("goooood", "hihihi")
                 toiletActivity()
             }
         }
@@ -152,10 +152,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         this.window.statusBarColor = (ContextCompat.getColor(this, R.color.white))
         this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
-//        val mapView = MapView(this)
-//        val mapViewContainer: ViewGroup = mapView.findViewById(R.id.kakaoMapView)
-//        mapViewContainer.addView(mapView)
     }
 
     fun findAddress() {
@@ -173,7 +169,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         val mapViewContainer = kakaoMapView2 as ViewGroup
         mapViewContainer.addView(mapView)
 
-//        mapView!!.setMapViewEventListener(this)
+        mapView!!.setMapViewEventListener(this)
 
 //        mapView.setMapViewEventListener(object : MapView.MapViewEventListener {
 //            override fun onMapViewInitialized(mapView: MapView?) {
@@ -269,7 +265,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         // 시작 지점 표시
         val startMarker = MapPOIItem()
-        startMarker.itemName = ""
+        startMarker.itemName = "시작점"
         startMarker.mapPoint = polyline!!.getPoint(0)
         startMarker.markerType = MapPOIItem.MarkerType.CustomImage
         startMarker.customImageResourceId =
@@ -341,7 +337,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     // 배변활동 표시
     private fun toiletActivity() {
-        onMapViewLongPressed(mapView, mapPoint)
+//        onMapViewLongPressed(mapView, mapPoint)
         Log.d("ddㄲㄲㄲ", "토일렉엑티비티")
 //        mapView?.setMapCenterPoint(mapPoint, true)
 //        val marker = MapPOIItem()
@@ -403,50 +399,51 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-//        if (!isStart || isPause) {
-//            return
-//        }
-//        val lat = p1!!.mapPointGeoCoord.latitude
-//        val lon = p1!!.mapPointGeoCoord.longitude
-//
-//        route.add(arrayListOf(lat, lon))
-//
-//        mapPoint = p1
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
-//
-//        if (prevLat == null && prevLon == null) {
-//            prevLat = lat
-//            prevLon = lon
-//            return
-//        } else {
-//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-//            // 이동 거리 표시
-//            walkingDistance += distance
-//            if (walkingDistance < 1000) {
-//                distanceId.text = String.format("%.1f", walkingDistance)
-//            } else {
-//                digitId.text = "km"
-//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-//            }
-//            // 소모 칼로리 표시
-//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-//            calorieView.text = String.format("%.2f", walkingCalorie)
+        if (!isStart || isPause) {
+            return
+        }
+        val lat = p1!!.mapPointGeoCoord.latitude
+        val lon = p1!!.mapPointGeoCoord.longitude
+
+        route.add(arrayListOf(lat, lon))
+
+        mapPoint = p1
+        polyline!!.addPoint(p1)
+        p0!!.removePolyline(polyline)
+        p0.addPolyline(polyline)
+
+        if (prevLat == null && prevLon == null) {
+            prevLat = lat
+            prevLon = lon
+            return
+        } else {
+            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+            // 이동 거리 표시
+            walkingDistance += distance
+            if (walkingDistance < 1000) {
+                distanceId.text = String.format("%.1f", walkingDistance)
+            } else {
+                digitId.text = "km"
+                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+            }
+            // 소모 칼로리 표시
+            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+            Log.d("태그", "칼로리: " + walkingCalorie)
+            calorieView.text = String.format("%.2f", walkingCalorie)
 //            // 충족량 표시
-//            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-//                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-//            }
-//
+////            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
+//            amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
+
+
 //            if (prevLat != 0.0) {
-//                prevLat = lat
-//                prevLon = lon
+                prevLat = lat
+                prevLon = lon
 //            }
-//        }
-//        // 변환 주소 가져오기
-//        if (!getAddress) {
-//            findAddress()
-//        }
+        }
+        // 변환 주소 가져오기
+        if (!getAddress) {
+            findAddress()
+        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -594,7 +591,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             R.drawable.toilet_activity
         marker.isCustomImageAutoscale = false
         marker.setCustomImageAnchor(0.5f, 1.0f)
-        p0?.addPOIItem(marker)
+        p0!!.addPOIItem(marker)
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
