@@ -136,7 +136,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        val mapViewContainer = kakaoMapView as ViewGroup
 //        mapViewContainer.addView(mapView)
 
-        listen = MarkerEventListener()
+        listen = MarkerEventListener(mainActivity)
         kakaoMapView.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
@@ -422,7 +422,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 }
 // 마커 클릭 이벤트 리스너
-class MarkerEventListener: MapView.POIItemEventListener {
+class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
     override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
         // 마커 클릭 시
         Log.d("markerClick", "ok")
@@ -436,17 +436,17 @@ class MarkerEventListener: MapView.POIItemEventListener {
     override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
         // 말풍선 클릭 시
         Log.d("ballonClick", "okok")
-//        val builder = AlertDialog.Builder(context)
-//        val itemList = arrayOf("토스트", "마커 삭제", "취소")
-//        builder.setTitle("${poiItem?.itemName}")
-//        builder.setItems(itemList) { dialog, which ->
-//            when(which) {
-//                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
-//                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
-//                2 -> dialog.dismiss()   // 대화상자 닫기
-//            }
-//        }
-//        builder.show()
+        val builder = AlertDialog.Builder(context)
+        val itemList = arrayOf("토스트", "마커 삭제", "취소")
+        builder.setTitle("${poiItem?.itemName}")
+        builder.setItems(itemList) { dialog, which ->
+            when(which) {
+                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
+                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
+                2 -> dialog.dismiss()   // 대화상자 닫기
+            }
+        }
+        builder.show()
     }
 
     override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
