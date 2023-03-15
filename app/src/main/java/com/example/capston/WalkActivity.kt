@@ -121,7 +121,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             toiletFab.visibility = View.GONE
             playFab.visibility = View.VISIBLE
             resetFab.visibility = View.VISIBLE
-            pauseWalking()
+//            pauseWalking()
 
         }
         resetFab.setOnClickListener {
@@ -137,7 +137,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         }
         toiletFab.setOnClickListener {
-            Log.d("dsdsdsds", "dd")
             if (isStart && mapPoint != null) {
                 Log.d("goooood", "hihihi")
                 toiletActivity()
@@ -165,7 +164,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         // 위치 권한 설정 확인
         isSetLocationPermission()
 
-        val mapView = MapView(this)
+        mapView = MapView(this)
         val mapViewContainer = kakaoMapView2 as ViewGroup
         mapViewContainer.addView(mapView)
 
@@ -339,6 +338,19 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private fun toiletActivity() {
 //        onMapViewLongPressed(mapView, mapPoint)
         Log.d("ddㄲㄲㄲ", "토일렉엑티비티")
+        val marker = MapPOIItem()
+        marker.itemName = ""
+        marker.isShowCalloutBalloonOnTouch = false
+        marker.mapPoint = mapPoint
+        marker.markerType = MapPOIItem.MarkerType.CustomImage
+        marker.customImageResourceId =
+            R.drawable.toilet_activity
+        marker.isCustomImageAutoscale = false
+        marker.setCustomImageAnchor(0.5f, 1.0f)
+        mapView!!.addPOIItem(marker)
+
+
+
 //        mapView?.setMapCenterPoint(mapPoint, true)
 //        val marker = MapPOIItem()
 //        marker.itemName = "배변"
