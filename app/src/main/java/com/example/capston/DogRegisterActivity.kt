@@ -1,10 +1,13 @@
 package com.example.capston
 
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,8 +19,12 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.ActivityDogRegisterBinding
@@ -25,20 +32,29 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
-import kotlinx.android.synthetic.main.breed_spinner.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
+
+    private final val REQUEST_FIRST = 1010
+
     var validEditText: Boolean= false
     var validSpinner1: Boolean= false
     var validSpinner2: Boolean= false
     var validSpinner3: Boolean= false
+    var validImage: Boolean= false
 
     lateinit var breed_recycleR: RecyclerView
     lateinit var breedAdapter: BreedAdapter
     lateinit var breed:ArrayList<BreedDTO>
     lateinit var BreedSearch: SearchView
+
+    lateinit var uri: Uri
 
     private lateinit var auth: FirebaseAuth
 
@@ -69,7 +85,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             override fun afterTextChanged(editable: Editable) {
 
                 validEditText = editable.isNotEmpty()
-                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3)
+                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -81,13 +97,12 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         })
 
 
-
         viewBinding.nextPageBtn.setOnClickListener {
             val intent = Intent(this, DogRegisterEndActivity::class.java)
 //            intent.putExtra("dogname", dog_name_edt_text.text.toString())
 
             pet_info.pet_name = viewBinding.dogNameEdtText.text.toString()
-            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
+//            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
             addDogToDB(pet_info)
 
             startActivity(intent)
@@ -114,6 +129,8 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
 
         setupAgeData()
         setupAgeHandler()
+
+        initAddImage()
 
 //        limitDropHeight(dog_age_spinner)
 
@@ -143,7 +160,10 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         return tempPersons
     }
 
-
+    /*
+     * 이후 반려견 추가등록하는 기능 넣으려면 수정할 필요 있음
+     * 현재 pet_list 배열을 새로 만들어서 저장하므로 추가 등록 시 기존 값 지워지고 새로운 배열 등록되는게 문제가 될듯
+     */
     private fun addDogToDB(pet_info : PetInfo){
         val database: DatabaseReference =
             Firebase.database.reference.child("users")
@@ -154,6 +174,150 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         database.child(auth.currentUser!!.uid).child("pet_list").setValue(pet_info_array)
     }
 
+    /*
+     * 갤러리 접근 권한 획득 후 작업
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            1010 -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // 권한 허가
+                    // 허용 클릭 시 갤러리에서 이미지 가져오기
+                    getImageFromAlbum()
+                } else {
+                    // 거부 클릭시
+                    Toast.makeText(this,"권한을 거부했습니다.",Toast.LENGTH_SHORT).show()
+                }
+            } else -> {
+            //Do Nothing
+            }
+        }
+    }
+
+    private fun initAddImage() {
+        viewBinding.imageArea.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                -> {
+                    // 권한이 존재하는 경우
+                    // TODO 이미지를 가져옴
+                    getImageFromAlbum()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    // 권한이 거부 되어 있는 경우
+                    showPermissionContextPopup()
+                }
+                else -> {
+                    // 처음 권한을 시도했을 때 띄움
+                    requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),REQUEST_FIRST)
+                }
+            }
+        }
+    }
+
+    /*
+     * 갤러리에서 이미지 가져와서 image area에 띄움
+     */
+    private fun getImageFromAlbum() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        getImageActivity.launch(intent)
+    }
+    private val getImageActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                AppCompatActivity.RESULT_OK -> {
+                    // 전달 받은 이미지 uri를 넣어준다.
+                    uri = result.data?.data!!
+                    // 이미지를 ImageView에 표시한다.
+                    viewBinding.imageArea.setImageURI(uri)
+
+                    // 갤러리에서 이미지 가져오고 등록하기 버튼 활성화
+                    image_upload_btn.isEnabled = true
+                    image_upload_btn.isClickable = true
+
+                    // Upload
+                    initUploadImage(uri)
+                }
+            }
+        }
+
+    /*
+     * 업로드 버튼 클릭 이벤트 설정
+     */
+    private fun initUploadImage(uri : Uri){
+        viewBinding.imageUploadBtn.setOnClickListener{
+            // 서버로 업로드
+            uploadImageToStorage(uri)
+        }
+    }
+
+    /*
+     * 서버 스토리지로 이미지 업로드
+     */
+    private fun uploadImageToStorage(uri: Uri) {
+        // storage 인스턴스 생성
+        val storage = Firebase.storage
+        // storage 참조
+        val storageRef = storage.getReference("images").child("users")
+        // storage에 저장할 파일명 선언
+        val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
+        val mountainsRef = storageRef.child("${fileName}.jpg")
+
+
+        val uploadTask = mountainsRef.putFile(uri).addOnCompleteListener {
+            if (it.isSuccessful) {
+                // 파일 업로드에 성공했기 때문에 스토리지 url을 다시 받아와 DB에 저장
+                mountainsRef.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        pet_info.image_url = uri.toString()
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+            } else {
+                Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // 파일 업로드 성공
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            Toast.makeText(this, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
+            // 성공했으므로 업로드 버튼 비활성화
+            image_upload_btn.isEnabled = false
+            // 갤러리 불러오기 비활성화
+            imageArea.isEnabled = false
+            imageArea.isClickable = false
+
+            // validImage 변경 후 다음으로 버튼 활성화 검사
+            validImage = true
+            checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
+        }   // 파일 업로드 실패
+            .addOnFailureListener {
+            Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /*
+     * 저장소 접근 권한 설정 팝업
+     */
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(this)
+            .setTitle("권한이 필요합니다")
+            .setMessage("갤러리에서 사진을 선택하려면 권한이 필요합니다.")
+            .setPositiveButton("동의하기") { _, _ ->
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_FIRST)
+            }
+            .setNegativeButton("취소하기",{ _,_ ->})
+            .create()
+            .show()
+    }
 
     // -- 스피너 높이 조절 코드인데 잘 안되네요 --
 //    private fun limitDropHeight(breed_spinner: Spinner) {
@@ -208,7 +372,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             }
 
         })
-
     }
 
 
@@ -275,7 +438,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
 
                     }
                 }
-                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3)
+                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
                 // 성별 저장
 //                Log.d("GENDER", "${position.toString()}")
                 if(position==1) // 수
@@ -343,7 +506,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                         Log.d("스피너3", "$validSpinner3")
                     }
                 }
-                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3)
+                checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
 
                 // 출생년도 저장
                 pet_info.born = dog_age_spinner.selectedItem.toString()
@@ -364,11 +527,15 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         )
     }
 
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean){
-        Log.d("Valid", (v1 && v2 && v3 && v4).toString())
-        if(v1 && v2 && v3 && v4){
+    /*
+     * 이미지 업로드 검사 추가 - v5 = validImage
+     */
+    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean){
+        Log.d("Valid", (v1 && v2 && v3 && v4 && v5).toString())
+        if(v1 && v2 && v3 && v4 && v5){
             next_page_btn.isEnabled = true
             next_page_btn.isClickable = true
+
         } else {
             next_page_btn.isEnabled = false
             next_page_btn.isClickable = false
