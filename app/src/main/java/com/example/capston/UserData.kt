@@ -15,5 +15,5 @@ data class PetInfo(
     var breed: String? = null,
     var gender : Int? = null, // female = 0, male = 1
     var born : String? = null,
-//    var image_url : String? = null,
+    var image_url : String? = null,
 )
