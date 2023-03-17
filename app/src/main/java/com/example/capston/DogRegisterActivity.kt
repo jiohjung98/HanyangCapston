@@ -2,6 +2,7 @@ package com.example.capston
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -145,18 +146,22 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     }
 
     fun tempPersons(): ArrayList<BreedDTO> {
+        val breedArray: Array<String> = resources.getStringArray(R.array.spinner_breed)
         var tempPersons = ArrayList<BreedDTO>()
         tempPersons.add(BreedDTO(""))
-        tempPersons.add(BreedDTO("허스키"))
-        tempPersons.add(BreedDTO("비숑"))
-        tempPersons.add(BreedDTO("푸들"))
-        tempPersons.add(BreedDTO("말티즈"))
-        tempPersons.add(BreedDTO("치와와"))
-        tempPersons.add(BreedDTO("시츄"))
-        tempPersons.add(BreedDTO("웰시코기"))
-        tempPersons.add(BreedDTO("진돗개"))
-        tempPersons.add(BreedDTO("닥스훈트"))
-        tempPersons.add(BreedDTO("골든 리트리버"))
+//        tempPersons.add(BreedDTO("허스키"))
+//        tempPersons.add(BreedDTO("비숑"))
+//        tempPersons.add(BreedDTO("푸들"))
+//        tempPersons.add(BreedDTO("말티즈"))
+//        tempPersons.add(BreedDTO("치와와"))
+//        tempPersons.add(BreedDTO("시츄"))
+//        tempPersons.add(BreedDTO("웰시코기"))
+//        tempPersons.add(BreedDTO("진돗개"))
+//        tempPersons.add(BreedDTO("닥스훈트"))
+//        tempPersons.add(BreedDTO("골든 리트리버"))
+        for(i in breedArray.indices){
+            tempPersons.add(BreedDTO((breedArray[i])))
+        }
         return tempPersons
     }
 
