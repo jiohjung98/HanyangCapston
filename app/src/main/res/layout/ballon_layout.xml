@@ -18,17 +18,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="장소명"
+            android:text="정보입력"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <EditText
             android:id="@+id/ball_tv_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="주소"
+            android:hint="반려견 정보를 입력해주세요~~~~~~"
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="@+id/ball_tv_name"
             app:layout_constraintTop_toBottomOf="@+id/ball_tv_name" />

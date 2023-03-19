@@ -1,7 +1,6 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,14 +12,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.example.capston.MainActivity
-import com.example.capston.R
-import com.example.capston.WalkFragment
+import com.example.capston.*
 import com.example.capston.databinding.FragmentWalkBinding
-import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import java.util.*
@@ -200,6 +197,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
         val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        val info: View = inflater.inflate(R.layout.lost_dog_info,null)
         val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
         val address: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_address)
 
@@ -213,13 +211,18 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
             address.text = "getPressedCalloutBalloon"
-            return mCalloutBalloon
+            return info
         }
     }
 
     //메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        this._binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
         this._binding = null
     }
 
@@ -420,9 +423,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private fun meterToKillo(meter: Double): Double {
         return meter / 1000
     }
-}
+
 // 마커 클릭 이벤트 리스너
 class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
+
     override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
         // 마커 클릭 시
         Log.d("markerClick", "ok")
@@ -433,26 +437,67 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
         // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
     }
 
-    override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+//    private lateinit var mainActivity: MainActivity
+//    fun onAttach(context: Context) {
+//        // 2. Context를 액티비티로 형변환해서 할당
+//        mainActivity = context as MainActivity
+//    }
+
+    lateinit var mainActivity: MainActivity
+
+    override fun onCalloutBalloonOfPOIItemTouched(
+        mapView: MapView?,
+        poiItem: MapPOIItem?,
+        buttonType: MapPOIItem.CalloutBalloonButtonType?
+    ) {
         // 말풍선 클릭 시
         Log.d("ballonClick", "okok")
-        val builder = AlertDialog.Builder(context)
-        val itemList = arrayOf("정보", "마커 삭제", "취소")
-        builder.setTitle("${poiItem?.itemName}")
-        builder.setItems(itemList) { dialog, which ->
-            when(which) {
-                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
-                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
-                2 -> dialog.dismiss()   // 대화상자 닫기
-            }
+
+        mainActivity = context as MainActivity
+
+        val logoutDlg = DogInfoEnterDialog(mainActivity)
+        Log.d("gdsa","asdgdsg")
+        logoutDlg.setOnOKClickedListener{ content ->
         }
-        builder.show()
+        logoutDlg.show("메인의 내용을 변경할까요?")
+//        val builder = Builder(context)
+//        val itemList = arrayOf("정보", "마커 삭제", "취소")
+//        builder.setTitle("${poiItem?.itemName}")
+//        mainActivity = context as MainActivity
+//        builder.setItems(itemList) { dialog, which ->
+//            when(which) {
+//
+//                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
+//                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
+//                2 -> dialog.dismiss()   // 대화상자 닫기
+//            }
+//        }
+//        builder.show()
+
+
+//        mainActivity = context as MainActivity
+//        val dialog = DogInfoEnterDialog(mainActivity)
+//        dialog.show("dd")
     }
 
-    override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
+    override fun onDraggablePOIItemMoved(
+        mapView: MapView?,
+        poiItem: MapPOIItem?,
+        mapPoint: MapPoint?
+    ) {
         // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
     }
 }
+    fun myDialog(view: View) {
+        val myLayout = layoutInflater.inflate(R.layout.lost_dog_info, null)
+        val build = AlertDialog.Builder(view.context).apply {
+            setView(myLayout)
+        }
+        val dialog = build.create()
+        dialog.show()
+    }
+}
+
 
 
 //    // 위치 권한 확인

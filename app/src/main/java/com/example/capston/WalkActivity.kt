@@ -336,8 +336,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     // 배변활동 표시
     private fun toiletActivity() {
-//        onMapViewLongPressed(mapView, mapPoint)
-        Log.d("ddㄲㄲㄲ", "토일렉엑티비티")
         val marker = MapPOIItem()
         marker.itemName = ""
         marker.isShowCalloutBalloonOnTouch = false
