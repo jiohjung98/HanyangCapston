@@ -24,7 +24,9 @@ import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.*
 
-
+/*
+ * 다이얼로그에서 산책 시작하고나서 나오는 화면, 지도
+ */
 class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 

@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.FragmentNaviWalkBinding
 import com.example.capston.homepackage.WalkDialog
 
+/*
+ *  두번째 메뉴, 산책하기 -> 다이얼로그 -> 산책지도
+ */
 class NaviWalkFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null

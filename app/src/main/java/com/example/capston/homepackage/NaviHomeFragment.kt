@@ -26,6 +26,9 @@ import kotlin.math.*
 var RecordPage = HomeRecord()
 val walkFragment = WalkFragment()
 
+/*
+ * 메인화면, 첫번째 메뉴, 지도
+ */
 class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
