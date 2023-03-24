@@ -9,6 +9,7 @@
     app:cardCornerRadius="8px">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint1"
         android:layout_width="200dp"
         android:layout_height="wrap_content">
 
@@ -24,25 +25,56 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/ball_tv_address"
+        <TextView
+            android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="반려견 정보를 입력해주세요~~~~~~"
+            android:text="발견 시간: "
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="@+id/ball_tv_name"
-            app:layout_constraintTop_toBottomOf="@+id/ball_tv_name" />
+            app:layout_constraintTop_toBottomOf="@+id/ball_tv_name"
+            android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/receiveTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="클릭해서 추가 정보"
             android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/timeText"
+            app:layout_constraintTop_toTopOf="@+id/timeText"
+            app:layout_constraintBottom_toBottomOf="@+id/timeText" />
+
+        <TextView
+            android:id="@+id/infoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="실종 정보: "
+            android:textSize="10sp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="@id/ball_tv_name"
+            app:layout_constraintTop_toBottomOf="@+id/timeText" />
+
+        <TextView
+            android:id="@+id/receiveInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="갈색 푸들, 크기는 소형견"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/receiveTime"
+            app:layout_constraintTop_toTopOf="@+id/infoText" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/infoText"
+            app:layout_constraintTop_toBottomOf="@+id/infoText"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ball_tv_address" />
+            />
+
+
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

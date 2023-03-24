@@ -1,61 +1,77 @@
 package com.example.capston
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.LostDogInfoBinding
+import com.example.capston.homepackage.NaviHomeFragment
+import com.jakewharton.threetenabp.AndroidThreeTen.init
 
 
 class DogInfoEnterDialog(private val context : AppCompatActivity) {
-    private lateinit var listener : MyDialogOKClickedListener
-    private lateinit var binding : LostDogInfoBinding
-    private var EmailDlg = Dialog(context)   //부모 액티비티의 context 가 들어감
 
-    fun show(content : String) {
+    private lateinit var binding: LostDogInfoBinding
+    private var dogInfoDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
+
+
+    fun myDlg() {
+        dogInfoDialog.show()
         binding = LostDogInfoBinding.inflate(context.layoutInflater)
 
         // 다이얼로그 테두리 둥글게 만들기
-        EmailDlg?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        EmailDlg?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        EmailDlg.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-        EmailDlg.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
-        EmailDlg.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+        dogInfoDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dogInfoDialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dogInfoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        dogInfoDialog.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
+        dogInfoDialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
 
 
         // 다이얼로그 뜨는 위치 조정하기
-        val params: WindowManager.LayoutParams = this.EmailDlg.window!!.attributes
+        val params: WindowManager.LayoutParams = this.dogInfoDialog.window!!.attributes
         params.y = 800
-        this.EmailDlg.window!!.attributes = params
+        this.dogInfoDialog.window!!.attributes = params
+        val info = dogInfoDialog.findViewById<EditText>(R.id.receiveInfo)
+        val time = dogInfoDialog.findViewById<EditText>(R.id.receiveTime)
 
-        //ok 버튼 동작
-        binding.yesBtn.setOnClickListener{
-            EmailDlg.dismiss()
+        binding.yesBtn.setOnClickListener {
+//            onClickedListener.onClicked(time.text.toString(), info.text.toString())
+            dogInfoDialog.dismiss()
         }
 
         binding.noBtn.setOnClickListener {
-            EmailDlg.dismiss()
-        }
-        EmailDlg.show()
-        }
-
-
-    fun setOnOKClickedListener(listener: (String) -> Unit) {
-        this.listener = object: MyDialogOKClickedListener {
-            override fun onOKClicked(content: String) {
-                listener(content)
-            }
+            dogInfoDialog.dismiss()
         }
     }
 
-    interface MyDialogOKClickedListener {
-        fun onOKClicked(content : String)
+    interface ButtonClickListener {
+        fun onClicked(time: String, info: String)
     }
 
+    private lateinit var onClickedListener: ButtonClickListener
 
+    fun setOnClickedListener(listener: ButtonClickListener) {
+        onClickedListener = listener
+    }
 }
+
+//
+//    fun setOnOKClickedListener(listener: (String) -> Unit) {
+//        this.listener = object: MyDialogOKClickedListener {
+//            override fun onOKClicked(content: String) {
+//                listener(content)
+//            }
+//        }
+//    }
+//
+//    interface MyDialogOKClickedListener {
+//        fun onOKClicked(content : String)
+//    }
+
 
 //
 //class LogoutDialog(): DialogFragment() {

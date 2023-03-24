@@ -41,16 +41,16 @@
             android:layout_marginTop="20dp" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/inputTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="발견 시간을 입력해주세요."
             android:textSize="16sp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
             android:paddingStart="8dp"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintStart_toStartOf="@+id/text2"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text2"
             android:layout_marginTop="10dp"/>
 
@@ -60,14 +60,14 @@
             android:layout_height="wrap_content"
             android:text="상세 정보"
             app:layout_constraintStart_toStartOf="@+id/text1"
-            app:layout_constraintTop_toBottomOf="@+id/editText1"
+            app:layout_constraintTop_toBottomOf="@+id/inputTime"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_marginTop="20dp"
             />
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/inputInfo"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:hint="상세 정보를 입력해주세요."
@@ -76,7 +76,7 @@
                 android:paddingStart="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="5dp"
                 android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/text3"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,49 +84,50 @@
 
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/view1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#999999"
-            app:layout_constraintTop_toBottomOf="@+id/editText2"
+            app:layout_constraintTop_toBottomOf="@+id/inputInfo"
+            app:layout_constraintStart_toStartOf="@id/layout"
+            app:layout_constraintEnd_toEndOf="@id/layout"
             android:layout_marginTop="40dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80sp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            app:layout_constraintTop_toBottomOf="@+id/view">
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:background="#999999"
+            app:layout_constraintStart_toStartOf="@id/layout"
+            app:layout_constraintEnd_toEndOf="@id/layout"
+            app:layout_constraintTop_toBottomOf="@+id/view1"
+            />
 
         <TextView
             android:id="@+id/yes_btn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="네"
-            android:textColor="#C7DA91" />
-
-        <View
-            android:layout_width="1dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#999999" />
+            android:text="저장"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@id/layout"
+            app:layout_constraintEnd_toEndOf="@id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/view1"
+            app:layout_constraintBottom_toBottomOf="@id/layout" />
 
         <TextView
             android:id="@+id/no_btn"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="아니오"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#FCCE65" />
-        </LinearLayout>
+            android:text="취소"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/view2"
+            app:layout_constraintEnd_toEndOf="@id/layout"
+            app:layout_constraintTop_toBottomOf="@+id/view1"
+            app:layout_constraintBottom_toBottomOf="@id/layout" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
