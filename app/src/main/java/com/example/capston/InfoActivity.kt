@@ -2,7 +2,6 @@ package com.example.capston
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
@@ -15,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityInfoBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_dog_register.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_info.*
 import java.util.regex.Pattern
 
@@ -26,6 +27,9 @@ class InfoActivity: AppCompatActivity() {
     var validEditText2: Boolean = false
     var validEditText3: Boolean = false
     var validEditText4: Boolean = false
+
+    private val database: DatabaseReference =
+        Firebase.database.reference
 
     private var _binding: ActivityInfoBinding? = null
     private val binding get() = _binding!!
@@ -172,7 +176,7 @@ class InfoActivity: AppCompatActivity() {
                     startActivity(intent)
                 }
 
-                createUser(email, pw1)
+                createUser(name, email, pw1)
             }
     }
 
@@ -213,11 +217,12 @@ class InfoActivity: AppCompatActivity() {
         return super.dispatchTouchEvent(event)
     }
 
-    private fun createUser(email: String, password: String) {
+    private fun createUser(name: String, email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    addNewUserToDB(task.result.user!!.uid,name,email)
                     updateUI(user)
                 } else {
                     updateUI(null)
@@ -226,6 +231,13 @@ class InfoActivity: AppCompatActivity() {
             .addOnFailureListener {
             }
     }
+
+    private fun addNewUserToDB(userId: String, name: String, email: String) {
+        val pet_list = PetListModel(arrayListOf<PetInfo>())
+        val user_data = UserData(name,email,pet_list)
+        database.child("users").child(userId).setValue(user_data)
+    }
+
 //
     private fun updateUI(user: FirebaseUser?) {
         user?.let {
