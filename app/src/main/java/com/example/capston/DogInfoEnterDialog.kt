@@ -45,6 +45,7 @@ class DogInfoEnterDialog(private val context : AppCompatActivity) {
 
         binding.noBtn.setOnClickListener {
             dogInfoDialog.dismiss()
+
         }
     }
 
