@@ -626,6 +626,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(this, MainActivity::class.java)
+        kakaoMapView2.removeAllViews()
         startActivity(intent)
         finish()
     }
