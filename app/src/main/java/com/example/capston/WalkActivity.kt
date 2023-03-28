@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -143,10 +144,11 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
         }
         camera_btn.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+//            val intent = Intent(this, MainActivity::class.java)
+            onClickEnd()
             // 아래 removeAllViews() 안넣어주면 튕김
             kakaoMapView2.removeAllViews()
-            startActivity(intent)
+//            startActivity(intent)
         }
 
         this.window.statusBarColor = (ContextCompat.getColor(this, R.color.white))
@@ -158,6 +160,13 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
 
         mapReverseGeoCoder.startFindingAddress()
+    }
+
+    private fun onClickEnd() {
+        val dlg = WalkEndAlertDialog(this)
+        dlg.setOnOKClickedListener{ content ->
+        }
+        dlg.show("산책 종료 전 띄워주기")
     }
 
     private fun initView() {

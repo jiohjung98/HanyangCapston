@@ -1,27 +1,82 @@
 package com.example.capston
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.Window
-import android.view.WindowManager
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import android.view.*
 import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostDogInfoBinding
 import com.example.capston.homepackage.NaviHomeFragment
-import com.jakewharton.threetenabp.AndroidThreeTen.init
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.getInstance
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import kotlinx.android.synthetic.main.activity_dog_register.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.mf.map.api.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-class DogInfoEnterDialog(private val context : AppCompatActivity) {
+class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragment() {
+
+    var listen: NaviHomeFragment.MarkerEventListener? = null
+    lateinit var mainActivity: MainActivity
+
+    private lateinit var auth: FirebaseAuth
+    lateinit var uri: Uri
+    private final val REQUEST_FIRST = 1010
+
+    var lost_pet_info = LostPetInfo()
 
     private lateinit var binding: LostDogInfoBinding
     private var dogInfoDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = LostDogInfoBinding.inflate(inflater, container, false)
+
+        dogInfoDialog.show()
+        mainActivity = context as MainActivity
+
+        auth = getInstance()
+
+        initAddImage()
+
+        return binding.root
+    }
+
+
+
+//    private var mapView: MapView? = null
+//    private var polyline: MapPolyline? = null
+//    private var mapPoint: MapPoint? = null
+
+
 
 
     fun myDlg() {
         dogInfoDialog.show()
         binding = LostDogInfoBinding.inflate(context.layoutInflater)
+
+        mainActivity = context as MainActivity
 
         // 다이얼로그 테두리 둥글게 만들기
         dogInfoDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -38,15 +93,42 @@ class DogInfoEnterDialog(private val context : AppCompatActivity) {
         val info = dogInfoDialog.findViewById<EditText>(R.id.receiveInfo)
         val time = dogInfoDialog.findViewById<EditText>(R.id.receiveTime)
 
+        listen = NaviHomeFragment.MarkerEventListener(mainActivity)
+
+
+//        binding.yesBtn.setOnClickListener {
+////            fun onMapViewLongPressed(p0: MapView, p1: MapPoint) {
+////
+////                // mainActivity 변수 초기화(안해주면 사용 못함)
+////                mainActivity = context as MainActivity
+////
+////                val p0 = NaviHomeFragment().mapView
+////                val p1 = NaviHomeFragment().mapPoint
+//////
+////                val marker = MapPOIItem()
+////                marker.itemName = "실종견"
+////                marker.mapPoint = p1
+////                marker.markerType =MapPOIItem.MarkerType.BluePin
+////                binding2.kakaoMapView!!.addPOIItem(marker)
+//////            onClickedListener.onClicked(time.text.toString(), info.text.toString())
+////            }
+//            dogInfoDialog.dismiss()
+//        }
+
         binding.yesBtn.setOnClickListener {
-//            onClickedListener.onClicked(time.text.toString(), info.text.toString())
+
+//            val marker = MapPOIItem()
+//            marker.itemName = "실종견"
+//            marker.mapPoint = mapPoint
+//            marker.markerType =MapPOIItem.MarkerType.BluePin
+//            binding2.kakaoMapView!!.addPOIItem(marker)
             dogInfoDialog.dismiss()
         }
 
         binding.noBtn.setOnClickListener {
             dogInfoDialog.dismiss()
-
         }
+
     }
 
     interface ButtonClickListener {
@@ -57,6 +139,147 @@ class DogInfoEnterDialog(private val context : AppCompatActivity) {
 
     fun setOnClickedListener(listener: ButtonClickListener) {
         onClickedListener = listener
+    }
+
+    /*
+     * 갤러리 접근 권한 획득 후 작업
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            1010 -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // 권한 허가
+                    // 허용 클릭 시 갤러리에서 이미지 가져오기
+                    getImageFromAlbum()
+                } else {
+                    // 거부 클릭시
+                    Toast.makeText(context,"권한을 거부했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } else -> {
+            //Do Nothing
+        }
+        }
+    }
+
+    private fun initAddImage() {
+        binding.imageArea.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                -> {
+                    // 권한이 존재하는 경우
+                    // TODO 이미지를 가져옴
+                    getImageFromAlbum()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    // 권한이 거부 되어 있는 경우
+                    showPermissionContextPopup()
+                }
+                else -> {
+                    // 처음 권한을 시도했을 때 띄움
+                    requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),REQUEST_FIRST)
+                }
+            }
+        }
+    }
+
+    /*
+    * 저장소 접근 권한 설정 팝업
+    */
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(context)
+            .setTitle("권한이 필요합니다")
+            .setMessage("갤러리에서 사진을 선택하려면 권한이 필요합니다.")
+            .setPositiveButton("동의하기") { _, _ ->
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_FIRST)
+            }
+            .setNegativeButton("취소하기",{ _,_ ->})
+            .create()
+            .show()
+    }
+
+    /*
+     * 갤러리에서 이미지 가져와서 image area에 띄움
+     */
+    private fun getImageFromAlbum() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        getImageActivity.launch(intent)
+    }
+    private val getImageActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                AppCompatActivity.RESULT_OK -> {
+                    // 전달 받은 이미지 uri를 넣어준다.
+                    uri = result.data?.data!!
+                    // 이미지를 ImageView에 표시한다.
+                    binding.imageArea.setImageURI(uri)
+
+                    // 갤러리에서 이미지 가져오고 등록하기 버튼 활성화
+                    image_upload_btn.isEnabled = true
+                    image_upload_btn.isClickable = true
+
+                    // Upload
+                    initUploadImage(uri)
+                }
+            }
+        }
+
+    /*
+     * 업로드 버튼 클릭 이벤트 설정
+     */
+    private fun initUploadImage(uri : Uri){
+        binding.imageUploadBtn.setOnClickListener{
+            // 서버로 업로드
+            uploadImageToStorage(uri)
+        }
+    }
+
+    /*
+     * 서버 스토리지로 이미지 업로드
+     */
+    private fun uploadImageToStorage(uri: Uri) {
+        // storage 인스턴스 생성
+        val storage = Firebase.storage
+        // storage 참조
+        val storageRef = storage.getReference("images").child("missing")
+        // storage에 저장할 파일명 선언
+        val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
+        val mountainsRef = storageRef.child("${fileName}.jpg")
+
+
+        val uploadTask = mountainsRef.putFile(uri).addOnCompleteListener {
+            if (it.isSuccessful) {
+                // 파일 업로드에 성공했기 때문에 스토리지 url을 다시 받아와 DB에 저장
+                mountainsRef.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        lost_pet_info.lost_img = uri.toString()
+                    }.addOnFailureListener {
+                        Toast.makeText(context, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+            } else {
+                Toast.makeText(context, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // 파일 업로드 성공
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            Toast.makeText(context, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
+            // 성공했으므로 업로드 버튼 비활성화
+            image_upload_btn.isEnabled = false
+            // 갤러리 불러오기 비활성화
+            imageArea.isEnabled = false
+            imageArea.isClickable = false
+
+        }   // 파일 업로드 실패
+            .addOnFailureListener {
+                Toast.makeText(context, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+            }
     }
 }
 

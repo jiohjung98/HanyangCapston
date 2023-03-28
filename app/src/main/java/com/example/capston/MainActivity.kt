@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         setSupportActionBar(toolbar) // 커스텀한 toolbar를 액션바로 사용
         supportActionBar?.setDisplayShowTitleEnabled(false) // 액션바에 표시되는 제목의 표시유무를 설정합니다. false로 해야 custom한 툴바의 이름이 화면에 보이게 됩니다.
 
-        var noticeitem = findViewById<ImageView>(R.id.noticeitem)
+//        var noticeitem = findViewById<ImageView>(R.id.noticeitem)
         var toolbar = findViewById<Toolbar>(R.id.toolbar)
         var toolbar2 = findViewById<Toolbar>(R.id.toolbar2)
         var toolbar3 = findViewById<Toolbar>(R.id.toolbar3)

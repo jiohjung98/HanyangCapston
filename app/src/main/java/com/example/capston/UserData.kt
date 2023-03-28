@@ -17,3 +17,10 @@ data class PetInfo(
     var born : String? = null,
     var image_url : String? = null,
 )
+
+
+data class LostPetInfo(
+    var time: String? = null,
+    var info: String? = null,
+    var lost_img: String? = null,
+)
