@@ -1,8 +1,6 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Dialog
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -11,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,9 +16,7 @@ import androidx.fragment.app.Fragment
 import com.example.capston.*
 import com.example.capston.databinding.FragmentWalkBinding
 import com.example.capston.databinding.LostDogInfoBinding
-import kotlinx.android.synthetic.main.ballon_layout.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.lost_dog_info.*
 import net.daum.mf.map.api.*
 import java.util.*
 import kotlin.concurrent.timer
@@ -155,12 +150,15 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        val info: View = inflater.inflate(R.layout.lost_dog_info,null)
-        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
 
-//        val time1: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
-//        val info1: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
+        var mainActivity: MainActivity? = null
+
+        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        var receiveInfo: View = inflater.inflate(R.layout.lost_dog_info,null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
+        var info3: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
+        var time3: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
+
 
 //        lateinit var mainActivity: MainActivity
 //        private val dogInfoDialog = DogInfoEnterDialog(mainActivity)
@@ -181,10 +179,24 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 마커 클릭 시 나오는 말풍선
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
 
+//            // mainActivity 변수 초기화(안해주면 사용 못함)
+//            mainActivity = context as MainActivity
+//
+//
+//            val dogInfoDialog = DogInfoEnterDialog(mainActivity!!)
+//            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
+//                override fun onClicked(time: String, info: String) {
+//                    Log.d("전달 ㅇㅇ", "ㅇㅇㅇㅇㅇ")
+//                    info3.text = info
+//                    time3.text = time
+//                    Log.d("info3", "$info3")
+//                }
+//            })
 
 //            //다이얼로그에서 정의한 interface를 통해 데이터를 받아온다.
 //            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
 //                override fun onClicked(time: String, info: String) {
+//                    time1.text = time
 //                    time1.text = time
 //                    info1.text = info
 //                }
@@ -215,6 +227,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
 //            address.text = "getPressedCalloutBalloon"
+
             return mCalloutBalloon
         }
     }
@@ -473,6 +486,17 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
     override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
         // 마커 클릭 시
         Log.d("markerClick", "ok")
+
+//        // mainActivity 변수 초기화(안해주면 사용 못함)
+//        mainActivity = context as MainActivity
+//
+//        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+//
+//        dogInfoDialog.setOnClickedListener(object: DogInfoEnterDialog.ButtonClickListener {
+//            override fun onClicked(time: String, info: String) {
+//                Log.d("연결 가능", "성공")
+//            }
+//        })
 
 
     }

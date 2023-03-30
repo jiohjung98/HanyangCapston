@@ -2,7 +2,6 @@ package com.example.capston
 
 import android.Manifest
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -18,15 +17,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostDogInfoBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.getInstance
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.android.synthetic.main.activity_dog_register.*
-import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.android.synthetic.main.activity_dog_register.imageArea
+import kotlinx.android.synthetic.main.activity_dog_register.image_upload_btn
 import net.daum.mf.map.api.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,23 +51,17 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
     ): View? {
         val binding = LostDogInfoBinding.inflate(inflater, container, false)
 
-        dogInfoDialog.show()
+        myDlg()
         mainActivity = context as MainActivity
 
         auth = getInstance()
 
         initAddImage()
 
+
+
         return binding.root
     }
-
-
-
-//    private var mapView: MapView? = null
-//    private var polyline: MapPolyline? = null
-//    private var mapPoint: MapPoint? = null
-
-
 
 
     fun myDlg() {
@@ -90,38 +82,18 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
         val params: WindowManager.LayoutParams = this.dogInfoDialog.window!!.attributes
         params.y = 800
         this.dogInfoDialog.window!!.attributes = params
-        val info = dogInfoDialog.findViewById<EditText>(R.id.receiveInfo)
-        val time = dogInfoDialog.findViewById<EditText>(R.id.receiveTime)
+        val info = dogInfoDialog.findViewById<EditText>(R.id.inputInfo)
+        val time = dogInfoDialog.findViewById<EditText>(R.id.inputTime)
 
         listen = NaviHomeFragment.MarkerEventListener(mainActivity)
 
 
-//        binding.yesBtn.setOnClickListener {
-////            fun onMapViewLongPressed(p0: MapView, p1: MapPoint) {
-////
-////                // mainActivity 변수 초기화(안해주면 사용 못함)
-////                mainActivity = context as MainActivity
-////
-////                val p0 = NaviHomeFragment().mapView
-////                val p1 = NaviHomeFragment().mapPoint
-//////
-////                val marker = MapPOIItem()
-////                marker.itemName = "실종견"
-////                marker.mapPoint = p1
-////                marker.markerType =MapPOIItem.MarkerType.BluePin
-////                binding2.kakaoMapView!!.addPOIItem(marker)
-//////            onClickedListener.onClicked(time.text.toString(), info.text.toString())
-////            }
-//            dogInfoDialog.dismiss()
-//        }
-
         binding.yesBtn.setOnClickListener {
+            val getInfo: String = info.text.toString()
+            val getTime: String = time.text.toString()
+            Log.d("info&time 값", "$getInfo $getTime")
 
-//            val marker = MapPOIItem()
-//            marker.itemName = "실종견"
-//            marker.mapPoint = mapPoint
-//            marker.markerType =MapPOIItem.MarkerType.BluePin
-//            binding2.kakaoMapView!!.addPOIItem(marker)
+            onClickedListener?.onClicked(getInfo, getTime)
             dogInfoDialog.dismiss()
         }
 
@@ -135,7 +107,7 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
         fun onClicked(time: String, info: String)
     }
 
-    private lateinit var onClickedListener: ButtonClickListener
+    private var onClickedListener: ButtonClickListener? = null
 
     fun setOnClickedListener(listener: ButtonClickListener) {
         onClickedListener = listener
