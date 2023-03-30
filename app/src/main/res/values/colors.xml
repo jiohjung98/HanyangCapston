@@ -10,6 +10,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="skyblue">#FF66B2FF</color>
     <color name="main">#F8F4EA</color>
+    <color name="chocolate">#D2691E</color>
     <color name="btn_back">#e2e2e2</color>
     <color name="btn_text">#574444</color>
     <color name="btn_info">#82a323</color>
