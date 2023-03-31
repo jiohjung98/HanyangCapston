@@ -10,19 +10,20 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.BacktostartDialogBinding
+import com.example.capston.databinding.SkipDialogBinding
 import com.google.firebase.auth.FirebaseAuth
 
 /*
  * 마이페이지 이메일 문의 누르면 이메일 보내겠냐는 다이얼로그
  * -> dogplanet@dogplanet.com 으로 메일 보내도록 외부 프로그램 연결
  */
-class BacktoStartDialog(private val context : AppCompatActivity) {
+class SkipDialog(private val context : AppCompatActivity) {
     private lateinit var listener : MyDialogOKClickedListener
-    private lateinit var binding : BacktostartDialogBinding
+    private lateinit var binding : SkipDialogBinding
     private var BackStartDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
 
     fun show(content : String) {
-        binding = BacktostartDialogBinding.inflate(context.layoutInflater)
+        binding = SkipDialogBinding.inflate(context.layoutInflater)
 
         // 다이얼로그 테두리 둥글게 만들기
         BackStartDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -58,13 +59,7 @@ class BacktoStartDialog(private val context : AppCompatActivity) {
     }
 
     private fun backProcess(){
-        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
-            if(task.isSuccessful)
-                Log.d("DELETE","회원정보삭제")
-        }?.addOnFailureListener{
-            Log.d("DELETE ERROR","회원정보삭제 실패")
-        }
-        val intent = Intent(context, StartActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
         context.startActivity(intent)
         (context as Activity).finish()
     }

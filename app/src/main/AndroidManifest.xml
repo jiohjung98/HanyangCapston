@@ -131,7 +131,10 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
-
+        <activity
+            android:name=".EmailVerifyActivity"
+            android:exported = "true">
+        </activity>
         <activity
             android:name=".PostingActivity"
             android:exported="true" />

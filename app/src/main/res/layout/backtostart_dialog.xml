@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="정말 멍플래닛을\n탈퇴하시겠습니까?"
+                android:text="회원가입을 그만두고 \n시작화면으로 돌아가시겠어요?"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:paddingTop="20dp"

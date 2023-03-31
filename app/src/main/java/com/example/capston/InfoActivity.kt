@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityInfoBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_info.*
 import java.util.regex.Pattern
@@ -28,12 +26,14 @@ class InfoActivity: AppCompatActivity() {
     var validEditText3: Boolean = false
     var validEditText4: Boolean = false
 
-    private val database: DatabaseReference =
-        Firebase.database.reference
-
     private var _binding: ActivityInfoBinding? = null
     private val binding get() = _binding!!
-    private lateinit var auth: FirebaseAuth
+    internal lateinit var auth: FirebaseAuth
+
+    private lateinit var name : String
+    private lateinit var email : String
+    private lateinit var pw1 : String
+    private lateinit var pw2 : String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +42,6 @@ class InfoActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-
-
 
         binding.etName.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -145,15 +143,15 @@ class InfoActivity: AppCompatActivity() {
 
 
             binding.nextBtn.setOnClickListener {
-                var name = binding.etName.text.toString() // 이름
-                var email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일
-                var pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
-                var pw2 = binding.editTextTextPassword2.text.toString() // 비밀번호 확인
+                name = binding.etName.text.toString() // 이름
+                email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일
+                pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
+                pw2 = binding.editTextTextPassword2.text.toString() // 비밀번호 확인
 
                 if(email.isEmpty()){
                     binding.emailLayout.visibility = View.VISIBLE
                     next_btn.isEnabled = false
-                } else if (!email.contains("@")){
+                } else if (!email.contains("@") || !(email.contains("."))){
                     binding.emailLayout.visibility = View.VISIBLE
                 }
 
@@ -171,13 +169,46 @@ class InfoActivity: AppCompatActivity() {
                     binding.pw2Layout.visibility = View.VISIBLE
                 }
 
-                if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1) && (pw1 == pw2) && (email.contains("@")) && (name.isNotEmpty())){
-                    val intent = Intent(this, UserAgreeActivity::class.java)
+                if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1)
+                    && (pw1 == pw2)
+                    && (email.contains("@"))
+                    && (email.contains("."))
+                    && (name.isNotEmpty())){
+                    val intent = Intent(this, EmailVerifyActivity::class.java)
+                    intent.putExtra("name",name)
                     startActivity(intent)
                 }
 
                 createUser(name, email, pw1)
             }
+    }
+
+    private fun createUser(name: String, email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+//                    addNewUserToDB(task.result.user!!.uid,name,email)
+                    updateUI(user)
+                } else {
+                    updateUI(null)
+                }
+            }
+            .addOnFailureListener {
+            }
+    }
+//
+//    private fun addNewUserToDB(userId: String, name: String, email: String) {
+//        val pet_list = PetListModel(arrayListOf<PetInfo>())
+//        val user_data = UserData(name,email,pet_list)
+//        database.child("users").child(userId).setValue(user_data)
+//    }
+
+//
+    internal fun updateUI(user: FirebaseUser?) {
+        user?.let {
+//            binding.txtResult.text = "Email: ${user.email}\nUid: ${user.uid}"
+        }
     }
 
 //    override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -217,33 +248,6 @@ class InfoActivity: AppCompatActivity() {
         return super.dispatchTouchEvent(event)
     }
 
-    private fun createUser(name: String, email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    addNewUserToDB(task.result.user!!.uid,name,email)
-                    updateUI(user)
-                } else {
-                    updateUI(null)
-                }
-            }
-            .addOnFailureListener {
-            }
-    }
-
-    private fun addNewUserToDB(userId: String, name: String, email: String) {
-        val pet_list = PetListModel(arrayListOf<PetInfo>())
-        val user_data = UserData(name,email,pet_list)
-        database.child("users").child(userId).setValue(user_data)
-    }
-
-//
-    private fun updateUI(user: FirebaseUser?) {
-        user?.let {
-//            binding.txtResult.text = "Email: ${user.email}\nUid: ${user.uid}"
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()

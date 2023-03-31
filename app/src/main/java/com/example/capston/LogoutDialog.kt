@@ -81,6 +81,7 @@ class LogoutDialog(private val context : AppCompatActivity) {
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(context, SplashActivity::class.java)
             context.startActivity(intent)
+            logoutDlg.dismiss()
             (context as Activity).finish()
         }, 3000)
     }

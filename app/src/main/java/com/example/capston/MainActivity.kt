@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 
     // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음
     // 현재 사용 : 마이페이지 유저정보
-    val database: DatabaseReference = Firebase.database.reference
-    val auth = FirebaseAuth.getInstance()
+    internal val database: DatabaseReference = Firebase.database.reference
+    internal val auth = FirebaseAuth.getInstance()
 
     private val fl: FrameLayout by lazy {
         findViewById(R.id.main_frm)
@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
-
 
         replaceFragment(NaviWalkFragment())
 
@@ -223,4 +222,5 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
     }
+
 }

@@ -109,14 +109,17 @@ class NaviMypageFragment : Fragment() {
         binding.email.setOnClickListener {
             onClickEmail(view)
         }
+        getFromDB()
+    }
 
+    // DB에서 받아와서 정보 할당하기
+    private fun getFromDB(){
         //카카오로 로그인 시, 마이페이지 프래그먼트에서 이름 띄워주기(무조건 여기(onActivityCreated)에 선언해줘야 오류 안남)
         val nickname = requireView().findViewById<TextView>(R.id.receive_name) // 로그인 버튼
         val petname = requireView().findViewById<TextView>(R.id.receive_dog_name)
         val breed = requireView().findViewById<TextView>(R.id.receive_breed)
         val gender = requireView().findViewById<TextView>(R.id.receive_gender)
 
-        // DB에서 받아와서 정보 할당하기
         val uid = database.child("users").child(auth.currentUser!!.uid)
         uid.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -136,7 +139,6 @@ class NaviMypageFragment : Fragment() {
                 Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
             }
         })
-
     }
 
     // fragment 액션바 없애주기

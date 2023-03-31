@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +21,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 /*
- *  두번째 메뉴, 산책하기 -> 다이얼로그 -> 산책지도
+ *  두번째 메뉴, 산책하기
  */
 class NaviWalkFragment : Fragment() {
     // TODO: Rename and change types of parameters
@@ -30,9 +31,14 @@ class NaviWalkFragment : Fragment() {
     lateinit var binding: FragmentNaviWalkBinding
 
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
-    lateinit var mainActivity: MainActivity
-    lateinit var database : DatabaseReference
-    lateinit var auth : FirebaseAuth
+    private lateinit var mainActivity: MainActivity
+    private lateinit var database : DatabaseReference
+    private lateinit var auth : FirebaseAuth
+
+    private lateinit var petname : TextView
+    private lateinit var breed : TextView
+    private lateinit var gender : TextView
+    private lateinit var age : TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -60,27 +66,28 @@ class NaviWalkFragment : Fragment() {
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
         }
+
+        binding.registerBtn.setOnClickListener {
+            onClickRegister(view)
+        }
+
         getImageFromStore()
 
-        val petname = requireView().findViewById<TextView>(R.id.walk_name)
-        val breed = requireView().findViewById<TextView>(R.id.walk_breed)
-        val gender = requireView().findViewById<TextView>(R.id.walk_gender)
-        val age = requireView().findViewById<TextView>(R.id.walk_age)
+        petname = requireView().findViewById<TextView>(R.id.walk_name)
+        breed = requireView().findViewById<TextView>(R.id.walk_breed)
+        gender = requireView().findViewById<TextView>(R.id.walk_gender)
+        age = requireView().findViewById<TextView>(R.id.walk_age)
 
         // DB에서 받아와서 정보 할당하기
         val uid = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0")
         uid.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // 데이터가 변경되면 리스너가 감지함
-                // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
-                // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
-                petname.text = snapshot.child("pet_name").value.toString()
-                breed.text = snapshot.child("breed").value.toString()
-                age.text = snapshot.child("born").value.toString() + "년생"
-                if(snapshot.child("gender").value == 1)
-                    gender.text = "♂"
+                // 등록된 반려견없음 (건너뛰기 등)
+                if(snapshot.value == null)
+                    invalidDog()
+                // 등록된 반려견 있음
                 else
-                    gender.text = "♀"
+                    validDog(snapshot)
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
@@ -95,6 +102,30 @@ class NaviWalkFragment : Fragment() {
             }
     }
 
+    private fun validDog(snapshot: DataSnapshot){
+        Log.d("등록 있음","${snapshot}")
+        binding.walkBtn.isEnabled = true
+        binding.walkBtn.visibility = View.VISIBLE
+        // 데이터가 변경되면 리스너가 감지함
+        // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
+        // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
+        petname.text = snapshot.child("pet_name").value.toString()
+        breed.text = snapshot.child("breed").value.toString()
+        age.text = snapshot.child("born").value.toString() + "년생"
+        if (snapshot.child("gender").value == 1)
+            gender.text = "♂"
+        else
+            gender.text = "♀"
+    }
+
+    private fun invalidDog(){
+//        Log.d("등록 없음","${snapshot}")
+        binding.registerBtn.visibility = View.VISIBLE
+        binding.walkAgeSlash.visibility = View.INVISIBLE
+        binding.walkBreedSlash.visibility = View.INVISIBLE
+        petname.text = "등록된 반려견이 없습니다"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
@@ -107,6 +138,11 @@ class NaviWalkFragment : Fragment() {
             binding.walkBtn.text = content
         }
         walkDlg.show("산책")
+    }
+
+    private fun onClickRegister(view: View?) {
+        mainActivity.startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
+        mainActivity.finish()
     }
 
     /*
