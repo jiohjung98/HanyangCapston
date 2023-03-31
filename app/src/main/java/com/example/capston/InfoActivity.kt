@@ -135,52 +135,51 @@ class InfoActivity: AppCompatActivity() {
             }
         })
 
-            binding.backButton.setOnClickListener {
-                val intent = Intent(this, LoginActivity::class.java)
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        binding.nextBtn.setOnClickListener {
+            name = binding.etName.text.toString() // 이름
+            email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일
+            pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
+            pw2 = binding.editTextTextPassword2.text.toString() // 비밀번호 확인
+
+            if(email.isEmpty()){
+                binding.emailLayout.visibility = View.VISIBLE
+                next_btn.isEnabled = false
+            } else if (!email.contains("@") || !(email.contains("."))){
+                binding.emailLayout.visibility = View.VISIBLE
+            }
+
+            if(pw1.isEmpty()){
+                binding.pw1Layout.visibility = View.VISIBLE
+                next_btn.isEnabled = false
+            } else if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1)) {
+                binding.pw1Layout.visibility = View.VISIBLE
+            }
+
+            if(pw2.isEmpty()){
+                binding.pw2Layout.visibility = View.VISIBLE
+                next_btn.isEnabled = false
+            } else if (pw1 != pw2){
+                binding.pw2Layout.visibility = View.VISIBLE
+            }
+
+            if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1)
+                && (pw1 == pw2)
+                && (email.contains("@"))
+                && (email.contains("."))
+                && (name.isNotEmpty())){
+                val intent = Intent(this, EmailVerifyActivity::class.java)
+                intent.putExtra("name",name)
                 startActivity(intent)
             }
 
-
-
-            binding.nextBtn.setOnClickListener {
-                name = binding.etName.text.toString() // 이름
-                email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일
-                pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
-                pw2 = binding.editTextTextPassword2.text.toString() // 비밀번호 확인
-
-                if(email.isEmpty()){
-                    binding.emailLayout.visibility = View.VISIBLE
-                    next_btn.isEnabled = false
-                } else if (!email.contains("@") || !(email.contains("."))){
-                    binding.emailLayout.visibility = View.VISIBLE
-                }
-
-                if(pw1.isEmpty()){
-                    binding.pw1Layout.visibility = View.VISIBLE
-                    next_btn.isEnabled = false
-                } else if (!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1)) {
-                    binding.pw1Layout.visibility = View.VISIBLE
-                }
-
-                if(pw2.isEmpty()){
-                    binding.pw2Layout.visibility = View.VISIBLE
-                    next_btn.isEnabled = false
-                } else if (pw1 != pw2){
-                    binding.pw2Layout.visibility = View.VISIBLE
-                }
-
-                if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1)
-                    && (pw1 == pw2)
-                    && (email.contains("@"))
-                    && (email.contains("."))
-                    && (name.isNotEmpty())){
-                    val intent = Intent(this, EmailVerifyActivity::class.java)
-                    intent.putExtra("name",name)
-                    startActivity(intent)
-                }
-
-                createUser(name, email, pw1)
-            }
+            createUser(name, email, pw1)
+        }
     }
 
     private fun createUser(name: String, email: String, password: String) {
