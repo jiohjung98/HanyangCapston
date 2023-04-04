@@ -130,7 +130,8 @@
                 android:layout_gravity="center"
                 android:background="@drawable/info_edittext_rounded_corner_rectangle"
                 android:hint="이메일을 입력해주세요."
-                android:textSize="16dp">
+                android:textSize="16dp"
+                android:inputType="text">
             </EditText>
 
             <LinearLayout

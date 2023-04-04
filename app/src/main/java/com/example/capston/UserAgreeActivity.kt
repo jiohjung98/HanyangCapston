@@ -19,7 +19,7 @@ class UserAgreeActivity : AppCompatActivity() {
     lateinit var DownAnim : Animation
     lateinit var UptAnim : Animation
 
-
+    private var name : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,7 @@ class UserAgreeActivity : AppCompatActivity() {
         binding.agree3.setOnClickListener { onCheckChanged(binding.agree3) }
 
 
-
+        name = intent.getStringExtra("name")
 
         binding.contentbtn1.setOnClickListener {
             if (isPageOpen) {
@@ -74,14 +74,15 @@ class UserAgreeActivity : AppCompatActivity() {
             }
             else{
                 val intent = Intent(this,SignUpComplete::class.java)
+                intent.putExtra("name",name)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
             }
         }
 
+        // 좌측 위 뒤로가기 버튼 누르면 실행되는것
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, InfoActivity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
     }
 
@@ -141,5 +142,12 @@ class UserAgreeActivity : AppCompatActivity() {
         }
     }
 
+    // 뒤로가기 -> 시작화면
+    override fun onBackPressed() {
+        val backtoStartDialog = BacktoStartDialog(this)
+        backtoStartDialog.setOnOKClickedListener { content ->
+        }
+        backtoStartDialog.show("초기화면")
+    }
 
 }

@@ -17,6 +17,10 @@ import com.example.capston.homepackage.CustomDialog
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.util.Utility
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
@@ -26,6 +30,11 @@ class MainActivity : AppCompatActivity(), CustomDialog {
     lateinit var binding: ActivityMainBinding
 
     public var toolbar3_menu: Menu? = null
+
+    // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음
+    // 현재 사용 : 마이페이지 유저정보
+    internal val database: DatabaseReference = Firebase.database.reference
+    internal val auth = FirebaseAuth.getInstance()
 
     private val fl: FrameLayout by lazy {
         findViewById(R.id.main_frm)
@@ -78,7 +87,6 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
-
 
         replaceFragment(NaviWalkFragment())
 
@@ -214,4 +222,5 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
     }
+
 }

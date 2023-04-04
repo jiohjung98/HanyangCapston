@@ -25,17 +25,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/home_mainimage"
-            app:layout_constraintBottom_toTopOf="@id/home_name"
+            app:layout_constraintBottom_toTopOf="@id/walk_name"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/day" />
+
 
         <View
             android:id="@+id/oo"
@@ -68,31 +70,31 @@
             tools:layout_editor_absoluteX="0dp" />
 
         <TextView
-            android:id="@+id/home_name"
+            android:id="@+id/walk_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="꾸미"
+            android:layout_marginBottom="25dp"
+            android:text=""
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/weight_box"
             app:layout_constraintStart_toStartOf="@id/walk_box" />
 
         <TextView
-            android:id="@+id/home_age"
+            android:id="@+id/walk_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:text="12살"
+            android:text=""
             android:textColor="#767676"
             android:textSize="15dp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/home_name"
-            app:layout_constraintStart_toEndOf="@+id/home_name"
-            app:layout_constraintTop_toTopOf="@id/home_name" />
+            app:layout_constraintBottom_toBottomOf="@id/walk_name"
+            app:layout_constraintStart_toEndOf="@+id/walk_name"
+            app:layout_constraintTop_toTopOf="@id/walk_name" />
 
         <TextView
-            android:id="@+id/home_age_slash"
+            android:id="@+id/walk_age_slash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
@@ -100,26 +102,26 @@
             android:textColor="#767676"
             android:textSize="15dp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/home_name"
-            app:layout_constraintStart_toEndOf="@+id/home_age"
-            app:layout_constraintTop_toTopOf="@id/home_name" />
+            app:layout_constraintBottom_toBottomOf="@id/walk_name"
+            app:layout_constraintStart_toEndOf="@+id/walk_age"
+            app:layout_constraintTop_toTopOf="@id/walk_name" />
 
 
         <TextView
-            android:id="@+id/home_sex"
+            android:id="@+id/walk_breed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:text="남"
+            android:text=""
             android:textColor="#767676"
             android:textSize="15dp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/home_name"
-            app:layout_constraintStart_toEndOf="@+id/home_age_slash"
-            app:layout_constraintTop_toTopOf="@id/home_name" />
+            app:layout_constraintBottom_toBottomOf="@id/walk_name"
+            app:layout_constraintStart_toEndOf="@+id/walk_age_slash"
+            app:layout_constraintTop_toTopOf="@id/walk_name" />
 
         <TextView
-            android:id="@+id/home_sex_slash"
+            android:id="@+id/walk_breed_slash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
@@ -127,23 +129,23 @@
             android:textColor="#767676"
             android:textSize="15dp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/home_name"
-            app:layout_constraintStart_toEndOf="@+id/home_sex"
-            app:layout_constraintTop_toTopOf="@id/home_name" />
+            app:layout_constraintBottom_toBottomOf="@id/walk_name"
+            app:layout_constraintStart_toEndOf="@+id/walk_breed"
+            app:layout_constraintTop_toTopOf="@id/walk_name" />
 
 
         <TextView
-            android:id="@+id/home_breed"
+            android:id="@+id/walk_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:text="푸들"
+            android:text=""
             android:textColor="#767676"
             android:textSize="15dp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/home_name"
-            app:layout_constraintStart_toEndOf="@+id/home_sex_slash"
-            app:layout_constraintTop_toTopOf="@id/home_name" />
+            app:layout_constraintBottom_toBottomOf="@id/walk_name"
+            app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
+            app:layout_constraintTop_toTopOf="@id/walk_name" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/weight_box"
@@ -426,7 +428,24 @@
             android:layout_marginBottom="52dp"
             android:background="@drawable/record_button"
             android:elevation="0dp"
+            android:visibility="invisible"
+            android:enabled="false"
             android:text="산책하러가기"
+            android:textSize="15.5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <Button
+            android:id="@+id/register_btn"
+            android:layout_width="187dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="52dp"
+            android:background="@drawable/record_button"
+            android:elevation="0dp"
+            android:visibility="gone"
+            android:text="내 반려견 등록하기"
             android:textSize="15.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

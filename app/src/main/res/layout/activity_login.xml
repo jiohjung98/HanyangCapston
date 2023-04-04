@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="38dp"
         android:layout_marginTop="40dp"
-        android:text="아이디"
+        android:text="이메일"
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/info_edittext_rounded_corner_rectangle"
-        android:hint="아이디를 입력해주세요."
+        android:hint="이메일을 입력해주세요."
         android:inputType="text"
         android:maxLength="30"
         android:maxLines="1"
@@ -138,23 +138,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/warning_text" />
 
-    <ImageButton
-        android:id="@+id/kakao_login_button"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/kakao"
-        android:outlineProvider="none"
-        android:paddingLeft="54dp"
-        android:paddingRight="48dp"
-        android:text="카카오로 로그인하기"
-        android:textColor="@color/google_login"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_btn" />
-
     <RelativeLayout
         android:id="@+id/signup"
         android:layout_width="wrap_content"
@@ -197,6 +180,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/kakao_login_button" />
+        app:layout_constraintTop_toBottomOf="@id/login_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

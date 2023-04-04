@@ -10,6 +10,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.LogoutcompletedialogBinding
 import com.example.capston.databinding.LogoutdialogBinding
+import com.google.firebase.auth.FirebaseAuth
 
 
 class LogoutDialog(private val context : AppCompatActivity) {
@@ -72,11 +73,15 @@ class LogoutDialog(private val context : AppCompatActivity) {
         this.logoutDlg.window!!.attributes = params
 
         logoutDlg.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        logoutDlg.dismiss()
         logoutDlg.show()
+        // firebase logout
+        FirebaseAuth.getInstance().signOut()
 //      액티비티로 이동(첫화면)
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(context, SplashActivity::class.java)
             context.startActivity(intent)
+            logoutDlg.dismiss()
             (context as Activity).finish()
         }, 3000)
     }

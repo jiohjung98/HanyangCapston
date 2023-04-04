@@ -24,11 +24,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".TrackingActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+            android:name=".SplashActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".WalkingListActivity"
@@ -105,11 +106,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--            시작화면 수정용 주석 처리 -->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".DogRegisterActivity"
@@ -130,8 +132,9 @@
             android:name=".LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".SplashActivity"
-            android:exported="true" />
+            android:name=".EmailVerifyActivity"
+            android:exported = "true">
+        </activity>
         <activity
             android:name=".PostingActivity"
             android:exported="true" />

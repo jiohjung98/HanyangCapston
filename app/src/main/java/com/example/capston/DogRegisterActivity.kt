@@ -72,6 +72,11 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
 
         auth = FirebaseAuth.getInstance()
 
+        // 우측 위 건너뛰기 버튼 누르면 메인으로 넘어가기 = 뒤로가기와 동일
+        viewBinding.skipBtn.setOnClickListener {
+            onBackPressed()
+        }
+
         viewBinding.dogNameEdtText.setOnTouchListener(OnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -149,16 +154,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         val breedArray: Array<String> = resources.getStringArray(R.array.spinner_breed)
         var tempPersons = ArrayList<BreedDTO>()
         tempPersons.add(BreedDTO(""))
-//        tempPersons.add(BreedDTO("허스키"))
-//        tempPersons.add(BreedDTO("비숑"))
-//        tempPersons.add(BreedDTO("푸들"))
-//        tempPersons.add(BreedDTO("말티즈"))
-//        tempPersons.add(BreedDTO("치와와"))
-//        tempPersons.add(BreedDTO("시츄"))
-//        tempPersons.add(BreedDTO("웰시코기"))
-//        tempPersons.add(BreedDTO("진돗개"))
-//        tempPersons.add(BreedDTO("닥스훈트"))
-//        tempPersons.add(BreedDTO("골든 리트리버"))
         for(i in breedArray.indices){
             tempPersons.add(BreedDTO((breedArray[i])))
         }
@@ -564,10 +559,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         }
     }
 
-
-
-
-
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action === MotionEvent.ACTION_DOWN) {
@@ -584,6 +575,14 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    // 뒤로가기 -> 건너뛰기
+    override fun onBackPressed() {
+        val skipDialog = SkipDialog(this)
+        skipDialog.setOnOKClickedListener { content ->
+        }
+        skipDialog.show("초기화면")
     }
 
 }

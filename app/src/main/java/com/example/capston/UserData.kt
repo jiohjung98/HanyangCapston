@@ -1,8 +1,8 @@
 package com.example.capston
 
 data class UserData(
-    val username: String,
-    val email: String,
+    val username: String?,
+    val email: String?,
     val pet_list: PetListModel,
 )
 
