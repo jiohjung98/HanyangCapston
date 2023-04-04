@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.capston.*
+import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.FragmentWalkBinding
 import com.example.capston.databinding.LostDogInfoBinding
 import kotlinx.android.synthetic.main.fragment_navi_home.*
@@ -63,7 +64,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var animal = ArrayList<String>()
     private var fullAmount = ArrayList<Double>()
 
-    private var _binding: FragmentWalkBinding? = null
+    private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
     private var binding2: LostDogInfoBinding? = null
@@ -84,7 +85,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     ): View? {
 
 //        try {
-            _binding = FragmentWalkBinding.inflate(inflater, container, false)
+            _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 //        } catch (Exception ) {
 //            Log.e(TAG, "onCreateView", e);
 //            throw e

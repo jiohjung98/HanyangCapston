@@ -18,7 +18,6 @@ data class PetInfo(
     var image_url : String? = null,
 )
 
-
 data class LostPetInfo(
     var time: String? = null,
     var info: String? = null,

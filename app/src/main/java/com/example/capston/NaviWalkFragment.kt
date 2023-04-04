@@ -91,11 +91,11 @@ class NaviWalkFragment : Fragment() {
 
                 val v = super.getView(position, convertView, parent)
                 var tv = v as TextView
-                tv.setTextSize(/* size = */ 16F)
+                tv.setTextSize(/* size = */ 12f)
                 if (position == count) {
 
                     (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
-                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
+//                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
 
                 }
                 return v

@@ -17,6 +17,7 @@ import com.example.capston.databinding.ActivityWalkBinding
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.fragment_walk.*
+import kotlinx.android.synthetic.main.logoutdialog.*
 import net.daum.mf.map.api.*
 import retrofit2.Call
 import retrofit2.Callback
