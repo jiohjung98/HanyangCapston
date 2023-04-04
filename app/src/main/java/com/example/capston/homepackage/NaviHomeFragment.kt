@@ -1,7 +1,6 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -15,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.capston.*
+import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.FragmentWalkBinding
+import com.example.capston.databinding.LostDogInfoBinding
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import java.util.*
@@ -36,9 +37,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val RequestPermissionCode = 1
-    private var mapView: MapView? = null
+    var mapView: MapView? = null
     private var polyline: MapPolyline? = null
-    private var mapPoint: MapPoint? = null
+    var mapPoint: MapPoint? = null
     private var prevLat: Double? = null
     private var prevLon: Double? = null
     private var walkingDistance: Double = 0.0
@@ -66,8 +67,13 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var animal = ArrayList<String>()
     private var fullAmount = ArrayList<Double>()
 
-    private var _binding: FragmentWalkBinding? = null
+    private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
+
+    private var binding2: LostDogInfoBinding? = null
+
+    var info = binding2?.inputInfo?.editableText.toString().trim()
+    val time1 = binding2?.inputTime?.editableText.toString().trim()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +86,13 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentWalkBinding.inflate(inflater, container, false)
+
+//        try {
+            _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
+//        } catch (Exception ) {
+//            Log.e(TAG, "onCreateView", e);
+//            throw e
+//        }
 
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
@@ -142,12 +154,15 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        val info: View = inflater.inflate(R.layout.lost_dog_info,null)
-        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
 
-        val time1: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
-        val info1: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
+        var mainActivity: MainActivity? = null
+
+        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        var receiveInfo: View = inflater.inflate(R.layout.lost_dog_info,null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
+        var info3: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
+        var time3: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
+
 
 //        lateinit var mainActivity: MainActivity
 //        private val dogInfoDialog = DogInfoEnterDialog(mainActivity)
@@ -168,10 +183,24 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 마커 클릭 시 나오는 말풍선
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
 
+//            // mainActivity 변수 초기화(안해주면 사용 못함)
+//            mainActivity = context as MainActivity
+//
+//
+//            val dogInfoDialog = DogInfoEnterDialog(mainActivity!!)
+//            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
+//                override fun onClicked(time: String, info: String) {
+//                    Log.d("전달 ㅇㅇ", "ㅇㅇㅇㅇㅇ")
+//                    info3.text = info
+//                    time3.text = time
+//                    Log.d("info3", "$info3")
+//                }
+//            })
 
 //            //다이얼로그에서 정의한 interface를 통해 데이터를 받아온다.
 //            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
 //                override fun onClicked(time: String, info: String) {
+//                    time1.text = time
 //                    time1.text = time
 //                    info1.text = info
 //                }
@@ -202,6 +231,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
 //            address.text = "getPressedCalloutBalloon"
+
             return mCalloutBalloon
         }
     }
@@ -362,12 +392,48 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+
+        // mainActivity 변수 초기화(안해주면 사용 못함)
+        mainActivity = context as MainActivity
+
+        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+        dogInfoDialog.myDlg()
+//
+//        val info = binding2?.inputInfo?.text.toString().trim()
+//        val time = binding2?.inputTime?.text.toString().trim()
+
+//        binding2 = LostDogInfoBinding.inflate((context as MainActivity).layoutInflater)
+
         kakaoMapView.setMapCenterPoint(p1,true)
         val marker = MapPOIItem()
         marker.itemName = "실종견"
         marker.mapPoint = p1
         marker.markerType =MapPOIItem.MarkerType.BluePin
-        kakaoMapView!!.addPOIItem(marker)
+//
+//        if (info.isNotEmpty() && time.isNotEmpty() ) {
+//            Log.d("인포값", "${info}")
+//            Log.d("타임값", "${time}")
+//            kakaoMapView!!.addPOIItem(marker)
+//        }
+
+        if (info != null) {
+            kakaoMapView!!.addPOIItem(marker)
+            Log.d("인포값", "${info}")
+            Log.d("타임값", "${time1}")
+
+        }
+
+        else {
+            kakaoMapView!!.removePOIItem(marker)
+        }
+        Log.d("인포값", "${info}")
+
+
+//        this.binding2.yesBtn.setOnClickListener {
+//            Log.d("버튼눌려요", "dddddd")
+//            kakaoMapView!!.addPOIItem(marker)
+//        }
+
 
 //        marker.itemName = "배변"
 //        marker.isShowCalloutBalloonOnTouch = false
@@ -379,6 +445,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        marker.setCustomImageAnchor(0.5f, 1.0f)
 //        kakaoMapView!!.addPOIItem(marker)
     }
+
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
     }
@@ -423,6 +490,19 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
     override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
         // 마커 클릭 시
         Log.d("markerClick", "ok")
+
+//        // mainActivity 변수 초기화(안해주면 사용 못함)
+//        mainActivity = context as MainActivity
+//
+//        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+//
+//        dogInfoDialog.setOnClickedListener(object: DogInfoEnterDialog.ButtonClickListener {
+//            override fun onClicked(time: String, info: String) {
+//                Log.d("연결 가능", "성공")
+//            }
+//        })
+
+
     }
 
     override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {

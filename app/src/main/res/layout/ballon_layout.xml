@@ -58,7 +58,7 @@
             android:id="@+id/receiveInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="갈색 푸들, 크기는 소형견"
+            android:text=""
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="@+id/receiveTime"
             app:layout_constraintTop_toTopOf="@+id/infoText" />

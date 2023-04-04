@@ -10,7 +10,7 @@
         android:id="@+id/layout"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="600dp"
         android:background="@drawable/dialog_frame"
         android:elevation="20dp"
         android:gravity="center"
@@ -28,23 +28,46 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:text="정보 입력" />
+        
+        <RadioGroup
+            android:id="@+id/radioLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="@+id/text1"
+            app:layout_constraintTop_toBottomOf="@+id/text1" >
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="내 반려견 실종" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="실종견 발견" />
+        </RadioGroup>
+
 
         <TextView
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="발견 시간"
+            android:text="실종 시간/발견 시간"
             app:layout_constraintStart_toStartOf="@+id/text1"
-            app:layout_constraintTop_toBottomOf="@+id/text1"
+            app:layout_constraintTop_toBottomOf="@+id/radioLayout"
             android:textColor="@color/black"
             android:textSize="16dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="15dp" />
 
         <EditText
             android:id="@+id/inputTime"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:hint="발견 시간을 입력해주세요."
+            android:hint="실종 혹은 발견 시간을 입력해주세요."
             android:textSize="16sp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
             android:paddingStart="8dp"
@@ -70,7 +93,7 @@
                 android:id="@+id/inputInfo"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="상세 정보를 입력해주세요."
+                android:hint="실종 혹은 발견 정보를 입력해주세요."
                 android:textSize="16sp"
                 android:background="@drawable/info_edittext_rounded_corner_rectangle"
                 android:paddingStart="8dp"
@@ -83,15 +106,60 @@
                 />
 
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageArea"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:src="@drawable/paws"
+            app:civ_circle_background_color="#E0E0E0"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputInfo"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/click_upload_text"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_width="250dp"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:text="Click to upload"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="@id/imageArea"
+            app:layout_constraintRight_toRightOf="@id/imageArea"
+            app:layout_constraintBottom_toBottomOf="@id/imageArea"
+            app:layout_constraintTop_toTopOf="@id/imageArea" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/image_upload_btn"
+            style="@style/ColoredButton"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:background="@drawable/agree_nextbtn_color"
+            android:enabled="false"
+            android:text="이미지 등록하기"
+            app:layout_constraintTop_toBottomOf="@id/imageArea"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.16" />
+
+
+
+
         <View
             android:id="@+id/view1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#999999"
-            app:layout_constraintTop_toBottomOf="@+id/inputInfo"
+            app:layout_constraintTop_toBottomOf="@+id/image_upload_btn"
             app:layout_constraintStart_toStartOf="@id/layout"
             app:layout_constraintEnd_toEndOf="@id/layout"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="20dp"/>
 
         <View
             android:id="@+id/view2"

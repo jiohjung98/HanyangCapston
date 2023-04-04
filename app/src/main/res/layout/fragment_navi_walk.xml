@@ -182,17 +182,26 @@
 
             <EditText
                 android:id="@+id/weight_input"
-                android:layout_width="wrap_content"
+                android:layout_width="30sp"
                 android:layout_height="wrap_content"
-                android:hint="입력하세요."
+                android:inputType="numberDecimal"
+                android:hint=""
                 android:textColor="#767676"
                 android:textSize="11dp"
                 android:textStyle="normal"
+                android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="@id/weight_line"
-                app:layout_constraintEnd_toEndOf="@id/weight_box"
                 app:layout_constraintStart_toStartOf="@id/weight_line"
                 app:layout_constraintTop_toTopOf="@id/weight_line" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kg"
+                app:layout_constraintStart_toEndOf="@+id/weight_input"
+                app:layout_constraintTop_toTopOf="@+id/weight_input"
+                app:layout_constraintBottom_toBottomOf="@+id/weight_input"
+                android:layout_marginStart="5dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -235,12 +244,14 @@
                 android:id="@+id/dog_ddong_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:dropDownWidth="340dp"
-                android:spinnerMode="dropdown"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:dropDownWidth="100dp"
+                android:spinnerMode="dialog"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/ddong_line"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ddong_line"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/ddong_line" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
