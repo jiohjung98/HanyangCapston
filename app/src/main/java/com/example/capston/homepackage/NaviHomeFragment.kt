@@ -1,6 +1,7 @@
 package com.example.capston.homepackage
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -9,6 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -17,7 +20,9 @@ import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.FragmentWalkBinding
 import com.example.capston.databinding.LostDogInfoBinding
+import kotlinx.android.synthetic.main.ballon_layout.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.android.synthetic.main.lost_dog_info.*
 import net.daum.mf.map.api.*
 import java.util.*
 import kotlin.concurrent.timer
@@ -153,31 +158,26 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         var mainActivity: MainActivity? = null
 
-        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        var receiveInfo: View = inflater.inflate(R.layout.lost_dog_info,null)
+
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        private val tvTime: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
+        private val tvInfo: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
         val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
-        var info3: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
-        var time3: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
 
 
-//        lateinit var mainActivity: MainActivity
-//        private val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-
-//        private lateinit var onClickedListener: ButtonClickListener
-//
-//        fun setOnClickedListener(listener: ButtonClickListener) {
-//            onClickedListener = listener
-//        }
-//
-//        //호출할 리스너
-//        fun setDialogListener(customDialogListener: DogInfoEnterDialog.ButtonClickListener) {
-//            val customDialogListener = customDialogListener
-//        }
+//        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
 
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
+
+            return mCalloutBalloon
+            }
+
+
+
+
 
 //            // mainActivity 변수 초기화(안해주면 사용 못함)
 //            mainActivity = context as MainActivity
@@ -221,8 +221,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
 //            address.text = "getCalloutBalloon"
-            return mCalloutBalloon
-        }
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
@@ -360,24 +358,50 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         if (validLostBtn) {
 
-            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-            dogInfoDialog.myDlg()
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.lost_dog_info)
 
-            kakaoMapView.setMapCenterPoint(p1, true)
-            val marker = MapPOIItem()
-            marker.itemName = "실종견"
-            marker.mapPoint = p1
-            marker.markerType = MapPOIItem.MarkerType.RedPin
+            val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
+            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+            val receiveTime = dialog.findViewById<EditText>(R.id.inputTime)
+            val receiveInfo = dialog.findViewById<EditText>(R.id.inputInfo)
 
-            if (info != null) {
+            btnSave.setOnClickListener {
+                val marker = MapPOIItem().apply {
+                    itemName = "실종견"
+                    mapPoint = p1
+                    tag = 0
+                }
                 kakaoMapView!!.addPOIItem(marker)
-                Log.d("인포값", "${info}")
-                Log.d("타임값", "${time1}")
 
-            } else {
-                kakaoMapView!!.removePOIItem(marker)
+                dialog.dismiss()
             }
-            Log.d("인포값", "${info}")
+
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+
+//            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+//            dogInfoDialog.myDlg()
+
+//            kakaoMapView.setMapCenterPoint(p1, true)
+//            val marker = MapPOIItem()
+//            marker.itemName = "실종견"
+//            marker.mapPoint = p1
+//            marker.markerType = MapPOIItem.MarkerType.RedPin
+//
+//
+//            if (info != null && time1 != null) {
+//                kakaoMapView!!.addPOIItem(marker)
+//                Log.d("인포값", "${info}")
+//                Log.d("타임값", "${time1}")
+//
+//            } else {
+//                kakaoMapView!!.removePOIItem(marker)
+//            }
+//            Log.d("인포값", "${info}")
 
             validLostBtn = false
         }

@@ -1,7 +1,9 @@
 package com.example.capston
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +24,15 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 /*
  *  두번째 메뉴, 산책하기
@@ -34,6 +44,10 @@ class NaviWalkFragment : Fragment() {
 
     private var _binding: FragmentNaviWalkBinding?= null
     private val binding get() = _binding!!
+
+    private final val REQUEST_FIRST = 1010
+    var pet_info = PetInfo()
+    lateinit var uri: Uri
 
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
     private lateinit var mainActivity: MainActivity
@@ -77,6 +91,8 @@ class NaviWalkFragment : Fragment() {
         }
 
         getImageFromStore()
+
+        initAddImage()
 
         petname = requireView().findViewById<TextView>(R.id.walk_name)
         breed = requireView().findViewById<TextView>(R.id.walk_breed)
@@ -165,6 +181,9 @@ class NaviWalkFragment : Fragment() {
         val url = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0").child("image_url")
         url.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                if (MainActivity() == null) {
+                    return;
+                }
                 Log.d("IMAGE URL","${Uri.parse(snapshot.value.toString())}")
                 GlideApp.with(this@NaviWalkFragment).load(Uri.parse(snapshot.value.toString())).into(binding.profile)
             }
@@ -240,5 +259,134 @@ class NaviWalkFragment : Fragment() {
             dipValue,
             resources.displayMetrics
         )
+    }
+
+    /*
+    * 갤러리 접근 권한 획득 후 작업
+    */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            1010 -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // 권한 허가
+                    // 허용 클릭 시 갤러리에서 이미지 가져오기
+                    getImageFromAlbum()
+                } else {
+                    // 거부 클릭시
+                    Toast.makeText(mainActivity,"권한을 거부했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } else -> {
+            //Do Nothing
+        }
+        }
+    }
+
+    private fun initAddImage() {
+        binding.camera.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(mainActivity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                -> {
+                    // 권한이 존재하는 경우
+                    // TODO 이미지를 가져옴
+                    getImageFromAlbum()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    // 권한이 거부 되어 있는 경우
+                    showPermissionContextPopup()
+                }
+                else -> {
+                    // 처음 권한을 시도했을 때 띄움
+                    requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),REQUEST_FIRST)
+                }
+            }
+        }
+    }
+
+    /*
+     * 갤러리에서 이미지 가져와서 image area에 띄움
+     */
+    private fun getImageFromAlbum() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        getImageActivity.launch(intent)
+    }
+    private val getImageActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                AppCompatActivity.RESULT_OK -> {
+                    // 전달 받은 이미지 uri를 넣어준다.
+                    uri = result.data?.data!!
+                    // 이미지를 ImageView에 표시한다.
+                    binding.profile.setImageURI(uri)
+                    // Upload
+                    initUploadImage(uri)
+                }
+            }
+        }
+
+    /*
+     * 저장소 접근 권한 설정 팝업
+     */
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(mainActivity)
+            .setTitle("권한이 필요합니다")
+            .setMessage("갤러리에서 사진을 선택하려면 권한이 필요합니다.")
+            .setPositiveButton("동의하기") { _, _ ->
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_FIRST)
+            }
+            .setNegativeButton("취소하기",{ _,_ ->})
+            .create()
+            .show()
+    }
+
+    /*
+     * 업로드 버튼 클릭 이벤트 설정
+     */
+    private fun initUploadImage(uri : Uri){
+            // 서버로 업로드
+            uploadImageToStorage(uri)
+    }
+
+    /*
+     * 서버 스토리지로 이미지 업로드
+     */
+    private fun uploadImageToStorage(uri: Uri) {
+        // storage 인스턴스 생성
+        val storage = Firebase.storage
+        // storage 참조
+        val storageRef = storage.getReference("images").child("users")
+        // storage에 저장할 파일명 선언
+        val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
+        val mountainsRef = storageRef.child("${fileName}.jpg")
+
+
+        val uploadTask = mountainsRef.putFile(uri).addOnCompleteListener {
+            if (it.isSuccessful) {
+                // 파일 업로드에 성공했기 때문에 스토리지 url을 다시 받아와 DB에 저장
+                mountainsRef.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        pet_info.image_url = uri.toString()
+                    }.addOnFailureListener {
+                        Toast.makeText(mainActivity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+            } else {
+                Toast.makeText(mainActivity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // 파일 업로드 성공
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            Toast.makeText(mainActivity, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
+
+        }   // 파일 업로드 실패
+            .addOnFailureListener {
+                Toast.makeText(mainActivity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
+            }
     }
 }

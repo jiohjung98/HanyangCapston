@@ -29,6 +29,11 @@ import net.daum.android.map.MapView
 class MainActivity : AppCompatActivity(), CustomDialog {
     lateinit var binding: ActivityMainBinding
 
+    private var oneFragment: NaviHomeFragment? = null
+    private var twoFragment: NaviWalkFragment? = null
+    private var threeFragment: Calendar_fragment? = null
+    private var fourFragment: NaviMypageFragment? = null
+
     public var toolbar3_menu: Menu? = null
 
     // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음

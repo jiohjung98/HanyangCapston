@@ -25,6 +25,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.imageArea
 import kotlinx.android.synthetic.main.activity_dog_register.image_upload_btn
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.android.synthetic.main.fragment_walk.*
+import kotlinx.android.synthetic.main.fragment_walk.kakaoMapView
 import net.daum.mf.map.api.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -86,7 +89,6 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
         val time = dogInfoDialog.findViewById<EditText>(R.id.inputTime)
 
         listen = NaviHomeFragment.MarkerEventListener(mainActivity)
-
 
         binding.yesBtn.setOnClickListener {
             val getInfo: String = info.text.toString()
@@ -197,7 +199,7 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
                     image_upload_btn.isClickable = true
 
                     // Upload
-                    initUploadImage(uri)
+//                    initUploadImage(uri)
                 }
             }
         }
@@ -205,12 +207,12 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
     /*
      * 업로드 버튼 클릭 이벤트 설정
      */
-    private fun initUploadImage(uri : Uri){
-        binding.imageUploadBtn.setOnClickListener{
-            // 서버로 업로드
-            uploadImageToStorage(uri)
-        }
-    }
+//    private fun initUploadImage(uri : Uri){
+//        binding.imageUploadBtn.setOnClickListener{
+//            // 서버로 업로드
+//            uploadImageToStorage(uri)
+//        }
+//    }
 
     /*
      * 서버 스토리지로 이미지 업로드
