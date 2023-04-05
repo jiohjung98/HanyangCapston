@@ -138,6 +138,9 @@
         <activity
             android:name=".PostingActivity"
             android:exported="true" />
+        <activity
+            android:name=".TrackingActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

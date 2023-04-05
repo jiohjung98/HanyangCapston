@@ -37,13 +37,6 @@
                 android:layout_marginStart="24dp"
                 android:src="@drawable/logo_mini" />
 
-            <ImageView
-                android:id="@+id/noticeitem"
-                android:layout_width="30dp"
-                android:layout_height="22dp"
-                android:layout_gravity="right"
-                android:layout_marginEnd="18dp"
-                android:src="@drawable/icon_bell" />
             <TextView
                 android:id="@+id/toolBarTitle"
                 android:layout_width="wrap_content"

@@ -22,10 +22,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import com.example.capston.databinding.FragmentNaviWalkBinding
-import com.example.capston.homepackage.WalkDialog
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
 
 /*

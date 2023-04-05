@@ -131,9 +131,9 @@
         android:layout_gravity="center|bottom"
         android:layout_marginTop="45dp"
         android:background="@drawable/agree_nextbtn_color"
-        android:text="로그인"
         android:textColor="@color/btn_back"
         android:textStyle="bold"
+        android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/warning_text" />

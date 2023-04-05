@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.FragmentWalkBinding
-import com.example.capston.homepackage.walkFragment
 import kotlinx.android.synthetic.main.fragment_walk.*
 import net.daum.mf.map.api.MapView
 import net.daum.mf.map.api.MapPoint

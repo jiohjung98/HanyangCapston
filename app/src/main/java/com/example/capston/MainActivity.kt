@@ -108,16 +108,16 @@ class MainActivity : AppCompatActivity(), CustomDialog {
             toolbar3.visibility = View.INVISIBLE
         }
 
-        noticeitem.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, NoticeFragment())
-                .addToBackStack(null)
-            transaction.commit()
-            toolbar.visibility = View.INVISIBLE
-            toolbar2.visibility = View.VISIBLE
-            toolbar3.visibility = View.INVISIBLE
-
-        }
+//        noticeitem.setOnClickListener {
+//            val transaction = supportFragmentManager.beginTransaction()
+//                .replace(R.id.main_frm, NoticeFragment())
+//                .addToBackStack(null)
+//            transaction.commit()
+//            toolbar.visibility = View.INVISIBLE
+//            toolbar2.visibility = View.VISIBLE
+//            toolbar3.visibility = View.INVISIBLE
+//
+//        }
 
         btn_back.setOnClickListener {
             val transaction = supportFragmentManager.popBackStack()
@@ -178,32 +178,32 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         fragmentTransaction.commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar3_menu, menu)
-        toolbar3_menu = menu
-
-        if (toolbar3.visibility == View.VISIBLE) {
-            toolbar3_menu!!.findItem(R.id.item1).setVisible(true)
-            toolbar3_menu!!.findItem(R.id.item2).setVisible(true)
-        }
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection
-        return when (item.itemId) {
-            R.id.item1 -> {
-                Toast.makeText(this@MainActivity, "수정 클릭", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.item2 -> {
-                Toast.makeText(this@MainActivity, "삭제 클릭", Toast.LENGTH_SHORT).show()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.toolbar3_menu, menu)
+//        toolbar3_menu = menu
+//
+//        if (toolbar3.visibility == View.VISIBLE) {
+//            toolbar3_menu!!.findItem(R.id.item1).setVisible(true)
+//            toolbar3_menu!!.findItem(R.id.item2).setVisible(true)
+//        }
+//
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        // Handle item selection
+//        return when (item.itemId) {
+//            R.id.item1 -> {
+//                Toast.makeText(this@MainActivity, "수정 클릭", Toast.LENGTH_SHORT).show()
+//                true
+//            }
+//            R.id.item2 -> {
+//                Toast.makeText(this@MainActivity, "삭제 클릭", Toast.LENGTH_SHORT).show()
+//                true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     private fun deleteToolbar(naviMypageFragment: Fragment) {
         val fragmentManager = supportFragmentManager

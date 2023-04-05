@@ -25,7 +25,6 @@ import kotlin.math.*
 
 
 var RecordPage = HomeRecord()
-val walkFragment = WalkFragment()
 
 /*
  * 메인화면, 첫번째 메뉴, 지도
@@ -35,37 +34,26 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     var listen: MarkerEventListener? = null
 
+    //내 반려견 실종 버튼
+    var validLostBtn: Boolean = false
+
+    //실종 반려견 발견 버튼
+    var validFindBtn: Boolean = false
+
+
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val RequestPermissionCode = 1
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
-    private var prevLat: Double? = null
-    private var prevLon: Double? = null
-    private var walkingDistance: Double = 0.0
-    private var walkingCalorie: Double = 0.0
     private var isStart: Boolean = false
     private var isPause: Boolean = false
     private var tapTimer: Timer? = null
     private val route = ArrayList<ArrayList<Double>>()
-    private val toiletLoc = ArrayList<ArrayList<Double>>()
-    private val walkingAmounts = ArrayList<Double>()
-    private var walkingTimer: Timer? = null
-    private var runningDogImageTimer: Timer? = null
-    private var runningDogImage = arrayOf(
-        R.drawable.running_dog_1, R.drawable.running_dog_2
-        , R.drawable.running_dog_3, R.drawable.running_dog_4, R.drawable.running_dog_5
-        , R.drawable.running_dog_6, R.drawable.running_dog_7, R.drawable.running_dog_8
-    )
-    private var runningDogImageCounter: Int = 1
-    private var time = 0
-    private var isTimerRunning: Boolean = false
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
-    private var animal = ArrayList<String>()
-    private var fullAmount = ArrayList<Double>()
 
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
@@ -86,13 +74,19 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+            _binding = com.example.capston.databinding.FragmentNaviHomeBinding.inflate(inflater, container, false)
 
-//        try {
-            _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
-//        } catch (Exception ) {
-//            Log.e(TAG, "onCreateView", e);
-//            throw e
-//        }
+        binding.lostBtn.setOnClickListener {
+            validLostBtn = true
+            dog_lost_txt.visibility = View.VISIBLE
+            dog_find_txt.visibility = View.INVISIBLE
+        }
+
+        binding.findBtn.setOnClickListener {
+            validFindBtn = true
+            dog_find_txt.visibility = View.VISIBLE
+            dog_lost_txt.visibility = View.INVISIBLE
+        }
 
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
@@ -110,6 +104,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
     }
+
 
     fun findAddress() {
         val mapReverseGeoCoder =
@@ -149,6 +144,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+
     }
 
 
@@ -304,33 +300,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         p0!!.removePolyline(polyline)
         p0.addPolyline(polyline)
 
-//        if (prevLat == null && prevLon == null) {
-//            prevLat = lat
-//            prevLon = lon
-//            return
-//        } else {
-//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-//            // 이동 거리 표시
-//            walkingDistance += distance
-//            if (walkingDistance < 1000) {
-//                distanceId.text = String.format("%.1f", walkingDistance)
-//            } else {
-//                digitId.text = "km"
-//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-//            }
-//            // 소모 칼로리 표시
-//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-//            calorieView.text = String.format("%.2f", walkingCalorie)
-//            // 충족량 표시
-//            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-//                amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-//            }
-//
-//            if (prevLat != 0.0) {
-//                prevLat = lat
-//                prevLon = lon
-//            }
-//        }
         // 변환 주소 가져오기
         if (!getAddress) {
             findAddress()
@@ -344,16 +313,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
-        //마커 생성
-        Log.d("gooooooo", p1.toString())
-//        val marker = MapPOIItem()
-//        marker.itemName = "실종"
-//        marker.mapPoint = mapPoint
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
-//
-//        kakaoMapView.addPOIItem(marker)
-
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
@@ -396,54 +355,56 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         // mainActivity 변수 초기화(안해주면 사용 못함)
         mainActivity = context as MainActivity
 
-        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-        dogInfoDialog.myDlg()
-//
-//        val info = binding2?.inputInfo?.text.toString().trim()
-//        val time = binding2?.inputTime?.text.toString().trim()
+        dog_lost_txt.visibility = View.INVISIBLE
+        dog_find_txt.visibility = View.INVISIBLE
 
-//        binding2 = LostDogInfoBinding.inflate((context as MainActivity).layoutInflater)
+        if (validLostBtn) {
 
-        kakaoMapView.setMapCenterPoint(p1,true)
-        val marker = MapPOIItem()
-        marker.itemName = "실종견"
-        marker.mapPoint = p1
-        marker.markerType =MapPOIItem.MarkerType.BluePin
-//
-//        if (info.isNotEmpty() && time.isNotEmpty() ) {
-//            Log.d("인포값", "${info}")
-//            Log.d("타임값", "${time}")
-//            kakaoMapView!!.addPOIItem(marker)
-//        }
+            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+            dogInfoDialog.myDlg()
 
-        if (info != null) {
-            kakaoMapView!!.addPOIItem(marker)
+            kakaoMapView.setMapCenterPoint(p1, true)
+            val marker = MapPOIItem()
+            marker.itemName = "실종견"
+            marker.mapPoint = p1
+            marker.markerType = MapPOIItem.MarkerType.RedPin
+
+            if (info != null) {
+                kakaoMapView!!.addPOIItem(marker)
+                Log.d("인포값", "${info}")
+                Log.d("타임값", "${time1}")
+
+            } else {
+                kakaoMapView!!.removePOIItem(marker)
+            }
             Log.d("인포값", "${info}")
-            Log.d("타임값", "${time1}")
 
+            validLostBtn = false
         }
 
-        else {
-            kakaoMapView!!.removePOIItem(marker)
+        if (validFindBtn) {
+
+            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+            dogInfoDialog.myDlg()
+
+            kakaoMapView.setMapCenterPoint(p1, true)
+            val marker = MapPOIItem()
+            marker.itemName = "실종견"
+            marker.mapPoint = p1
+            marker.markerType = MapPOIItem.MarkerType.YellowPin
+
+            if (info != null) {
+                kakaoMapView!!.addPOIItem(marker)
+                Log.d("인포값", "${info}")
+                Log.d("타임값", "${time1}")
+
+            } else {
+                kakaoMapView!!.removePOIItem(marker)
+            }
+            Log.d("인포값", "${info}")
+
+            validFindBtn = false
         }
-        Log.d("인포값", "${info}")
-
-
-//        this.binding2.yesBtn.setOnClickListener {
-//            Log.d("버튼눌려요", "dddddd")
-//            kakaoMapView!!.addPOIItem(marker)
-//        }
-
-
-//        marker.itemName = "배변"
-//        marker.isShowCalloutBalloonOnTouch = false
-//        marker.mapPoint = mapPoint
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.customImageResourceId =
-//            R.drawable.toilet_activity
-//        marker.isCustomImageAutoscale = false
-//        marker.setCustomImageAnchor(0.5f, 1.0f)
-//        kakaoMapView!!.addPOIItem(marker)
     }
 
 
@@ -491,18 +452,6 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
         // 마커 클릭 시
         Log.d("markerClick", "ok")
 
-//        // mainActivity 변수 초기화(안해주면 사용 못함)
-//        mainActivity = context as MainActivity
-//
-//        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-//
-//        dogInfoDialog.setOnClickedListener(object: DogInfoEnterDialog.ButtonClickListener {
-//            override fun onClicked(time: String, info: String) {
-//                Log.d("연결 가능", "성공")
-//            }
-//        })
-
-
     }
 
     override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
@@ -518,27 +467,12 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
     ) {
         // 말풍선 클릭 시
         // mainActivity 변수 초기화(안해주면 사용 못함)
-        mainActivity = context as MainActivity
-
-        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-        dogInfoDialog.myDlg()
+//        mainActivity = context as MainActivity
+//
+//        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
+//        dogInfoDialog.myDlg()
 
     }
-
-
-        // 기본 다이얼로그 생성 방법
-//        val builder = Builder(context)
-//        val itemList = arrayOf("정보", "마커 삭제", "취소")
-//        builder.setTitle("${poiItem?.itemName}")
-//        mainActivity = context as MainActivity
-//        builder.setItems(itemList) { dialog, which ->
-//            when(which) {
-//                0 -> Toast.makeText(context, "토스트", Toast.LENGTH_SHORT).show()  // 토스트
-//                1 -> mapView?.removePOIItem(poiItem)    // 마커 삭제
-//                2 -> dialog.dismiss()   // 대화상자 닫기
-//            }
-//        }
-//        builder.show()
 
     override fun onDraggablePOIItemMoved(
         mapView: MapView?,
@@ -644,9 +578,5 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
 //
 //    }
 //
-//    override fun onDestroy() {
-//        stopTracking()
-////        binding.kakaoMapView.remove(mapView)
-//        super.onDestroy()
-//    }
+
 

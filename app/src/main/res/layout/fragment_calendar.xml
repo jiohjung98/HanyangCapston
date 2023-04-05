@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="@+id/saveBtn"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:visibility="invisible">
+            android:visibility="visible">
         </Button>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
