@@ -8,10 +8,13 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +24,8 @@ import com.example.capston.databinding.ActivityWalkBinding
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.logoutdialog.*
+import kotlinx.android.synthetic.main.logoutdialog.yes_btn
+import kotlinx.android.synthetic.main.walk_end_alert_dialog.*
 import net.daum.mf.map.api.*
 import org.w3c.dom.Text
 import retrofit2.Call
@@ -151,6 +156,17 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
         }
         camera_btn.setOnClickListener {
+            isPause = true
+            stopRunningDog()
+            pauseTimer()
+            timerSet()
+            pauseFab.visibility = View.GONE
+            toiletFab.visibility = View.GONE
+            playFab.visibility = View.VISIBLE
+            resetFab.visibility = View.VISIBLE
+
+            isTimerRunning
+
             val dialog = Dialog(this)
             // 다이얼로그 테두리 둥글게 만들기
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -160,14 +176,45 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialog.setContentView(R.layout.walk_end_alert_dialog)
 
             val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
 
-            // 아래 removeAllViews() 안넣어주면 튕김
-            kakaoMapView2.removeAllViews()
-//            startActivity(intent)
+            btnOk.setOnClickListener {
+                val dialog2 = Dialog(this)
+                // 다이얼로그 테두리 둥글게 만들기
+                dialog2?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog2?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+                dialog2.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+                dialog2.setContentView(R.layout.walk_end_dialog)
+
+                val params: WindowManager.LayoutParams = dialog2.window!!.attributes
+                params.y = 500
+                dialog2.window!!.attributes = params
+
+                dialog2.show()
+
+                // 아래 removeAllViews() 안넣어주면 튕김
+                kakaoMapView2.removeAllViews()
+
+//                액티비티로 이동(첫화면)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    val intent = Intent(this, MainActivity::class.java)
+                    this.startActivity(intent)
+                    (this as Activity).finish()
+                }, 3000)
+
+                dialog.dismiss()
+            }
+
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
 
-        this.window.statusBarColor = (ContextCompat.getColor(this, R.color.white))
-        this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//        this.window.statusBarColor = (ContextCompat.getColor(this, R.color.white))
+//        this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
     fun findAddress() {
