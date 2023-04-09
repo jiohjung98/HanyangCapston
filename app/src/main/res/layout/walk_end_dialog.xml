@@ -137,22 +137,5 @@
             app:layout_constraintStart_toEndOf="@id/calorie"
             app:layout_constraintTop_toTopOf="@+id/calorietxt"
             app:layout_constraintBottom_toBottomOf="@id/calorietxt" />
-
-
-
-
-
-
-
-
-
-
-
-"
-
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

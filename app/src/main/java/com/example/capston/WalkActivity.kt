@@ -216,9 +216,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
             dialog.show()
         }
-
-//        this.window.statusBarColor = (ContextCompat.getColor(this, R.color.white))
-//        this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
     fun findAddress() {
@@ -228,12 +225,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         mapReverseGeoCoder.startFindingAddress()
     }
 
-    private fun onClickEnd() {
-        val dlg = WalkEndAlertDialog(this)
-        dlg.setOnOKClickedListener{ content ->
-        }
-        dlg.show("산책 종료 전 띄워주기")
-    }
+//    private fun onClickEnd() {
+//        val dlg = WalkEndAlertDialog(this)
+//        dlg.setOnOKClickedListener{ content ->
+//        }
+//        dlg.show("산책 종료 전 띄워주기")
+//    }
 
     private fun initView() {
         // 위치 권한 설정 확인
@@ -245,55 +242,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         mapView!!.setMapViewEventListener(this)
 
-//        mapView.setMapViewEventListener(object : MapView.MapViewEventListener {
-//            override fun onMapViewInitialized(mapView: MapView?) {
-//                Log.i("디테일로그", "onMapViewInitialized")
-//            }
-//
-//            override fun onMapViewCenterPointMoved(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewCenterPointMoved")
-//            }
-//
-//            override fun onMapViewZoomLevelChanged(mapView: MapView?, i: Int) {
-//                Log.i("디테일로그", "onMapViewZoomLevelChanged")
-//            }
-//
-//            override fun onMapViewSingleTapped(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewSingleTapped")
-//            }
-//
-//            override fun onMapViewDoubleTapped(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewDoubleTapped")
-//            }
-//
-//            override fun onMapViewLongPressed(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.d("mapView", "good")
-//                mapView?.setMapCenterPoint(mapPoint,true)
-//                val marker = MapPOIItem()
-//                marker.itemName = "배변"
-////                marker.isShowCalloutBalloonOnTouch = false
-//                marker.mapPoint = mapPoint
-//                marker.markerType = MapPOIItem.MarkerType.BluePin
-////        marker.customImageResourceId =
-////            R.drawable.toilet_activity
-////        marker.isCustomImageAutoscale = false
-////        marker.setCustomImageAnchor(0.5f, 1.0f)
-//                mapView?.addPOIItem(marker)
-//                Log.i("디테일로그", "onMapViewLongPressed")
-//            }
-//
-//            override fun onMapViewDragStarted(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewDragStarted")
-//            }
-//
-//            override fun onMapViewDragEnded(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewDragEnded")
-//            }
-//
-//            override fun onMapViewMoveFinished(mapView: MapView?, mapPoint: MapPoint?) {
-//                Log.i("디테일로그", "onMapViewMoveFinished")
-//            }
-//        })
         // 현위치 트래킹 모드 ON
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
@@ -421,38 +369,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         marker.isCustomImageAutoscale = false
         marker.setCustomImageAnchor(0.5f, 1.0f)
         mapView!!.addPOIItem(marker)
-
-
-
-//        mapView?.setMapCenterPoint(mapPoint, true)
-//        val marker = MapPOIItem()
-//        marker.itemName = "배변"
-//        marker.isShowCalloutBalloonOnTouch = false
-//        marker.mapPoint = mapPoint
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-////        marker.customImageResourceId =
-////            R.drawable.toilet_activity
-////        marker.isCustomImageAutoscale = false
-////        marker.setCustomImageAnchor(0.5f, 1.0f)
-//        mapView?.addPOIItem(marker)
-//        Log.i("디테일로그", "onMapViewLongPressed")
-
-//        val marker = MapPOIItem()
-//        marker.itemName = "배변"
-////        marker.isShowCalloutBalloonOnTouch = false
-//        marker.mapPoint = mapPoint
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-////        marker.customImageResourceId =
-////            R.drawable.toilet_activity
-////        marker.isCustomImageAutoscale = false
-////        marker.setCustomImageAnchor(0.5f, 1.0f)
-//        mapView!!.addPOIItem(marker)
-//        toiletLoc.add(
-//            arrayListOf(
-//                marker.mapPoint.mapPointGeoCoord.latitude,
-//                marker.mapPoint.mapPointGeoCoord.longitude
-//            )
-//        )
     }
     // 위치 권한 설정 확인 함수
     private fun isSetLocationPermission() {
@@ -616,17 +532,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
-//////        toiletActivity()
-//        val marker = MapPOIItem()
-//        marker.itemName = "배변"
-////        marker.isShowCalloutBalloonOnTouch = false
-//        marker.mapPoint = mapPoint
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-////        marker.customImageResourceId =
-////            R.drawable.toilet_activity
-////        marker.isCustomImageAutoscale = false
-////        marker.setCustomImageAnchor(0.5f, 1.0f)
-//        mapView!!.addPOIItem(marker)
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
