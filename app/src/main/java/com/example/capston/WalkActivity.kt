@@ -157,22 +157,19 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         }
         camera_btn.setOnClickListener {
             isPause = true
-            stopRunningDog()
             pauseTimer()
-            timerSet()
             pauseFab.visibility = View.GONE
             toiletFab.visibility = View.GONE
             playFab.visibility = View.VISIBLE
             resetFab.visibility = View.VISIBLE
 
-            isTimerRunning
 
             val dialog = Dialog(this)
             // 다이얼로그 테두리 둥글게 만들기
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+            dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
             dialog.setContentView(R.layout.walk_end_alert_dialog)
 
             val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
@@ -184,12 +181,13 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 dialog2?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog2?.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-                dialog2.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+                dialog2.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
                 dialog2.setContentView(R.layout.walk_end_dialog)
 
                 val params: WindowManager.LayoutParams = dialog2.window!!.attributes
-                params.y = 500
-                dialog2.window!!.attributes = params
+                params?.width = WindowManager.LayoutParams.MATCH_PARENT
+                params?.y = 500
+                dialog2.window?.attributes = params as WindowManager.LayoutParams
 
                 dialog2.show()
 
@@ -207,6 +205,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
 
             btnCancel.setOnClickListener {
+                startTimer()
+                runningDog()
+                pauseFab.visibility = View.VISIBLE
+                toiletFab.visibility = View.VISIBLE
+                playFab.visibility = View.GONE
+                resetFab.visibility = View.GONE
                 dialog.dismiss()
             }
 

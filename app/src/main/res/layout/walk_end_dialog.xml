@@ -17,30 +17,142 @@
         android:elevation="20dp"
         android:gravity="center">
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="36dp"
-            android:layout_height="26dp"
-            android:layout_marginTop="50dp"
+        <TextView
+            android:id="@+id/timeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산책 시간: "
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/frame"
-            android:background="@drawable/logo1"
-            />
+            android:layout_marginTop="65sp"
+            android:layout_marginStart="30sp" />
 
         <TextView
-            android:id="@+id/text"
-            android:layout_width="match_parent"
+            android:id="@+id/hour"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="산책을 종료합니다."
             android:textColor="@color/black"
-            android:textSize="22sp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img"
-            />
+            app:layout_constraintStart_toEndOf="@+id/timeTxt"
+            app:layout_constraintTop_toTopOf="@id/timeTxt"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTxt"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/hourLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text=" : "
+            app:layout_constraintStart_toEndOf="@+id/hour"
+            app:layout_constraintTop_toTopOf="@id/timeTxt"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTxt" />
+
+        <TextView
+            android:id="@+id/minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/hourLine"
+            app:layout_constraintTop_toTopOf="@id/timeTxt"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTxt"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/minuteLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text=" : "
+            app:layout_constraintStart_toEndOf="@+id/minute"
+            app:layout_constraintTop_toTopOf="@id/timeTxt"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTxt" />
+
+        <TextView
+            android:id="@+id/second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/minuteLine"
+            app:layout_constraintTop_toTopOf="@id/timeTxt"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTxt"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/distancetxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이동 거리: "
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/timeTxt"
+            app:layout_constraintStart_toStartOf="@id/timeTxt"
+            android:layout_marginTop="5sp" />
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/distancetxt"
+            app:layout_constraintTop_toTopOf="@id/distancetxt"
+            app:layout_constraintBottom_toBottomOf="@id/distancetxt" />
+
+        <TextView
+            android:id="@+id/distanceMeter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="m"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/distance"
+            app:layout_constraintTop_toTopOf="@id/distance"
+            app:layout_constraintBottom_toBottomOf="@id/distance"/>
+
+        <TextView
+            android:id="@+id/calorietxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="소모 칼로리: "
+            android:textColor="@color/black"
+            android:layout_marginTop="5sp"
+            app:layout_constraintTop_toBottomOf="@id/distancetxt"
+            app:layout_constraintStart_toStartOf="@id/distancetxt" />
+
+        <TextView
+            android:id="@+id/calorie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/calorietxt"
+            app:layout_constraintTop_toTopOf="@+id/calorietxt"
+            app:layout_constraintBottom_toBottomOf="@id/calorietxt" />
+
+        <TextView
+            android:id="@+id/caloriee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kcal"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/calorie"
+            app:layout_constraintTop_toTopOf="@+id/calorietxt"
+            app:layout_constraintBottom_toBottomOf="@id/calorietxt" />
+
+
+
+
+
+
+
+
+
+
+
+"
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
