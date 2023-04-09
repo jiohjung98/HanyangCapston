@@ -25,6 +25,7 @@ android {
     buildTypes {
         buildFeatures{
             viewBinding true
+            dataBinding true
         }
 
         release {

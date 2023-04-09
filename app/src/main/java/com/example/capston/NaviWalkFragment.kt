@@ -37,13 +37,14 @@ import java.util.*
 /*
  *  두번째 메뉴, 산책하기
  */
+@Suppress("DEPRECATION")
 class NaviWalkFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private var _binding: FragmentNaviWalkBinding?= null
     private val binding get() = _binding!!
+    private var _binding: FragmentNaviWalkBinding? = null
 
     private final val REQUEST_FIRST = 1010
     var pet_info = PetInfo()
@@ -82,6 +83,10 @@ class NaviWalkFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        if (binding == null) {
+            return
+        }
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
         }
@@ -123,20 +128,22 @@ class NaviWalkFragment : Fragment() {
             }
     }
 
-    private fun validDog(snapshot: DataSnapshot){
-        Log.d("등록 있음","${snapshot}")
-        binding.walkBtn.isEnabled = true
-        binding.walkBtn.visibility = View.VISIBLE
-        // 데이터가 변경되면 리스너가 감지함
-        // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
-        // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
-        petname.text = snapshot.child("pet_name").value.toString()
-        breed.text = snapshot.child("breed").value.toString()
-        age.text = snapshot.child("born").value.toString() + "년생"
-        if (snapshot.child("gender").value == 1)
-            gender.text = "♂"
-        else
-            gender.text = "♀"
+
+    private fun validDog(snapshot: DataSnapshot) {
+        Log.d("등록 있음", "${snapshot}")
+            binding.walkBtn.isEnabled = true
+            binding!!.walkBtn.visibility = View.VISIBLE
+
+            // 데이터가 변경되면 리스너가 감지함
+            // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
+            // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
+            petname.text = snapshot.child("pet_name").value.toString()
+            breed.text = snapshot.child("breed").value.toString()
+            age.text = snapshot.child("born").value.toString() + "년생"
+            if (snapshot.child("gender").value == 1)
+                gender.text = "♂"
+            else
+                gender.text = "♀"
     }
 
     private fun invalidDog(){
@@ -185,13 +192,18 @@ class NaviWalkFragment : Fragment() {
                     return;
                 }
                 Log.d("IMAGE URL","${Uri.parse(snapshot.value.toString())}")
-                GlideApp.with(this@NaviWalkFragment).load(Uri.parse(snapshot.value.toString())).into(binding.profile)
+                if (isAdded()) {
+                    GlideApp.with(this@NaviWalkFragment).load(Uri.parse(snapshot.value.toString()))
+                        .into(binding.profile)
+                }
             }
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
         })
     }
+
+
 
 
     private fun setupData() {

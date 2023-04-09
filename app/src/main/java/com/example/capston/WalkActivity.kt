@@ -2,13 +2,17 @@ package com.example.capston
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,9 +20,9 @@ import androidx.core.content.ContextCompat
 import com.example.capston.databinding.ActivityWalkBinding
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.fragment_walk.*
 import kotlinx.android.synthetic.main.logoutdialog.*
 import net.daum.mf.map.api.*
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -147,8 +151,16 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
         }
         camera_btn.setOnClickListener {
-//            val intent = Intent(this, MainActivity::class.java)
-            onClickEnd()
+            val dialog = Dialog(this)
+            // 다이얼로그 테두리 둥글게 만들기
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+            dialog.setContentView(R.layout.walk_end_alert_dialog)
+
+            val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+
             // 아래 removeAllViews() 안넣어주면 튕김
             kakaoMapView2.removeAllViews()
 //            startActivity(intent)

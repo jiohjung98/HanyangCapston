@@ -5,25 +5,26 @@ import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
-import com.example.capston.databinding.FragmentWalkBinding
 import com.example.capston.databinding.LostDogInfoBinding
+import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.ballon_layout.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.lost_dog_info.*
 import net.daum.mf.map.api.*
+import net.daum.mf.map.api.MapView
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.*
@@ -38,6 +39,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
     var listen: MarkerEventListener? = null
+
+    private var kakaoMapViewContainer: FrameLayout? = null
 
     //내 반려견 실종 버튼
     var validLostBtn: Boolean = false
@@ -65,9 +68,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     private var binding2: LostDogInfoBinding? = null
 
-    var info = binding2?.inputInfo?.editableText.toString().trim()
-    val time1 = binding2?.inputTime?.editableText.toString().trim()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +79,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-            _binding = com.example.capston.databinding.FragmentNaviHomeBinding.inflate(inflater, container, false)
+            _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
         binding.lostBtn.setOnClickListener {
             validLostBtn = true
@@ -117,41 +117,75 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         mapReverseGeoCoder.startFindingAddress()
     }
 
-    // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
+//    // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        (activity as AppCompatActivity).supportActionBar?.show()
+//
+//        kakaoMapView = MapView(mainActivity)
+//        kakaoMapViewContainer.addView(kakaoMapView)
+//
+//        listen = MarkerEventListener(mainActivity)
+//
+//        kakaoMapView.setPOIItemEventListener(listen)
+//
+//        isSetLocationPermission()
+//        kakaoMapView!!.setMapViewEventListener(this)
+//        kakaoMapView!!.setZoomLevel(0, true)
+//        kakaoMapView!!.setCustomCurrentLocationMarkerTrackingImage(
+//            R.drawable.labrador_icon,
+//            MapPOIItem.ImageOffset(50, 50)
+//        )
+//        kakaoMapView!!.setCustomCurrentLocationMarkerImage(
+//            R.drawable.labrador_icon,
+//            MapPOIItem.ImageOffset(50, 50)
+//        )
+//        kakaoMapView!!.currentLocationTrackingMode =
+//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+//        Log.d("트래킹", kakaoMapView!!.currentLocationTrackingMode.toString())
+//        kakaoMapView!!.setCurrentLocationEventListener(this)
+//        polyline = MapPolyline()
+//        polyline!!.tag = 1000
+//        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+//
+//        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+//    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
-//        val mapView = MapView(activity)
-//        val mapViewContainer = kakaoMapView as ViewGroup
-//        mapViewContainer.addView(mapView)
-
         listen = MarkerEventListener(mainActivity)
+
+        // 뷰 추가 전 기존 뷰 삭제
+        kakaoMapViewContainer?.removeAllViews()
+
+        val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
+        kakaoMapViewContainer?.addView(kakaoMapView)
+
         kakaoMapView.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
-        kakaoMapView!!.setMapViewEventListener(this)
-        kakaoMapView!!.setZoomLevel(0, true)
-        kakaoMapView!!.setCustomCurrentLocationMarkerTrackingImage(
+        kakaoMapView.setMapViewEventListener(this)
+        kakaoMapView.setZoomLevel(0, true)
+        kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.labrador_icon,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView!!.setCustomCurrentLocationMarkerImage(
+        kakaoMapView.setCustomCurrentLocationMarkerImage(
             R.drawable.labrador_icon,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView!!.currentLocationTrackingMode =
+        kakaoMapView.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
-        Log.d("트래킹", kakaoMapView!!.currentLocationTrackingMode.toString())
-        kakaoMapView!!.setCurrentLocationEventListener(this)
+        Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
+        kakaoMapView.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
-
     }
-
 
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
@@ -160,13 +194,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
         private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        private val tvTime: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
-        private val tvInfo: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
         val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
-
-
-//        val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
@@ -176,78 +204,34 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             }
 
 
-
-
-
-//            // mainActivity 변수 초기화(안해주면 사용 못함)
-//            mainActivity = context as MainActivity
-//
-//
-//            val dogInfoDialog = DogInfoEnterDialog(mainActivity!!)
-//            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
-//                override fun onClicked(time: String, info: String) {
-//                    Log.d("전달 ㅇㅇ", "ㅇㅇㅇㅇㅇ")
-//                    info3.text = info
-//                    time3.text = time
-//                    Log.d("info3", "$info3")
-//                }
-//            })
-
-//            //다이얼로그에서 정의한 interface를 통해 데이터를 받아온다.
-//            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
-//                override fun onClicked(time: String, info: String) {
-//                    time1.text = time
-//                    time1.text = time
-//                    info1.text = info
-//                }
-//            })
-
-//
-//            dogInfoDialog.setOnClickedListener(object: DogInfoEnterDialog.ButtonClickListener{
-//                override fun onClicked(time: String, info: String) {
-//
-//                }
-//            }
-
-//
-//            val dialog = dogInfoDialog(this)
-////            dogInfoDialog.saveInfo()
-//            dogInfoDialog.setOnClickedListener(object : DogInfoEnterDialog.ButtonClickListener {
-//                override fun onClicked(myName: String) {
-//                    time.text = myName
-//                }
-//
-//            })
-
-
-//            address.text = "getCalloutBalloon"
-
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
 //            address.text = "getPressedCalloutBalloon"
-
             return mCalloutBalloon
         }
     }
 
-    //메모리 누수 방지
+    // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
-        this._binding = null
+        kakaoMapViewContainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
+        mapView?.onPause() // 맵뷰를 일시정지
+        mapView = null // 맵뷰 변수를 null로 설정
     }
 
     override fun onResume() {
         super.onResume()
+        if (mapView != null) {
+            mapView!!.onResume()
+        }
         this._binding = null
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WalkFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
+    override fun onPause() {
+        super.onPause()
+        if (mapView != null) {
+            mapView!!.onPause()
+        }
     }
 
     override fun onDestroy() {
@@ -359,6 +343,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (validLostBtn) {
 
             val dialog = Dialog(requireContext())
+            // 다이얼로그 테두리 둥글게 만들기
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
             dialog.setContentView(R.layout.lost_dog_info)
 
             val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
@@ -368,6 +357,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
             btnSave.setOnClickListener {
                 val marker = MapPOIItem().apply {
+                    markerType = MapPOIItem.MarkerType.RedPin
                     itemName = "실종견"
                     mapPoint = p1
                     tag = 0
@@ -382,50 +372,41 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             }
 
             dialog.show()
-
-//            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-//            dogInfoDialog.myDlg()
-
-//            kakaoMapView.setMapCenterPoint(p1, true)
-//            val marker = MapPOIItem()
-//            marker.itemName = "실종견"
-//            marker.mapPoint = p1
-//            marker.markerType = MapPOIItem.MarkerType.RedPin
-//
-//
-//            if (info != null && time1 != null) {
-//                kakaoMapView!!.addPOIItem(marker)
-//                Log.d("인포값", "${info}")
-//                Log.d("타임값", "${time1}")
-//
-//            } else {
-//                kakaoMapView!!.removePOIItem(marker)
-//            }
-//            Log.d("인포값", "${info}")
-
             validLostBtn = false
         }
 
         if (validFindBtn) {
 
-            val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-            dogInfoDialog.myDlg()
+            val dialog = Dialog(requireContext())
+            // 다이얼로그 테두리 둥글게 만들기
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+            dialog.setContentView(R.layout.lost_dog_info)
 
-            kakaoMapView.setMapCenterPoint(p1, true)
-            val marker = MapPOIItem()
-            marker.itemName = "실종견"
-            marker.mapPoint = p1
-            marker.markerType = MapPOIItem.MarkerType.YellowPin
+            val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
+            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+            val receiveTime = dialog.findViewById<EditText>(R.id.inputTime)
+            val receiveInfo = dialog.findViewById<EditText>(R.id.inputInfo)
 
-            if (info != null) {
+            btnSave.setOnClickListener {
+                val marker = MapPOIItem().apply {
+                    markerType = MapPOIItem.MarkerType.YellowPin
+                    itemName = "실종견"
+                    mapPoint = p1
+                    tag = 0
+                }
                 kakaoMapView!!.addPOIItem(marker)
-                Log.d("인포값", "${info}")
-                Log.d("타임값", "${time1}")
 
-            } else {
-                kakaoMapView!!.removePOIItem(marker)
+                dialog.dismiss()
             }
-            Log.d("인포값", "${info}")
+
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
 
             validFindBtn = false
         }
@@ -442,7 +423,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         addressLocality = address[1]
         addressThoroughfare = address[2]
         val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
-//        val pref = getSharedPreferences("pref", AppCompatActivity.MODE_PRIVATE)
         val edit = pref.edit()
         edit.putString("addressAdmin", address[0])
         edit.putString("addressLocality", address[1])
@@ -489,12 +469,6 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
         buttonType: MapPOIItem.CalloutBalloonButtonType?
 
     ) {
-        // 말풍선 클릭 시
-        // mainActivity 변수 초기화(안해주면 사용 못함)
-//        mainActivity = context as MainActivity
-//
-//        val dogInfoDialog = DogInfoEnterDialog(mainActivity)
-//        dogInfoDialog.myDlg()
 
     }
 
@@ -507,100 +481,4 @@ class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
     }
 }
 }
-
-
-
-//    // 위치 권한 확인
-//    private fun permissionCheck() {
-//        val preference = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
-//        val isFirstCheck = preference.getBoolean("isFirstPermissionCheck", true)
-//        if (ContextCompat.checkSelfPermission(
-//                context as Activity,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // 권한이 없는 상태
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(
-//                    context as Activity,
-//                    Manifest.permission.ACCESS_FINE_LOCATION
-//                )
-//            ) {
-//                // 권한 거절 (다시 한 번 물어봄)
-//                val builder = AlertDialog.Builder(context as Activity)
-//                builder.setMessage("현재 위치를 확인하시려면 위치 권한을 허용해주세요.")
-//                builder.setPositiveButton("확인") { dialog, which ->
-//                    ActivityCompat.requestPermissions(
-//                        context as Activity,
-//                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-//                        ACCESS_FINE_LOCATION
-//                    )
-//                }
-//                builder.setNegativeButton("취소") { dialog, which ->
-//
-//                }
-//                builder.show()
-//            } else {
-//                if (isFirstCheck) {
-//                    // 최초 권한 요청
-//                    preference.edit().putBoolean("isFirstPermissionCheck", false).apply()
-//                    ActivityCompat.requestPermissions(
-//                        context as Activity,
-//                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-//                        ACCESS_FINE_LOCATION
-//                    )
-//                } else {
-//                    // 다시 묻지 않음 클릭 (앱 정보 화면으로 이동)
-//                    val builder = AlertDialog.Builder(context as Activity)
-//                    builder.setMessage("현재 위치를 확인하시려면 설정에서 위치 권한을 허용해주세요.")
-//                    builder.setPositiveButton("설정으로 이동") { dialog, which ->
-//                        val intent = Intent(
-//                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-//                            Uri.parse("http://www.google.com")
-//                        )
-//                        startActivity(intent)
-//                    }
-//                    builder.setNegativeButton("취소") { dialog, which ->
-//                    }
-//                    builder.show()
-//                }
-//            }
-//        } else {
-//            // 권한이 있는 상태
-//            startTracking()
-//        }
-//    }
-//    // 권한 요청 후 행동
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == ACCESS_FINE_LOCATION) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // 권한 요청 후 승인됨 (추적 시작)
-//                Toast.makeText(context, "위치 권한이 승인되었습니다", Toast.LENGTH_SHORT).show()
-//                startTracking()
-//            } else {
-//                // 권한 요청 후 거절됨 (다시 요청 or 토스트)
-//                Toast.makeText(context, "위치 권한이 거절되었습니다", Toast.LENGTH_SHORT).show()
-//                permissionCheck()
-//            }
-//        }
-//    }
-//
-//    // GPS가 켜져있는지 확인
-//    private fun checkLocationService(): Boolean {
-//        val locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-//    }
-//
-//    //     위치추적 시작
-//    private fun startTracking() {
-//        binding.kakaoMapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-//    }
-//
-//    //     위치추적 중지
-//    private fun stopTracking() {
-//        binding.kakaoMapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
-//
-//    }
-//
-
 

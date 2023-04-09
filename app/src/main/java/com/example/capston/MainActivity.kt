@@ -6,12 +6,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.capston.databinding.ActivityMainBinding
 import com.example.capston.homepackage.CustomDialog
 import com.example.capston.homepackage.NaviHomeFragment
@@ -24,10 +26,13 @@ import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.util.Utility
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import net.daum.android.map.MapView
+import net.daum.mf.map.api.MapView
+
 
 class MainActivity : AppCompatActivity(), CustomDialog {
     lateinit var binding: ActivityMainBinding
+
+//    private var mapView: MapView? = null
 
     private var oneFragment: NaviHomeFragment? = null
     private var twoFragment: NaviWalkFragment? = null
@@ -89,6 +94,14 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        mapView = getMapView()
+//        val mapViewContainer = findViewById<ViewGroup>(R.id.main_frm)
+//        mapViewContainer.addView(mapView)
+
+//        mapView = MapView(this)
+//        val mapViewContainer = findViewById<ViewGroup>(R.id.main_frm)
+//        mapViewContainer.addView(mapView)
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
@@ -160,14 +173,82 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 //        initNavigation()
     }
 
+//    binding.mainBnv.setOnNavigationItemSelectedListener { item ->
+//        if (item.itemId == binding.mainBnv.selectedItemId) {
+//            // 아이콘을 누른 프래그먼트와 이미 선택된 프래그먼트가 같을 경우
+//            // 아무런 동작도 하지 않음
+//            return@setOnNavigationItemSelectedListener false
+//        }
+//        changeFragment(
+//            when (item.itemId) {
+//                R.id.navigation_home -> {
+//                    main_bnv.itemIconTintList = null
+//                    NaviHomeFragment()
+//                    // Respond to navigation item 1 click
+//                }
+//                R.id.navigation_community -> {
+//                    main_bnv.itemIconTintList = null
+//                    NaviWalkFragment()
+//                    // Respond to navigation item 2 click
+//                }
+//                R.id.navigation_calendar -> {
+//                    main_bnv.itemIconTintList = null
+//                    Calendar_fragment()
+//                }
+//                else -> {
+//                    main_bnv.itemIconTintList = null
+//                    NaviMypageFragment()
+//                }
+//            }
+//        )
+//        true
+//    }
+
+//    fun getMapView(): MapView {
+//        val mapView = MapView(this)
+//        return mapView
+//    }
+
+//        binding.mainBnv.setOnItemSelectedListener { item ->
+//            val fragment: Fragment = when (item.itemId) {
+//                R.id.navigation_home -> NaviHomeFragment()
+//                R.id.navigation_community -> NaviWalkFragment()
+//                R.id.navigation_calendar -> Calendar_fragment()
+//                R.id.navigation_mypage -> NaviMypageFragment()
+//                else -> throw IllegalArgumentException("Invalid navigation item ID")
+//            }
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.main_frm, fragment, fragment.javaClass.simpleName)
+//                .addToBackStack(fragment.javaClass.simpleName)
+//                .commit()
+//            true
+//        }
+//    }
+
 
     private fun changeFragment(fragment: Fragment?) {
         supportFragmentManager.popBackStackImmediate()
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.main_frm, fragment!!)
+//                .addToBackStack(null)
                 .commit()
     }
+
+//    private fun changeFragment(fragment: Fragment) {
+//        val tag = fragment.javaClass.simpleName
+//        val fragmentPopped = supportFragmentManager.popBackStackImmediate(tag, 0)
+//        val fragmentTransaction = supportFragmentManager.beginTransaction()
+//        if (!fragmentPopped && supportFragmentManager.findFragmentByTag(tag) == null) {
+//            fragmentTransaction
+//                .replace(R.id.main_frm, fragment, tag)
+//                .addToBackStack(tag) // back stack에 fragment를 추가합니다.
+//        } else {
+//            fragmentTransaction
+//                .replace(R.id.main_frm, fragment, tag)
+//        }
+//        fragmentTransaction.commit()
+//    }
 
 //    private fun initNavigation() {
 //        binding.mainBnv.itemIconTintList = null
@@ -181,6 +262,12 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frm, naviCommunityFragment)
         fragmentTransaction.commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        mapView?.removeAllPOIItems()
+//        mapView = null
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -210,10 +297,10 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 //        }
 //    }
 
-    private fun deleteToolbar(naviMypageFragment: Fragment) {
+    private fun deleteToolbar(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frm, naviMypageFragment)
+        fragmentTransaction.replace(R.id.main_frm, fragment!!)
         fragmentTransaction.commit()
 
     }

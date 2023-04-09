@@ -25,9 +25,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.imageArea
 import kotlinx.android.synthetic.main.activity_dog_register.image_upload_btn
-import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.fragment_walk.*
-import kotlinx.android.synthetic.main.fragment_walk.kakaoMapView
 import net.daum.mf.map.api.*
 import java.text.SimpleDateFormat
 import java.util.*
