@@ -10,14 +10,14 @@
         android:id="@+id/layout"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="520dp"
+        android:layout_height="670dp"
         android:background="@drawable/dialog_frame"
         android:elevation="20dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/Dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/layout"
@@ -30,47 +30,97 @@
             android:text="정보 입력" />
 
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/name_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="시간"
-            app:layout_constraintStart_toStartOf="@+id/text1"
-            app:layout_constraintTop_toBottomOf="@+id/text1"
+            android:text="이름"
+            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintTop_toBottomOf="@+id/Dialog_title"
             android:textColor="@color/black"
             android:textSize="16dp"
             android:layout_marginTop="15dp" />
 
         <EditText
-            android:id="@+id/inputTime"
+            android:id="@+id/name_input"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:hint="실종 혹은 발견 시간을 입력해주세요."
+            android:hint="반려견 이름을 입력해주세요."
             android:textSize="16sp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
             android:paddingStart="8dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text2"
+            app:layout_constraintTop_toBottomOf="@+id/name_title"
             android:layout_marginTop="10dp"/>
 
         <TextView
-            android:id="@+id/text3"
+            android:id="@+id/breed_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="견종"
+            app:layout_constraintStart_toStartOf="@+id/name_input"
+            app:layout_constraintTop_toBottomOf="@+id/name_input"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/breed_input"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="반려견 견종을 선택해해주세요."
+            android:textSize="16sp"
+            android:background="@drawable/info_edittext_rounded_corner_rectangle"
+            android:paddingStart="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/breed_title"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간"
+            app:layout_constraintStart_toStartOf="@+id/breed_input"
+            app:layout_constraintTop_toBottomOf="@+id/breed_input"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/time_input"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="실종/발견 시간을 입력해주세요."
+            android:textSize="16sp"
+            android:background="@drawable/info_edittext_rounded_corner_rectangle"
+            android:paddingStart="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_title"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/content_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="상세 정보"
-            app:layout_constraintStart_toStartOf="@+id/text1"
-            app:layout_constraintTop_toBottomOf="@+id/inputTime"
+            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintTop_toBottomOf="@+id/time_input"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_marginTop="20dp"
             />
 
             <EditText
-                android:id="@+id/inputInfo"
+                android:id="@+id/content_input"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="실종 혹은 발견 정보를 입력해주세요."
+                android:hint="상세정보를 입력해주세요."
                 android:textSize="16sp"
                 android:background="@drawable/info_edittext_rounded_corner_rectangle"
                 android:paddingStart="8dp"
@@ -78,7 +128,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="5dp"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/text3"
+                app:layout_constraintTop_toBottomOf="@+id/content_title"
                 app:layout_constraintStart_toStartOf="parent"
                 />
 
@@ -93,7 +143,7 @@
             app:civ_border_color="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inputInfo"
+            app:layout_constraintTop_toBottomOf="@+id/content_input"
             android:layout_marginTop="20dp" />
 
         <TextView

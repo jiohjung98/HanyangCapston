@@ -16,6 +16,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostDogInfoBinding
@@ -68,6 +70,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     private var binding2: LostDogInfoBinding? = null
 
+    private lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,13 +112,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         return view
     }
 
-    lateinit var mainActivity: MainActivity
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // 2. Context를 액티비티로 형변환해서 할당
-        mainActivity = context as MainActivity
-    }
 
 
     fun findAddress() {
@@ -342,53 +346,24 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         if (validLostBtn) {
 
-            val dialog = Dialog(requireContext())
-            // 다이얼로그 테두리 둥글게 만들기
-            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-            dialog.setContentView(R.layout.lost_dog_info)
-
-            val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
-            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-            val receiveTime = dialog.findViewById<EditText>(R.id.inputTime)
-            val receiveInfo = dialog.findViewById<EditText>(R.id.inputInfo)
-
-            btnSave.setOnClickListener {
-                val marker = MapPOIItem().apply {
-                    markerType = MapPOIItem.MarkerType.RedPin
-                    itemName = "실종견"
-                    mapPoint = p1
-                    tag = 0
-                }
-                kakaoMapView!!.addPOIItem(marker)
-
-                dialog.dismiss()
-            }
-
-            btnCancel.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            dialog.show()
-            validLostBtn = false
+            val dialog = DogInfoEnterDialog()
+            dialog.show(childFragmentManager, "CustomDialog")
         }
 
         if (validFindBtn) {
 
             val dialog = Dialog(requireContext())
             // 다이얼로그 테두리 둥글게 만들기
-            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
             dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
             dialog.setContentView(R.layout.lost_dog_info)
 
             val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
             val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-            val receiveTime = dialog.findViewById<EditText>(R.id.inputTime)
-            val receiveInfo = dialog.findViewById<EditText>(R.id.inputInfo)
+            val receiveTime = dialog.findViewById<EditText>(R.id.time_input)
+            val receiveInfo = dialog.findViewById<EditText>(R.id.content_input)
 
             btnSave.setOnClickListener {
                 val marker = MapPOIItem().apply {

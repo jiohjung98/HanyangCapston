@@ -2,6 +2,7 @@ package com.example.capston
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -17,10 +18,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.example.capston.databinding.LostDogInfoBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.getInstance
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.imageArea
@@ -30,74 +34,110 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragment() {
+class DogInfoEnterDialog : DialogFragment() {
 
     var listen: NaviHomeFragment.MarkerEventListener? = null
-    lateinit var mainActivity: MainActivity
 
+    lateinit var mainActivity: MainActivity
     private lateinit var auth: FirebaseAuth
+    private lateinit var database : DatabaseReference
     lateinit var uri: Uri
+    private var _binding: LostDogInfoBinding? = null
+    private val binding get() = _binding!!
+
+//    private var dogInfoDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
+    var lost_pet_info = LostPetInfo()
     private final val REQUEST_FIRST = 1010
 
-    var lost_pet_info = LostPetInfo()
 
-    private lateinit var binding: LostDogInfoBinding
-    private var dogInfoDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //false로 설정해 주면 화면밖 혹은 뒤로가기 버튼시 다이얼로그라 dismiss 되지 않는다.
+        isCancelable = false
+        showsDialog = true
+
+        mainActivity = context as MainActivity
+        auth = mainActivity.auth
+        database = mainActivity.database
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = LostDogInfoBinding.inflate(inflater, container, false)
+        _binding = LostDogInfoBinding.inflate(inflater, container, false)
 
-        myDlg()
-        mainActivity = context as MainActivity
-
-        auth = getInstance()
-
-        initAddImage()
-
-
-
-        return binding.root
-    }
-
-
-    fun myDlg() {
-        dogInfoDialog.show()
-        binding = LostDogInfoBinding.inflate(context.layoutInflater)
-
-        mainActivity = context as MainActivity
-
-        // 다이얼로그 테두리 둥글게 만들기
-        dogInfoDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dogInfoDialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dogInfoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-        dogInfoDialog.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
-        dogInfoDialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-
+        this.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        this.dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        this.dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        this.dialog?.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
+        this.dialog?.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
 
         // 다이얼로그 뜨는 위치 조정하기
-        val params: WindowManager.LayoutParams = this.dogInfoDialog.window!!.attributes
+        val params: WindowManager.LayoutParams = dialog?.window!!.attributes
         params.y = 800
-        this.dogInfoDialog.window!!.attributes = params
-        val info = dogInfoDialog.findViewById<EditText>(R.id.inputInfo)
-        val time = dogInfoDialog.findViewById<EditText>(R.id.inputTime)
+        this.dialog?.window!!.attributes = params
+        val info = this.dialog?.findViewById<EditText>(R.id.content_input)
+        val time = this.dialog?.findViewById<EditText>(R.id.time_input)
 
         listen = NaviHomeFragment.MarkerEventListener(mainActivity)
 
         binding.yesBtn.setOnClickListener {
-            val getInfo: String = info.text.toString()
-            val getTime: String = time.text.toString()
+            val getInfo: String = info?.text.toString()
+            val getTime: String = time?.text.toString()
             Log.d("info&time 값", "$getInfo $getTime")
 
             onClickedListener?.onClicked(getInfo, getTime)
-            dogInfoDialog.dismiss()
+            dismiss()
         }
 
         binding.noBtn.setOnClickListener {
-            dogInfoDialog.dismiss()
+            dismiss()
+        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        _binding = null
+    }
+
+    fun setDlg() {
+        // 다이얼로그 둥글게
+        this.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        this.dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        this.dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        this.dialog?.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
+        this.dialog?.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+
+
+        // 다이얼로그 뜨는 위치 조정하기
+        val params: WindowManager.LayoutParams = dialog?.window!!.attributes
+        params.y = 800
+        this.dialog?.window!!.attributes = params
+        val info = this.dialog?.findViewById<EditText>(R.id.content_input)
+        val time = this.dialog?.findViewById<EditText>(R.id.time_input)
+
+        listen = NaviHomeFragment.MarkerEventListener(mainActivity)
+
+        binding.yesBtn.setOnClickListener {
+            val getInfo: String = info?.text.toString()
+            val getTime: String = time?.text.toString()
+            Log.d("info&time 값", "$getInfo $getTime")
+
+            onClickedListener?.onClicked(getInfo, getTime)
+            dismiss()
+        }
+
+        binding.noBtn.setOnClickListener {
+            dismiss()
         }
 
     }
@@ -140,7 +180,7 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
     private fun initAddImage() {
         binding.imageArea.setOnClickListener {
             when {
-                ContextCompat.checkSelfPermission(context,
+                ContextCompat.checkSelfPermission(mainActivity,
                     Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 -> {
                     // 권한이 존재하는 경우
@@ -163,7 +203,7 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
     * 저장소 접근 권한 설정 팝업
     */
     private fun showPermissionContextPopup() {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(mainActivity)
             .setTitle("권한이 필요합니다")
             .setMessage("갤러리에서 사진을 선택하려면 권한이 필요합니다.")
             .setPositiveButton("동의하기") { _, _ ->
@@ -253,91 +293,3 @@ class DogInfoEnterDialog(private val context : AppCompatActivity): DialogFragmen
             }
     }
 }
-
-//
-//    fun setOnOKClickedListener(listener: (String) -> Unit) {
-//        this.listener = object: MyDialogOKClickedListener {
-//            override fun onOKClicked(content: String) {
-//                listener(content)
-//            }
-//        }
-//    }
-//
-//    interface MyDialogOKClickedListener {
-//        fun onOKClicked(content : String)
-//    }
-
-
-//
-//class LogoutDialog(): DialogFragment() {
-//
-//    private var _binding: LogoutdialogBinding? = null
-//    private val binding get() = _binding!!
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        _binding = LogoutdialogBinding.inflate(inflater, container, false)
-//        val view = binding.root
-//        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-//
-//        initDialog()
-//        return view
-//    }
-//
-//    fun initDialog() {
-//
-//        binding.yesBtn.setOnClickListener {
-//            buttonClickListener.onButton1Clicked()
-//            dismiss()
-//        }
-//
-//        binding.noBtn.setOnClickListener {
-//            buttonClickListener.onButton2Clicked()
-//            dismiss()
-//        }
-//
-//    }
-//
-//    interface OnButtonClickListener {
-//        fun onButton1Clicked()
-//        fun onButton2Clicked()
-//    }
-//
-//    override fun onStart() {
-//        super.onStart();
-//        val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
-//        lp.copyFrom(dialog!!.window!!.attributes)
-//        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//        val window: Window = dialog!!.window!!
-//        window.attributes = lp
-//    }
-//
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        _binding = null
-//    }
-//
-//    // 클릭 이벤트 설정
-//    fun setButtonClickListener(buttonClickListener: OnButtonClickListener) {
-//        this.buttonClickListener = buttonClickListener
-//    }
-//
-//    // 클릭 이벤트 실행
-//    private lateinit var buttonClickListener: OnButtonClickListener
-//}
-
-//lateinit var mainActivity: MainActivity
-//
-//private fun onClick(view: View?) {
-//    val logoutDlg = LogoutDialog(mainActivity)
-//    Log.d("gdsa","asdgdsg")
-//    logoutDlg.setOnOKClickedListener{ content ->
-//        binding.yesBtn.text = content
-//    }
-//    logoutDlg.show("메인의 내용을 변경할까요?")
-//}
