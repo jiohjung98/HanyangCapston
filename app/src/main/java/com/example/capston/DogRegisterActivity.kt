@@ -59,7 +59,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
 
     private lateinit var auth: FirebaseAuth
 
-    var pet_info = PetInfo()
+    private var pet_info = PetInfo()
 
     private lateinit var viewBinding: ActivityDogRegisterBinding
 
@@ -107,6 +107,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             val intent = Intent(this, DogRegisterEndActivity::class.java)
 //            intent.putExtra("dogname", dog_name_edt_text.text.toString())
 
+            // 이름값 할당
             pet_info.pet_name = viewBinding.dogNameEdtText.text.toString()
 //            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
             addDogToDB(pet_info)
@@ -391,13 +392,10 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         }
 
     private fun setupGenderData() {
-
         val genderData = resources.getStringArray(R.array.spinner_gender)
-
         val genderAdapter = object : ArrayAdapter<String>(this,R.layout.gender_spinner) {
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
                 val v = super.getView(position, convertView, parent)
                 if (position == count) {
 
@@ -407,13 +405,11 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                 }
                 return v
             }
-
             override fun getCount(): Int {
                 return super.getCount() - 1
             }
 
         }
-
         genderAdapter.addAll(genderData.toMutableList())
         genderAdapter.add("성별을 선택해주세요.")
 
@@ -435,7 +431,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                     else -> {
                         validSpinner2 = true
                         Log.d("스피너2", "$validSpinner2")
-
                     }
                 }
                 checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
@@ -446,7 +441,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                 else            // 암
                     pet_info.gender = 0
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 validSpinner2 = false
             }
@@ -459,30 +453,20 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         val ageAdapter = object : ArrayAdapter<String>(this, R.layout.breed_spinner) {
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
                 val v = super.getView(position, convertView, parent)
-
                 if (position == count) {
                     (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
                     (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
                 }
-
                 return v
             }
-
             override fun getCount(): Int {
                 //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
                 return super.getCount() - 1
             }
-
-
         }
-
-
         ageAdapter.addAll(ageData.toMutableList())
-
         ageAdapter.add("출생연도를 선택해주세요.")
-
 
         viewBinding.dogAgeSpinner.adapter = ageAdapter
 
@@ -491,9 +475,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     }
 
     private fun setupAgeHandler() {
-
         viewBinding.dogAgeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 breed_recycleR.visibility= View.INVISIBLE
                 breed_search.clearFocus()
@@ -507,11 +489,9 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                     }
                 }
                 checkValid(validEditText, validSpinner1, validSpinner2, validSpinner3, validImage)
-
                 // 출생년도 저장
                 pet_info.born = dog_age_spinner.selectedItem.toString()
 //                Log.d("BORN YEAR", "${pet_info.born}")
-
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 validSpinner3 = false

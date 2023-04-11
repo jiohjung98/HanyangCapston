@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="spinner_breed">
+        <item>알수없음</item>
         <item>치와와</item>
         <item>재패니즈 스파니엘</item>
         <item>말티즈</item>

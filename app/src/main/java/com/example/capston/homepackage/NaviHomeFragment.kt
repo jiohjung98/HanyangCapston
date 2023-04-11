@@ -3,9 +3,11 @@ package com.example.capston.homepackage
 import android.Manifest
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,18 +15,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostDogInfoBinding
-import kotlinx.android.synthetic.main.activity_walk.*
-import kotlinx.android.synthetic.main.ballon_layout.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.lost_dog_info.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
@@ -32,7 +32,6 @@ import kotlin.concurrent.timer
 import kotlin.math.*
 
 
-var RecordPage = HomeRecord()
 
 /*
  * 메인화면, 첫번째 메뉴, 지도
@@ -49,6 +48,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     //실종 반려견 발견 버튼
     var validFindBtn: Boolean = false
+
 
 
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -68,7 +68,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-    private var binding2: LostDogInfoBinding? = null
+
+    // 실종 다이얼로그
+    private lateinit var dialog : DogInfoEnterDialog
 
     private lateinit var mainActivity: MainActivity
 
@@ -91,6 +93,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     ): View? {
             _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
+        dialog = DogInfoEnterDialog(mainActivity)
+        dialog.setLauncher()
+
         binding.lostBtn.setOnClickListener {
             validLostBtn = true
             dog_lost_txt.visibility = View.VISIBLE
@@ -108,11 +113,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         val view = binding.root
 
-
         return view
     }
-
-
 
 
     fun findAddress() {
@@ -346,8 +348,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         if (validLostBtn) {
 
-            val dialog = DogInfoEnterDialog()
-            dialog.show(childFragmentManager, "CustomDialog")
+
+            dialog.show("Missing Dog Info Dialog")
         }
 
         if (validFindBtn) {
@@ -421,6 +423,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private fun meterToKillo(meter: Double): Double {
         return meter / 1000
     }
+
 
 // 마커 클릭 이벤트 리스너
 class MarkerEventListener(var context: Context): MapView.POIItemEventListener {

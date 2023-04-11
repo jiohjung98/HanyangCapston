@@ -18,8 +18,10 @@ data class PetInfo(
     var image_url : String? = null,
 )
 
-data class LostPetInfo(
-    var time: String? = null,
-    var info: String? = null,
-    var lost_img: String? = null,
+data class UserPost(
+    val uid: String? = null,
+    val category : Int? = null, // 실종 = 0, 발견 = 1
+    val pet_info : PetInfo? = null,
+    val content : String? = null,
+    val image_url: String? = null
 )
