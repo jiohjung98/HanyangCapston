@@ -266,7 +266,8 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
 
-        dialog.show("Missing Dog Info Dialog")
+        // 다이얼로그에 좌표전달
+        dialog.show(p1)
 
 //        if (validFindBtn) {
 //

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.LostDogInfoBinding
+import net.daum.mf.map.api.MapPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -88,7 +89,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         }
     }
 
-    fun show(content : String) {
+    fun show(mapPoint : MapPoint?) {
         initialize()
         _binding = LostDogInfoBinding.inflate(activity.layoutInflater)
 
@@ -163,14 +164,16 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             uploadImageToStorage(uri)
             // post db 업로드
             uploadPost()
+            //
+            setCoordinate(mapPoint)
 
-            dlg.dismiss()
+            _dlg?.dismiss()
         }
 
         //cancel 버튼 동작
         binding.noBtn.setOnClickListener {
             _binding = null
-            dlg.dismiss()
+            _dlg?.dismiss()
         }
 
         BreedSearch.setOnQueryTextListener(searchViewTextListener)
@@ -187,6 +190,13 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         initAddImage()
 
         dlg.show()
+    }
+
+    private fun setCoordinate(mapPoint: MapPoint?){
+        val latitude = mapPoint?.mapPointGeoCoord?.latitude
+        val longitude = mapPoint?.mapPointGeoCoord?.longitude
+        Log.d("위도",latitude.toString())
+        Log.d("경도",longitude.toString())
     }
 
     // 리사이클러뷰 어댑터
