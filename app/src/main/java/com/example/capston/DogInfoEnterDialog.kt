@@ -30,18 +30,20 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
     private final val REQUEST_FIRST = 1010
 
     private lateinit var listener : MyDialogOKClickedListener
-    private lateinit var binding : LostDogInfoBinding
+    private var _binding : LostDogInfoBinding? = null
+    private val binding get() = _binding!!
 
-    private var dlg = Dialog(activity)   //부모 액티비티의 context 가 들어감
+    private var _dlg : Dialog? = null   //부모 액티비티의 context 가 들어감
+    private val dlg get() = _dlg!!
 
     // 확인버튼 활성화 확인
-    var validName: Boolean= false
-    var validBreed: Boolean= false
-    var validTime: Boolean= false
-    var validGender : Boolean = false
-    var validBorn : Boolean = false
-    var validContent: Boolean= false
-    var validImage: Boolean= false
+    private var validName: Boolean= false
+    private var validBreed: Boolean= false
+    private var validTime: Boolean= false
+    private var validGender : Boolean = false
+    private var validBorn : Boolean = false
+    private var validContent: Boolean= false
+    private var validImage: Boolean= false
 
     // 견종선택 리사이클러뷰
     private lateinit var breed_recycleR: RecyclerView
@@ -56,6 +58,9 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
     private lateinit var post : UserPost
 
     fun initialize(){
+        _dlg = Dialog(activity)
+        _uri = null
+
         validName = false
         validBreed = false
         validTime = false
@@ -75,10 +80,8 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         activity.launcher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
-                    // 전달 받은 이미지 uri를 넣어준다.
-                    this._uri = result.data?.data
-                    Log.d("uri변경직후",this.uri.toString())
-                    setImageArea(this.uri)
+                    _uri = result.data?.data
+                    setImageArea(_uri)
                 }
             }
         }
@@ -86,11 +89,11 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
 
     fun show(content : String) {
         initialize()
-        binding = LostDogInfoBinding.inflate(activity.layoutInflater)
+        _binding = LostDogInfoBinding.inflate(activity.layoutInflater)
 
         // 다이얼로그 테두리 둥글게 만들기
-        dlg?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dlg?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dlg.window?.requestFeature(Window.FEATURE_NO_TITLE)
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
         dlg.setContentView(binding.root)     //다이얼로그에 사용할 xml 파일을 불러옴
         dlg.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
@@ -98,9 +101,9 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         BreedSearch = binding.breedInput
         breed_recycleR = binding.breedRecycle
 
-        val params: WindowManager.LayoutParams = this.dlg.window!!.attributes
+        val params: WindowManager.LayoutParams = dlg.window!!.attributes
         params.y = 500
-        this.dlg.window!!.attributes = params
+        dlg.window!!.attributes = params
 
 
         // ↓↓↓ 버튼 및 텍스트리스너 설정
@@ -152,13 +155,11 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         binding.yesBtn.setOnClickListener {
             uploadImageToStorage(uri)
             dlg.dismiss()
-
-            // 어플 종료
-//            ActivityCompat.finishAffinity(context)
         }
 
         //cancel 버튼 동작
         binding.noBtn.setOnClickListener {
+            _binding = null
             dlg.dismiss()
         }
 
@@ -417,6 +418,7 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
+        checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
     }
 
     /*

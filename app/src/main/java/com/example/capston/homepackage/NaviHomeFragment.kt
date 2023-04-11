@@ -347,8 +347,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         dog_find_txt.visibility = View.INVISIBLE
 
         if (validLostBtn) {
-
-
             dialog.show("Missing Dog Info Dialog")
         }
 
