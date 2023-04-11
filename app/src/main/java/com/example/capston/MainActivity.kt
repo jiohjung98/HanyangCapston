@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(), CustomDialog {
     private var threeFragment: Calendar_fragment? = null
     private var fourFragment: NaviMypageFragment? = null
 
-
     internal var launcher: ActivityResultLauncher<Intent>? = null
     private var uri : Uri? = null
 
@@ -43,6 +42,8 @@ class MainActivity : AppCompatActivity(), CustomDialog {
     internal val database: DatabaseReference = Firebase.database.reference
     internal val auth = FirebaseAuth.getInstance()
     internal val storage = FirebaseStorage.getInstance()
+
+    internal val uid = auth.currentUser!!.uid
 
     @SuppressLint("MissingInflatedId")
 
@@ -147,14 +148,6 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         super.onDestroy()
 //        mapView?.removeAllPOIItems()
 //        mapView = null
-    }
-
-    fun getURI() : Uri? {
-        return uri
-    }
-
-    fun getLauncher() :  ActivityResultLauncher<Intent>? {
-        return launcher
     }
 
 

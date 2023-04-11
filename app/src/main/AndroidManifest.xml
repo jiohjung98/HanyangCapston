@@ -126,6 +126,9 @@
             android:name=".UserAgreeActivity"
             android:exported="true" />
         <activity
+            android:name=".MissingActivity"
+            android:exported="true" />
+        <activity
             android:name=".InfoActivity"
             android:exported="true" />
         <activity

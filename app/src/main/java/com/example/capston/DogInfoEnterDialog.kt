@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
+class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick  {
 
     private final val REQUEST_FIRST = 1010
 
@@ -58,6 +58,7 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
     private lateinit var post : UserPost
 
     fun initialize(){
+        _dlg?.dismiss()
         _dlg = Dialog(activity)
         _uri = null
 
@@ -72,11 +73,11 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         // 포스트 데이터 초기화
         pet_info = PetInfo()
         post = UserPost()
-
     }
 
     // 갤러리 불러오기 이후 수행할 동작 설정
     fun setLauncher() {
+        _dlg?.dismiss()
         activity.launcher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
@@ -104,7 +105,6 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         val params: WindowManager.LayoutParams = dlg.window!!.attributes
         params.y = 500
         dlg.window!!.attributes = params
-
 
         // ↓↓↓ 버튼 및 텍스트리스너 설정
 
@@ -153,7 +153,17 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
 
         // 확인 버튼 동작
         binding.yesBtn.setOnClickListener {
+            // post 데이터 객체 값 할당
+            post.uid = activity.auth.currentUser!!.uid
+            post.time = Integer.parseInt(binding.timeInput.text.toString())
+            post.category = 0
+            post.pet_info = this.pet_info
+            post.content = binding.contentInput.text.toString()
+            // 이미지 storage 업로드
             uploadImageToStorage(uri)
+            // post db 업로드
+            uploadPost()
+
             dlg.dismiss()
         }
 
@@ -177,7 +187,6 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
         initAddImage()
 
         dlg.show()
-
     }
 
     // 리사이클러뷰 어댑터
@@ -427,7 +436,7 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
     private fun getImageFromAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        activity.getLauncher()!!.launch(intent)
+        activity.launcher!!.launch(intent)
     }
 
 
@@ -445,6 +454,7 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
                 // 파일 업로드에 성공했기 때문에 스토리지 url을 다시 받아와 DB에 저장
                 mountainsRef.downloadUrl
                     .addOnSuccessListener { uri ->
+                        // 이미지 경로 할당
                         pet_info.image_url = uri.toString()
                     }.addOnFailureListener {
                         Toast.makeText(activity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
@@ -465,6 +475,13 @@ class DogInfoEnterDialog(private val activity: MainActivity) : BreedItemClick  {
             .addOnFailureListener {
                 Toast.makeText(activity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
             }
+    }
+
+    /*
+     * 파이어베이스 db에 포스트 업로드
+     */
+    private fun uploadPost(){
+        activity.database.child("post").child("lost").child(activity.uid).setValue(post)
     }
 
     /*

@@ -50,6 +50,7 @@
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
+            android:inputType="text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_title" />
 
@@ -99,31 +100,6 @@
             app:layout_constraintTop_toTopOf="@id/breed_input" />
 
         <TextView
-            android:id="@+id/time_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="시간"
-            app:layout_constraintStart_toStartOf="@+id/breed_input"
-            app:layout_constraintTop_toBottomOf="@+id/breed_input"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginTop="15dp" />
-
-        <EditText
-            android:id="@+id/time_input"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:hint="실종/발견 시간을 입력해주세요."
-            android:textSize="16sp"
-            android:background="@drawable/info_edittext_rounded_corner_rectangle"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="5dp"
-            android:inputType="datetime"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time_title"/>
-
-        <TextView
             android:id="@+id/gender_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -133,13 +109,13 @@
             android:textStyle="bold"
             android:layout_marginRight="270dp"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="@+id/time_input"
-            app:layout_constraintTop_toBottomOf="@+id/time_input"/>
+            app:layout_constraintStart_toStartOf="@+id/breed_input"
+            app:layout_constraintTop_toBottomOf="@+id/breed_input"/>
 
         <Spinner
             android:id="@+id/gender_spinner"
             android:layout_width="match_parent"
-            android:layout_height="43dp"
+            android:layout_height="40dp"
             android:paddingBottom="1dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
@@ -166,7 +142,7 @@
         <Spinner
             android:id="@+id/born_spinner"
             android:layout_width="match_parent"
-            android:layout_height="43dp"
+            android:layout_height="40dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/dog_register_frame"
@@ -178,12 +154,37 @@
             />
 
         <TextView
+            android:id="@+id/time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간"
+            app:layout_constraintStart_toStartOf="@+id/born_spinner"
+            app:layout_constraintTop_toBottomOf="@+id/born_spinner"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/time_input"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="실종/발견 시간을 입력해주세요."
+            android:textSize="16sp"
+            android:background="@drawable/info_edittext_rounded_corner_rectangle"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
+            android:inputType="datetime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_title"/>
+
+        <TextView
             android:id="@+id/content_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="상세 정보"
             app:layout_constraintStart_toStartOf="@+id/Dialog_title"
-            app:layout_constraintTop_toBottomOf="@+id/born_spinner"
+            app:layout_constraintTop_toBottomOf="@+id/time_input"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold"

@@ -19,9 +19,9 @@ data class PetInfo(
 )
 
 data class UserPost(
-    val uid: String? = null,
-    val category : Int? = null, // 실종 = 0, 발견 = 1
-    val pet_info : PetInfo? = null,
-    val content : String? = null,
-    val image_url: String? = null
+    var uid: String? = null,
+    var category : Int? = null, // 실종 = 0, 발견 = 1
+    var time : Int?= null,
+    var pet_info : PetInfo? = null,
+    var content : String? = null,
 )

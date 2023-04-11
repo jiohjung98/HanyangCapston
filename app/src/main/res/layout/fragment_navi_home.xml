@@ -51,44 +51,19 @@
             android:layout_marginTop="10sp" />
 
 
-
         <Button
             android:id="@+id/lost_btn"
             android:layout_width="130sp"
             android:layout_height="wrap_content"
-            android:text="반려견 실종"
+            android:text="실종/목격 등록"
             android:background="@drawable/agree_nextbtn_color"
             android:textColor="@color/white"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/point"
-            android:layout_marginTop="20sp"
-            android:layout_marginStart="20sp"
-            android:layout_marginBottom="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:id="@+id/point"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/lost_btn"
-            app:layout_constraintBottom_toBottomOf="@id/lost_btn" />
-
-        <Button
-            android:id="@+id/find_btn"
-            android:layout_width="130sp"
-            android:layout_height="wrap_content"
-            android:text="실종견 발견"
-            android:background="@drawable/agree_nextbtn_color"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_marginEnd="20sp"
-            app:layout_constraintTop_toTopOf="@+id/lost_btn"
-            app:layout_constraintBottom_toBottomOf="@id/lost_btn"
-            app:layout_constraintStart_toStartOf="@+id/point"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 
