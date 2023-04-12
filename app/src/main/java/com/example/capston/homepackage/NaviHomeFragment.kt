@@ -32,6 +32,9 @@ import kotlin.math.*
 
 var RecordPage = HomeRecord()
 
+//실종 시간, 정보
+private var savedLostTime: String? = null
+private var savedLostInfo: String? = null
 /*
  * 메인화면, 첫번째 메뉴, 지도
  */
@@ -117,40 +120,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         mapReverseGeoCoder.startFindingAddress()
     }
 
-//    // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        (activity as AppCompatActivity).supportActionBar?.show()
-//
-//        kakaoMapView = MapView(mainActivity)
-//        kakaoMapViewContainer.addView(kakaoMapView)
-//
-//        listen = MarkerEventListener(mainActivity)
-//
-//        kakaoMapView.setPOIItemEventListener(listen)
-//
-//        isSetLocationPermission()
-//        kakaoMapView!!.setMapViewEventListener(this)
-//        kakaoMapView!!.setZoomLevel(0, true)
-//        kakaoMapView!!.setCustomCurrentLocationMarkerTrackingImage(
-//            R.drawable.labrador_icon,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView!!.setCustomCurrentLocationMarkerImage(
-//            R.drawable.labrador_icon,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView!!.currentLocationTrackingMode =
-//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
-//        Log.d("트래킹", kakaoMapView!!.currentLocationTrackingMode.toString())
-//        kakaoMapView!!.setCurrentLocationEventListener(this)
-//        polyline = MapPolyline()
-//        polyline!!.tag = 1000
-//        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
-//
-//        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
@@ -167,6 +136,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         isSetLocationPermission()
         kakaoMapView.setMapViewEventListener(this)
+
+
+
         kakaoMapView.setZoomLevel(0, true)
         kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.labrador_icon,
@@ -176,8 +148,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             R.drawable.labrador_icon,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+//        kakaoMapView.currentLocationTrackingMode =
+//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+
+        kakaoMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading)
+        kakaoMapView.setMapRotationAngle(0f, false)
         Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
         kakaoMapView.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
@@ -199,6 +174,12 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
+
+            // 저장한 값을 말풍선에 표시합니다.
+            val timeTextView: TextView = mCalloutBalloon.findViewById(R.id.receiveTime)
+            timeTextView.text = savedLostTime
+            val infoTextView: TextView = mCalloutBalloon.findViewById(R.id.receiveInfo)
+            infoTextView.text = savedLostInfo
 
             return mCalloutBalloon
             }
@@ -330,6 +311,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+        kakaoMapView.setMapRotationAngle(0f, false)
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
@@ -354,8 +336,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
             val receiveTime = dialog.findViewById<EditText>(R.id.inputTime)
             val receiveInfo = dialog.findViewById<EditText>(R.id.inputInfo)
+//
+//            val uploadImage = dialog.findViewById<TextView>(R.id.imageArea)
 
             btnSave.setOnClickListener {
+                // 입력한 값을 가져와서 변수에 저장합니다.
+                savedLostTime = receiveTime.text.toString()
+                savedLostInfo = receiveInfo.text.toString()
+
                 val marker = MapPOIItem().apply {
                     markerType = MapPOIItem.MarkerType.RedPin
                     itemName = "실종견"

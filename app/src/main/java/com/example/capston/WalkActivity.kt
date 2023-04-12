@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.logoutdialog.*
 import kotlinx.android.synthetic.main.logoutdialog.yes_btn
 import kotlinx.android.synthetic.main.walk_end_alert_dialog.*
+import kotlinx.android.synthetic.main.walk_end_dialog.*
 import net.daum.mf.map.api.*
 import org.w3c.dom.Text
 import retrofit2.Call
@@ -175,6 +176,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
             val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
 
+
             btnOk.setOnClickListener {
                 val dialog2 = Dialog(this)
                 // 다이얼로그 테두리 둥글게 만들기
@@ -189,14 +191,34 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 params?.y = 500
                 dialog2.window?.attributes = params as WindowManager.LayoutParams
 
-                dialog2.show()
 
-                // 아래 removeAllViews() 안넣어주면 튕김
-                kakaoMapView2.removeAllViews()
+                val distanceView = dialog2.findViewById<TextView>(R.id.distance)
+                val calorieView = dialog2.findViewById<TextView>(R.id.calorie)
+                val minuteView = dialog2.findViewById<TextView>(R.id.minute)
+                val secondView = dialog2.findViewById<TextView>(R.id.second)
+                val millisecView = dialog2.findViewById<TextView>(R.id.millisec)
+
+                val minute = (time / 6000) % 60 // 1분
+                val second = (time / 100) % 60 // 1초
+                val millisec = time % 100 // 0.01초
+
+                minuteView.text = if (minute < 10) "0$minute" else "$minute"
+                secondView.text = if (second < 10) "0$second" else "$second"
+                millisecView.text = if (millisec < 10) "0$millisec" else "$millisec"
+
+
+                distanceView.text = "이동거리: " + String.format("%.2f", walkingDistance)
+                calorieView.text = "칼로리 소모량: " + String.format("%.2f", walkingCalorie)
+
+
+
+                dialog2.show()
 
 //                액티비티로 이동(첫화면)
                 Handler(Looper.getMainLooper()).postDelayed({
                     val intent = Intent(this, MainActivity::class.java)
+                    // 아래 removeAllViews() 안넣어주면 튕김
+                    kakaoMapView2.removeAllViews()
                     this.startActivity(intent)
                     (this as Activity).finish()
                 }, 3000)

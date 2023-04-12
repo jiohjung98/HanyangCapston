@@ -133,11 +133,12 @@
 
         <TextView
             android:id="@+id/yes_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:text="저장"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="@id/layout"
             app:layout_constraintEnd_toEndOf="@id/view2"
             app:layout_constraintTop_toBottomOf="@+id/view1"
@@ -145,9 +146,10 @@
 
         <TextView
             android:id="@+id/no_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:text="취소"
+            android:gravity="center"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/view2"
