@@ -21,7 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.LostDogInfoBinding
+import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
+import net.daum.mf.map.api.MapView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,7 +91,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         }
     }
 
-    fun show(mapPoint : MapPoint?) {
+    fun show(mapView: MapView?,poiItem: MapPOIItem?) {
         initialize()
         _binding = LostDogInfoBinding.inflate(activity.layoutInflater)
 
@@ -165,13 +167,14 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             // post db 업로드
             uploadPost()
             //
-            setCoordinate(mapPoint)
+            setCoordinate(poiItem?.mapPoint)
 
             _dlg?.dismiss()
         }
 
         //cancel 버튼 동작
         binding.noBtn.setOnClickListener {
+            mapView!!.removePOIItem(poiItem)
             _binding = null
             _dlg?.dismiss()
         }
@@ -192,16 +195,19 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         dlg.show()
     }
 
+    /*
+     좌표설정
+     */
     private fun setCoordinate(mapPoint: MapPoint?){
         val latitude = mapPoint?.mapPointGeoCoord?.latitude
         val longitude = mapPoint?.mapPointGeoCoord?.longitude
+        post.coordinate = Pair(mapPoint?.mapPointGeoCoord?.latitude, mapPoint?.mapPointGeoCoord?.longitude)
         Log.d("위도",latitude.toString())
         Log.d("경도",longitude.toString())
     }
 
     // 리사이클러뷰 어댑터
     fun setAdapter(){
-        //리사이클러뷰에 리사이클러뷰 어댑터 부착
         breed_recycleR.layoutManager = LinearLayoutManager(activity)
         breedAdapter = BreedAdapter(this,breed, activity)
         breed_recycleR.adapter = breedAdapter
@@ -491,7 +497,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      * 파이어베이스 db에 포스트 업로드
      */
     private fun uploadPost(){
-        activity.database.child("post").child("lost").child(activity.uid).setValue(post)
+        activity.database.child("post").child("lost").child(activity.uid).child(pet_info.pet_name!!).setValue(post)
     }
 
     /*

@@ -24,4 +24,5 @@ data class UserPost(
     var time : Int?= null,
     var pet_info : PetInfo? = null,
     var content : String? = null,
+    var coordinate : Pair<Double?,Double?>? = null
 )

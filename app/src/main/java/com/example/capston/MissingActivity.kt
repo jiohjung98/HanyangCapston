@@ -24,6 +24,10 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.backtostart_dialog.*
+import kotlinx.android.synthetic.main.ballon_layout.view.*
+import kotlinx.android.synthetic.main.custom_balloon_layout.*
+import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
@@ -83,7 +87,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         dialog.setLauncher()
 
 
-        listen = MarkerEventListener(this)
+        listen = MarkerEventListener(this,dialog)
 
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
@@ -112,7 +116,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,dialog,mapView))
     }
 
 
@@ -120,27 +124,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         val mapReverseGeoCoder =
             MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
         mapReverseGeoCoder.startFindingAddress()
-    }
-
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 마커 클릭 시 나오는 말풍선
-            name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
-
-            return mCalloutBalloon
-        }
-
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-//            address.text = "getPressedCalloutBalloon"
-            return mCalloutBalloon
-        }
     }
 
     // 메모리 누수 방지
@@ -266,8 +249,23 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
 
+        // 커스텀 이미지 마커
+        val marker = MapPOIItem().apply {
+            markerType = MapPOIItem.MarkerType.CustomImage
+            customImageResourceId = R.drawable.marker_nonclick           // 커스텀 마커 이미지
+//            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양 (커스텀)
+//            customSelectedImageResourceId = R.drawable.marker_click    // 클릭 시 커스텀 마커 이미지
+            isCustomImageAutoscale = true
+            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            itemName = "실종견"
+            mapPoint = p1
+            isShowCalloutBalloonOnTouch = false
+            tag = 0
+        }
+
+        p0!!.addPOIItem(marker)
         // 다이얼로그에 좌표전달
-        dialog.show(p1)
+//        dialog.show(p1)
 
 //        if (validFindBtn) {
 //
@@ -343,16 +341,12 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
 
     // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
-
-        lateinit var mainActivity: MainActivity
-
+    class MarkerEventListener(var context: Context,val dialog: DogInfoEnterDialog): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
             Log.d("markerClick", "ok")
-
+            dialog.show(mapView,poiItem)
         }
-
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
             // 말풍선 클릭 시 (Deprecated)
             // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
@@ -362,9 +356,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             mapView: MapView?,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
-
         ) {
-
         }
 
         override fun onDraggablePOIItemMoved(
@@ -375,5 +367,30 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
         }
     }
+
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(inflater: LayoutInflater,val dialog: DogInfoEnterDialog, val mapView: MapView?): CalloutBalloonAdapter {
+
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+//            // 말풍선에서 등록 누르면
+//            mCalloutBalloon.enter_btn.setOnClickListener{
+//                dialog.show(poiItem?.mapPoint)
+//            }
+//            // 삭제 누르면
+//            mCalloutBalloon.delete_btn.setOnClickListener{
+//                mapView?.removePOIItem(poiItem)
+//            }            // 마커 클릭 시 나오는 말풍선
+            return mCalloutBalloon
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+//            address.text = "getPressedCalloutBalloon"
+            return mCalloutBalloon
+        }
+    }
 }
+
 
