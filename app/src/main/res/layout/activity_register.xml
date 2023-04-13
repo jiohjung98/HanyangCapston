@@ -283,8 +283,7 @@
         app:layout_constraintStart_toStartOf="@+id/pw2_layout"
         app:layout_constraintTop_toBottomOf="@+id/pw2_layout"
         android:layout_marginStart="20dp"/>
-
-
+    
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerBtn"
         android:layout_width="360dp"

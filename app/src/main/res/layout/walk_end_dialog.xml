@@ -29,7 +29,7 @@
             android:layout_marginStart="30sp" />
 
         <TextView
-            android:id="@+id/hour"
+            android:id="@+id/minute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -44,12 +44,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text=" : "
-            app:layout_constraintStart_toEndOf="@+id/hour"
+            app:layout_constraintStart_toEndOf="@+id/minute"
             app:layout_constraintTop_toTopOf="@id/timeTxt"
             app:layout_constraintBottom_toBottomOf="@+id/timeTxt" />
 
         <TextView
-            android:id="@+id/minute"
+            android:id="@+id/second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -64,12 +64,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text=" : "
-            app:layout_constraintStart_toEndOf="@+id/minute"
+            app:layout_constraintStart_toEndOf="@+id/second"
             app:layout_constraintTop_toTopOf="@id/timeTxt"
             app:layout_constraintBottom_toBottomOf="@+id/timeTxt" />
 
         <TextView
-            android:id="@+id/second"
+            android:id="@+id/millisec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"

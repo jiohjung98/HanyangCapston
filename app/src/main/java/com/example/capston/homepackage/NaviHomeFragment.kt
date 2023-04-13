@@ -85,7 +85,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-            _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
 
         binding.lostBtn.setOnClickListener {
@@ -198,7 +198,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
 
             return mCalloutBalloon
-            }
+        }
 
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
@@ -414,38 +414,37 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
 
-// 마커 클릭 이벤트 리스너
-class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
+    // 마커 클릭 이벤트 리스너
+    class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
 
-    lateinit var mainActivity: MainActivity
+        lateinit var mainActivity: MainActivity
 
-    override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
-        // 마커 클릭 시
-        Log.d("markerClick", "ok")
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+            // 마커 클릭 시
+            Log.d("markerClick", "ok")
 
-    }
+        }
 
-    override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
-        // 말풍선 클릭 시 (Deprecated)
-        // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
-    }
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+            // 말풍선 클릭 시 (Deprecated)
+            // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
+        }
 
-    override fun onCalloutBalloonOfPOIItemTouched(
-        mapView: MapView?,
-        poiItem: MapPOIItem?,
-        buttonType: MapPOIItem.CalloutBalloonButtonType?
+        override fun onCalloutBalloonOfPOIItemTouched(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            buttonType: MapPOIItem.CalloutBalloonButtonType?
 
-    ) {
+        ) {
 
-    }
+        }
 
-    override fun onDraggablePOIItemMoved(
-        mapView: MapView?,
-        poiItem: MapPOIItem?,
-        mapPoint: MapPoint?
-    ) {
-        // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
+        override fun onDraggablePOIItemMoved(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            mapPoint: MapPoint?
+        ) {
+            // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
+        }
     }
 }
-}
-
