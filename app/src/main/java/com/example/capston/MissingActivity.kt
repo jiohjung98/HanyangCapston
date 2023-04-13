@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.backtostart_dialog.*
 import kotlinx.android.synthetic.main.ballon_layout.view.*
 import kotlinx.android.synthetic.main.custom_balloon_layout.*
@@ -118,6 +122,13 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,dialog,mapView))
+
+        binding.backBtn.setOnClickListener {
+            kakaoMapViewContainer?.removeAllViews()
+            val intent = Intent(this, MainActivity::class.java)
+            this.startActivity(intent)
+            this.finish()
+        }
     }
 
 

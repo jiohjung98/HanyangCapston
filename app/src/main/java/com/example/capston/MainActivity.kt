@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity(), CustomDialog {
     internal var launcher: ActivityResultLauncher<Intent>? = null
     private var uri : Uri? = null
 
+    private var lastSelectedItemId = 0
+
     // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음
     // 현재 사용 : 마이페이지 유저정보, DogInfoEnterDialog
     internal val database: DatabaseReference = Firebase.database.reference
@@ -97,36 +99,38 @@ class MainActivity : AppCompatActivity(), CustomDialog {
             toolbar3.visibility = View.INVISIBLE
         }
 
+
         binding.mainBnv.setOnItemSelectedListener { item ->
+            if (item.itemId == lastSelectedItemId) {
+                // 이미 선택된 아이템을 다시 선택했을 때 아무 동작도 하지 않음
+                return@setOnItemSelectedListener false
+            }
+
+            lastSelectedItemId = item.itemId
+            main_bnv.itemIconTintList = null
+
             changeFragment(
                 when (item.itemId) {
                     R.id.navigation_home -> {
-                        main_bnv.itemIconTintList = null
                         NaviHomeFragment()
-                        // Respond to navigation item 1 click
                     }
                     R.id.navigation_community -> {
-                        main_bnv.itemIconTintList = null
                         NaviWalkFragment()
-                        // Respond to navigation item 2 click
                     }
                     R.id.navigation_calendar -> {
-                        main_bnv.itemIconTintList = null
                         Calendar_fragment()
                     }
                     else -> {
-                        main_bnv.itemIconTintList = null
                         NaviMypageFragment()
                     }
                 }
             )
+
             true
         }
+
         binding.mainBnv.selectedItemId = R.id.navigation_home
-//        initNavigation()
     }
-
-
 
     private fun changeFragment(fragment: Fragment?) {
         supportFragmentManager.popBackStackImmediate()

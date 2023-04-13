@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.capston.databinding.ActivityWalkBinding
+import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.logoutdialog.*
@@ -218,7 +219,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 Handler(Looper.getMainLooper()).postDelayed({
                     val intent = Intent(this, MainActivity::class.java)
                     // 아래 removeAllViews() 안넣어주면 튕김
-                    kakaoMapView2.removeAllViews()
                     this.startActivity(intent)
                     (this as Activity).finish()
                 }, 3000)
