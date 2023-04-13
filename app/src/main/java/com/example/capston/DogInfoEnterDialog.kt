@@ -175,6 +175,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         //cancel 버튼 동작
         binding.noBtn.setOnClickListener {
             mapView!!.removePOIItem(poiItem)
+            activity.checkMessageVisibility(0) // set message to default
             _binding = null
             _dlg?.dismiss()
         }

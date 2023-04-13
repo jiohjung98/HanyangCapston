@@ -26,29 +26,41 @@
             android:id="@+id/howto_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="원하는 위치를 길게 눌러 \n실종/목격 정보를 등록해주세요. "
+            android:text="지도를 길게 눌러 실종/목격 위치를 등록해주세요"
             android:visibility="visible"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:background="@drawable/tooltip_bg"
-            android:textSize="12dp"
-            android:paddingStart="8dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="10dp"
+            android:textSize="15dp"
+            android:padding = "13dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.8"
-            app:layout_constraintBottom_toBottomOf="@id/miss_kakaoMapView"
-            android:layout_marginBottom="20sp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/miss_kakaoMapView"
+            android:layout_marginTop="30sp" />
 
-        <ImageView
-            android:id="@+id/txtBannerTail"
+        <TextView
+            android:id="@+id/howto_text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/tooltip_tail"
-            app:layout_constraintBottom_toBottomOf="@+id/howto_text"
-            app:layout_constraintLeft_toRightOf="@+id/howto_text" />
+            android:text="마커를 눌러 실종/목격 정보를 등록해주세요"
+            android:visibility="invisible"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:background="@drawable/tooltip_bg"
+            android:textSize="15dp"
+            android:padding = "13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/miss_kakaoMapView"
+            android:layout_marginBottom="30sp" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/txtBannerTail"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/tooltip_tail"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/howto_text"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/howto_text" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

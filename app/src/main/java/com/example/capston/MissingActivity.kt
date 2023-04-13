@@ -71,8 +71,9 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
 
+    // Viewbinding
     private var _binding: ActivityMissingBinding? = null
-    private val binding get() = _binding!!
+    internal val binding get() = _binding!!
 
     // 실종 다이얼로그
     private lateinit var dialog : DogInfoEnterDialog
@@ -139,7 +140,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         if (mapView != null) {
             mapView!!.onResume()
         }
-        this._binding = null
+//        this._binding = null
     }
 
     override fun onPause() {
@@ -264,6 +265,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         }
 
         p0!!.addPOIItem(marker)
+        checkMessageVisibility(1)
         // 다이얼로그에 좌표전달
 //        dialog.show(p1)
 
@@ -304,6 +306,18 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 //        }
     }
 
+    /*
+     지도위에 나올 툴팁 메시지 표시 체크
+     */
+    internal fun checkMessageVisibility(msgFlag: Int){
+        if(msgFlag==0){ // default
+            binding.howtoText2.visibility = View.INVISIBLE
+            binding.howtoText.visibility = View.VISIBLE
+        } else{ // after marker set
+            binding.howtoText.visibility = View.INVISIBLE
+            binding.howtoText2.visibility = View.VISIBLE
+        }
+    }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
     }
