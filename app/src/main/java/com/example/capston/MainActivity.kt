@@ -160,7 +160,6 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frm, fragment!!)
         fragmentTransaction.commit()
-
     }
 
     override fun onLikedBtnClicked() {

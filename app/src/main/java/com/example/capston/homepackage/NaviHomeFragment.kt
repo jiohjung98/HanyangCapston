@@ -90,20 +90,15 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         binding.lostBtn.setOnClickListener {
             validLostBtn = true
-//            dog_lost_txt.visibility = View.VISIBLE
-//            dog_find_txt.visibility = View.INVISIBLE
-
             val intent = Intent(context, MissingActivity::class.java)
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
         }
 
-
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
 
         val view = binding.root
-
         return view
     }
 
@@ -113,40 +108,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
         mapReverseGeoCoder.startFindingAddress()
     }
-
-//    // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        (activity as AppCompatActivity).supportActionBar?.show()
-//
-//        kakaoMapView = MapView(mainActivity)
-//        kakaoMapViewContainer.addView(kakaoMapView)
-//
-//        listen = MarkerEventListener(mainActivity)
-//
-//        kakaoMapView.setPOIItemEventListener(listen)
-//
-//        isSetLocationPermission()
-//        kakaoMapView!!.setMapViewEventListener(this)
-//        kakaoMapView!!.setZoomLevel(0, true)
-//        kakaoMapView!!.setCustomCurrentLocationMarkerTrackingImage(
-//            R.drawable.labrador_icon,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView!!.setCustomCurrentLocationMarkerImage(
-//            R.drawable.labrador_icon,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView!!.currentLocationTrackingMode =
-//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
-//        Log.d("트래킹", kakaoMapView!!.currentLocationTrackingMode.toString())
-//        kakaoMapView!!.setCurrentLocationEventListener(this)
-//        polyline = MapPolyline()
-//        polyline!!.tag = 1000
-//        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
-//
-//        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -188,22 +149,17 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
 
         var mainActivity: MainActivity? = null
-
-
         private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
         val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
             name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
-
             return mCalloutBalloon
         }
 
-
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-//            address.text = "getPressedCalloutBalloon"
             return mCalloutBalloon
         }
     }
@@ -232,7 +188,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onDestroy() {
-//        mapView.removeView(kakaoMapView)
+        kakaoMapViewContainer?.removeAllViews()
         super.onDestroy()
     }
 
@@ -353,8 +309,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
             val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
             val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-            val receiveTime = dialog.findViewById<EditText>(R.id.time_input)
-            val receiveInfo = dialog.findViewById<EditText>(R.id.content_input)
 
             btnSave.setOnClickListener {
                 val marker = MapPOIItem().apply {
@@ -364,20 +318,15 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     tag = 0
                 }
                 kakaoMapView!!.addPOIItem(marker)
-
                 dialog.dismiss()
             }
-
             btnCancel.setOnClickListener {
                 dialog.dismiss()
             }
-
             dialog.show()
-
             validFindBtn = false
         }
     }
-
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
     }
@@ -434,9 +383,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             mapView: MapView?,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
-
         ) {
-
         }
 
         override fun onDraggablePOIItemMoved(
