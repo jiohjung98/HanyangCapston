@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /*
  *  두번째 메뉴, 산책하기
@@ -97,7 +98,7 @@ class NaviWalkFragment : Fragment() {
             onClickRegister(view)
         }
 
-        // 현재 반려견 인덱스 확인
+        // 현재 반려견 인덱스 불러오기
         database.child("users").child(auth.currentUser!!.uid).child("current_pet").get().addOnSuccessListener{ task ->
             if (task.value != null){
                 _cur_pet_num = task.value.toString()
@@ -133,8 +134,6 @@ class NaviWalkFragment : Fragment() {
         gender = binding.walkGender
         age = binding.walkAge
 
-
-
         return binding.root
     }
 
@@ -154,6 +153,7 @@ class NaviWalkFragment : Fragment() {
         Log.d("등록 있음", "${snapshot}")
 
         getImageFromStore(snapshot)
+        setupMyDogList()
 
         binding.registerBtn.visibility = View.GONE
         binding.walkBtn.isEnabled = true
@@ -220,36 +220,68 @@ class NaviWalkFragment : Fragment() {
             GlideApp.with(this@NaviWalkFragment).load(Uri.parse(url))
                 .into(binding.profile)
         }
-
     }
 
+    /*
+     반려견 선택 스피너 설정
+     */
+    private fun setupMyDogList(){
+        val DogArray = ArrayList<String>()
+        database.child("users").child(auth.currentUser!!.uid).child("pet_list").get().addOnSuccessListener { result ->
+            for (item in result.children) {
+                Log.d("pet_list", item.child("pet_name").value.toString())
+                DogArray.add(item.child("pet_name").value.toString())
+            }
+            val statusAdapter =
+                object : ArrayAdapter<String>(requireContext(), R.layout.gender_spinner) {
+                    override fun getView(
+                        position: Int,
+                        convertView: View?,
+                        parent: ViewGroup
+                    ): View {
+                        val v = super.getView(position, convertView, parent)
+                        var tv = v as TextView
+                        tv.setTextSize(/* size = */ 12f)
+                        if (position == count) {
+                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
+//                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
+                        }
+                        return v
+                    }
 
+                    override fun getCount(): Int {
+                        return super.getCount() - 1
+                    }
+                }
 
+            statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            statusAdapter.addAll(DogArray.toMutableList())
+            statusAdapter.add(" 선택")
+
+            _binding!!.petSelectSpinner.adapter = statusAdapter
+
+            dog_ddong_spinner.setSelection(statusAdapter.count)
+            dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
+        }
+    }
 
     private fun setupData() {
-
         val statusData = resources.getStringArray(R.array.spinner_ddong)
-
         val statusAdapter = object : ArrayAdapter<String>(requireContext(),R.layout.gender_spinner) {
-
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
                 val v = super.getView(position, convertView, parent)
                 var tv = v as TextView
                 tv.setTextSize(/* size = */ 12f)
                 if (position == count) {
-
                     (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
 //                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
-
                 }
                 return v
             }
-
             override fun getCount(): Int {
                 return super.getCount() - 1
             }
-
         }
 
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -257,7 +289,7 @@ class NaviWalkFragment : Fragment() {
         statusAdapter.addAll(statusData.toMutableList())
         statusAdapter.add(" 선택")
 
-        _binding!!.dogDdongSpinner.adapter = statusAdapter
+        binding.dogDdongSpinner.adapter = statusAdapter
 
         dog_ddong_spinner.setSelection(statusAdapter.count)
         dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
@@ -269,17 +301,12 @@ class NaviWalkFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when(position) {
                     0 -> {
-
                     }
                     else -> {
-
                     }
                 }
-
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
-
             }
         }
     }
