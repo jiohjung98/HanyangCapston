@@ -113,6 +113,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             addDogToDB(pet_info)
 
             startActivity(intent)
+            finish()
         }
 
         viewBinding.backButton.setOnClickListener {

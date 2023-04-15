@@ -444,7 +444,7 @@
             android:layout_marginBottom="52dp"
             android:background="@drawable/record_button"
             android:elevation="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="내 반려견 등록하기"
             android:textSize="15.5dp"
             app:layout_constraintBottom_toBottomOf="parent"

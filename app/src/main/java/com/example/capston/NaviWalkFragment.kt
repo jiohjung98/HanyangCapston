@@ -43,12 +43,14 @@ class NaviWalkFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private val binding get() = _binding!!
     private var _binding: FragmentNaviWalkBinding? = null
+    private val binding get() = _binding!!
 
     private final val REQUEST_FIRST = 1010
-    var pet_info = PetInfo()
+    private var pet_info = PetInfo()
     lateinit var uri: Uri
+
+    private lateinit var DBpet : DatabaseReference
 
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
     private lateinit var mainActivity: MainActivity
@@ -78,15 +80,7 @@ class NaviWalkFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        if (binding == null) {
-            return
-        }
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
         }
@@ -99,18 +93,21 @@ class NaviWalkFragment : Fragment() {
 
         initAddImage()
 
-        petname = requireView().findViewById<TextView>(R.id.walk_name)
-        breed = requireView().findViewById<TextView>(R.id.walk_breed)
-        gender = requireView().findViewById<TextView>(R.id.walk_gender)
-        age = requireView().findViewById<TextView>(R.id.walk_age)
+        petname = binding.walkName
+        breed = binding.walkBreed
+        gender = binding.walkGender
+        age = binding.walkAge
 
         // DB에서 받아와서 정보 할당하기
-        val uid = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0")
-        uid.addValueEventListener(object: ValueEventListener {
+        DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0")
+        DBpet.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
                 // 등록된 반려견없음 (건너뛰기 등)
-                if(snapshot.value == null)
+                if (snapshot.value == null){
+//                    Log.d("snapshot", "null")
                     invalidDog()
+                }
                 // 등록된 반려견 있음
                 else
                     validDog(snapshot)
@@ -119,6 +116,12 @@ class NaviWalkFragment : Fragment() {
                 Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
             }
         })
+
+        return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
     }
 
     companion object {
@@ -131,6 +134,7 @@ class NaviWalkFragment : Fragment() {
 
     private fun validDog(snapshot: DataSnapshot) {
         Log.d("등록 있음", "${snapshot}")
+            binding.registerBtn.visibility = View.GONE
             binding.walkBtn.isEnabled = true
             binding!!.walkBtn.visibility = View.VISIBLE
 
@@ -147,7 +151,7 @@ class NaviWalkFragment : Fragment() {
     }
 
     private fun invalidDog(){
-//        Log.d("등록 없음","${snapshot}")
+        Log.d("등록 없음","")
         binding.registerBtn.visibility = View.VISIBLE
         binding.walkAgeSlash.visibility = View.INVISIBLE
         binding.walkBreedSlash.visibility = View.INVISIBLE
@@ -177,8 +181,9 @@ class NaviWalkFragment : Fragment() {
     }
 
     private fun onClickRegister(view: View?) {
-        mainActivity.startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
-        mainActivity.finish()
+        (context as MainActivity).supportFragmentManager.beginTransaction().remove(this).commit()
+        (context as MainActivity).startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
+        (context as MainActivity).finish()
     }
 
     /*
