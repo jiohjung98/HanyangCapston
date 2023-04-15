@@ -116,10 +116,6 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             finish()
         }
 
-        viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, SignUpComplete::class.java)
-            startActivity(intent)
-        }
         //배경 클릭시 포커스해제
         viewBinding.background.setOnClickListener {
             breed_recycleR.visibility= View.INVISIBLE
@@ -168,12 +164,28 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
      */
     private fun addDogToDB(pet_info : PetInfo){
         val database: DatabaseReference =
-            Firebase.database.reference.child("users")
+            Firebase.database.reference.child("users").child(auth.currentUser!!.uid)
 
-        val pet_info_array = ArrayList<PetInfo>()
-        pet_info_array.add(pet_info)
+        var cur_pet_num : Int? = null
 
-        database.child(auth.currentUser!!.uid).child("pet_list").setValue(pet_info_array)
+        // 현재 반려견 인덱스 확인
+        database.child("current_pet").get().addOnCompleteListener{ task ->
+            if (task.result.value != null){
+                cur_pet_num = Integer.parseInt(task.result.value.toString())
+                // user/uid/pet_list/현재반려견인덱스+1
+                database.child("pet_list").child((cur_pet_num?.plus(1)).toString()).setValue(pet_info)
+                // db의 현재 반려견 인덱스 변경
+                database.child("current_pet").setValue(cur_pet_num?.plus(1))
+            }
+            else{
+                Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
+            }
+        }
+
+        val next_pet_num = cur_pet_num?.plus(1)
+
+        // current 반려견 인덱스 세팅
+
     }
 
     /*

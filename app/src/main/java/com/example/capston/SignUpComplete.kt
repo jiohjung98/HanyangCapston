@@ -50,8 +50,8 @@ class SignUpComplete : AppCompatActivity() {
     }
 
     private fun addNewUserToDB(userId: String, name: String?, email: String?) {
-        val pet_list = PetListModel(arrayListOf<PetInfo>())
-        val user_data = UserData(name,email,pet_list)
+        // 현재 반려견 없음 = 0번 인덱스
+        val user_data = UserData(name,email,null,0)
         database.child("users").child(userId).setValue(user_data)
     }
 }

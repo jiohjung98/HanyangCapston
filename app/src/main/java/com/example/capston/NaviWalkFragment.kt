@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
@@ -50,7 +51,10 @@ class NaviWalkFragment : Fragment() {
     private var pet_info = PetInfo()
     lateinit var uri: Uri
 
+    // DB에서 불러올 정보들
     private lateinit var DBpet : DatabaseReference
+    private var _cur_pet_num : String? = null
+    private val cur_pet_num get() = _cur_pet_num!!
 
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
     private lateinit var mainActivity: MainActivity
@@ -89,7 +93,38 @@ class NaviWalkFragment : Fragment() {
             onClickRegister(view)
         }
 
-        getImageFromStore()
+        binding.addingBtn.setOnClickListener {
+            onClickRegister(view)
+        }
+
+        // 현재 반려견 인덱스 확인
+        database.child("users").child(auth.currentUser!!.uid).child("current_pet").get().addOnSuccessListener{ task ->
+            if (task.value != null){
+                _cur_pet_num = task.value.toString()
+                Log.d("DB LOAD SUCCESS",cur_pet_num)
+                // DB에서 받아와서 정보 할당하기
+                DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
+                DBpet.addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        // 등록된 반려견없음 (건너뛰기 등)
+                        if (snapshot.value == null){
+//                    Log.d("snapshot", "null")
+                            invalidDog()
+                        }
+                        // 등록된 반려견 있음
+                        else {
+                            validDog(snapshot)
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
+                    }
+                })
+            }
+            else{
+                Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
+            }
+        }
 
         initAddImage()
 
@@ -98,24 +133,7 @@ class NaviWalkFragment : Fragment() {
         gender = binding.walkGender
         age = binding.walkAge
 
-        // DB에서 받아와서 정보 할당하기
-        DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0")
-        DBpet.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
-                // 등록된 반려견없음 (건너뛰기 등)
-                if (snapshot.value == null){
-//                    Log.d("snapshot", "null")
-                    invalidDog()
-                }
-                // 등록된 반려견 있음
-                else
-                    validDog(snapshot)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
-            }
-        })
+
 
         return binding.root
     }
@@ -134,20 +152,23 @@ class NaviWalkFragment : Fragment() {
 
     private fun validDog(snapshot: DataSnapshot) {
         Log.d("등록 있음", "${snapshot}")
-            binding.registerBtn.visibility = View.GONE
-            binding.walkBtn.isEnabled = true
-            binding!!.walkBtn.visibility = View.VISIBLE
 
-            // 데이터가 변경되면 리스너가 감지함
-            // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
-            // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
-            petname.text = snapshot.child("pet_name").value.toString()
-            breed.text = snapshot.child("breed").value.toString()
-            age.text = snapshot.child("born").value.toString() + "년생"
-            if (snapshot.child("gender").value == 1)
-                gender.text = "♂"
-            else
-                gender.text = "♀"
+        getImageFromStore(snapshot)
+
+        binding.registerBtn.visibility = View.GONE
+        binding.walkBtn.isEnabled = true
+        binding.walkBtn.visibility = View.VISIBLE
+
+        // 데이터가 변경되면 리스너가 감지함
+        // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
+        // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
+        petname.text = snapshot.child("pet_name").value.toString()
+        breed.text = snapshot.child("breed").value.toString()
+        age.text = snapshot.child("born").value.toString() + "년생"
+        if (snapshot.child("gender").value == 1)
+            gender.text = "♂"
+        else
+            gender.text = "♀"
     }
 
     private fun invalidDog(){
@@ -155,6 +176,8 @@ class NaviWalkFragment : Fragment() {
         binding.registerBtn.visibility = View.VISIBLE
         binding.walkAgeSlash.visibility = View.INVISIBLE
         binding.walkBreedSlash.visibility = View.INVISIBLE
+        binding.addingBtn.visibility = View.INVISIBLE
+        binding.addingBtn.isEnabled = false
         petname.text = "등록된 반려견이 없습니다"
     }
 
@@ -189,23 +212,15 @@ class NaviWalkFragment : Fragment() {
     /*
      * 갤러리에서 이미지 가져와서 image area에 띄움
      */
-    private fun getImageFromStore() {
-        val url = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0").child("image_url")
-        url.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (MainActivity() == null) {
-                    return;
-                }
-                Log.d("IMAGE URL","${Uri.parse(snapshot.value.toString())}")
-                if (isAdded()) {
-                    GlideApp.with(this@NaviWalkFragment).load(Uri.parse(snapshot.value.toString()))
-                        .into(binding.profile)
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
+    private fun getImageFromStore(snapshot: DataSnapshot) {
+        // database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
+        val url = snapshot.child("image_url").value.toString()
+        if (isAdded()) {
+            Log.d("IMAGE URL",url)
+            GlideApp.with(this@NaviWalkFragment).load(Uri.parse(url))
+                .into(binding.profile)
+        }
+
     }
 
 

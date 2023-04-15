@@ -3,11 +3,8 @@ package com.example.capston
 data class UserData(
     val username: String?,
     val email: String?,
-    val pet_list: PetListModel,
-)
-
-data class PetListModel(
-    var pet_list : ArrayList<PetInfo>
+    val pet_list: Any? = null,
+    var current_pet : Int
 )
 
 data class PetInfo(
