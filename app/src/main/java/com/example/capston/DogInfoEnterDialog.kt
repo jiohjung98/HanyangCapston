@@ -164,8 +164,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             post.content = binding.contentInput.text.toString()
             // 이미지 storage 업로드
             uploadImageToStorage(uri)
-            // post db 업로드
-            uploadPost()
             //
             setCoordinate(poiItem?.mapPoint)
 
@@ -473,6 +471,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                     .addOnSuccessListener { uri ->
                         // 이미지 경로 할당
                         pet_info.image_url = uri.toString()
+                        uploadPost()
                     }.addOnFailureListener {
                         Toast.makeText(activity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
                     }

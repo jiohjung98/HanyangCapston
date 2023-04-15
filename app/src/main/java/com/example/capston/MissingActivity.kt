@@ -48,7 +48,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     var listen: MarkerEventListener? = null
 
-    private var kakaoMapViewContainer: FrameLayout? = null
+    internal var kakaoMapViewContainer: FrameLayout? = null
 
 
     // Firebase
@@ -123,11 +123,14 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,dialog,mapView))
 
+
+        // 좌측 뒤로가기 버튼
         binding.backBtn.setOnClickListener {
-            kakaoMapViewContainer?.removeAllViews()
-            val intent = Intent(this, MainActivity::class.java)
-            this.startActivity(intent)
-            this.finish()
+//            kakaoMapViewContainer?.removeAllViews()
+//            val intent = Intent(this, MainActivity::class.java)
+//            this.startActivity(intent)
+//            this.finish()
+            onBackPressed()
         }
     }
 
