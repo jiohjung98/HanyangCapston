@@ -278,7 +278,7 @@ class NaviWalkFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 Log.d("리스너","onItemSelected listener called")
                 uid.child("current_pet").setValue(position.plus(1))
-//                (context as MainActivity).supportFragmentManager.beginTransaction().detach(this@NaviWalkFragment).attach(this@NaviWalkFragment).commit()
+                (context as MainActivity).supportFragmentManager.beginTransaction().detach(this@NaviWalkFragment).attach(this@NaviWalkFragment).commit()
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
