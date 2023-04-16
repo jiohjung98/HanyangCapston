@@ -89,7 +89,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         android:text="건너뛰기"
-        android:textColor="@color/grey"
+        android:textColor="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -33,38 +33,30 @@ import kotlin.math.*
 class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
+    // 카카오맵
     var listen: MarkerEventListener? = null
-
     private var kakaoMapViewContainer: FrameLayout? = null
-
-    //내 반려견 실종 버튼
-    var validLostBtn: Boolean = false
-
-    //실종 반려견 발견 버튼
-    var validFindBtn: Boolean = false
-
-
-
-    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
-    private val RequestPermissionCode = 1
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
-    private var isStart: Boolean = false
-    private var isPause: Boolean = false
-    private var tapTimer: Timer? = null
-    private val route = ArrayList<ArrayList<Double>>()
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
+    private var mapBounds : MapPointBounds? = null
+    
+    // 권한
+    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+    private val RequestPermissionCode = 1
+    
+    private var isStart: Boolean = false
+    private var isPause: Boolean = false
+    private var tapTimer: Timer? = null
+    private val route = ArrayList<ArrayList<Double>>()
 
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-
-    // 실종 다이얼로그
-    private lateinit var dialog : DogInfoEnterDialog
 
     private lateinit var mainActivity: MainActivity
 
@@ -84,12 +76,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
-
         binding.lostBtn.setOnClickListener {
-            validLostBtn = true
             val intent = Intent(context, MissingActivity::class.java)
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
@@ -103,28 +93,26 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
 
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
-        mapReverseGeoCoder.startFindingAddress()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
         listen = MarkerEventListener(mainActivity)
 
+
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
 
         val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
+
         kakaoMapViewContainer?.addView(kakaoMapView)
 
         kakaoMapView.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
         kakaoMapView.setMapViewEventListener(this)
+
+
         kakaoMapView.setZoomLevel(0, true)
         kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.labrador_icon,
@@ -135,7 +123,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             MapPOIItem.ImageOffset(50, 50)
         )
         kakaoMapView.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
         kakaoMapView.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
@@ -162,6 +150,12 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 말풍선 클릭 시
             return mCalloutBalloon
         }
+    }
+
+    fun findAddress() {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     // 메모리 누수 방지
@@ -241,6 +235,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
     }
 
+
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
     }
 
@@ -274,7 +269,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
         tapTimer = timer(period = 3000, initialDelay = 3000) {
             p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
             cancel()
         }
     }
@@ -287,45 +282,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
 
-        // mainActivity 변수 초기화(안해주면 사용 못함)
-        mainActivity = context as MainActivity
-
-        dog_lost_txt.visibility = View.INVISIBLE
-        dog_find_txt.visibility = View.INVISIBLE
-
-        if (validLostBtn) {
-//            dialog.show("Missing Dog Info Dialog")
-        }
-
-        if (validFindBtn) {
-
-            val dialog = Dialog(requireContext())
-            // 다이얼로그 테두리 둥글게 만들기
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-            dialog.setContentView(R.layout.lost_dog_info)
-
-            val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
-            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-
-            btnSave.setOnClickListener {
-                val marker = MapPOIItem().apply {
-                    markerType = MapPOIItem.MarkerType.YellowPin
-                    itemName = "실종견"
-                    mapPoint = p1
-                    tag = 0
-                }
-                kakaoMapView!!.addPOIItem(marker)
-                dialog.dismiss()
-            }
-            btnCancel.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-            validFindBtn = false
-        }
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {

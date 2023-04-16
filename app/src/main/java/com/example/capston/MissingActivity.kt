@@ -1,38 +1,24 @@
 package com.example.capston
 
 import android.Manifest
-import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityMissingBinding
-import com.example.capston.databinding.BacktostartDialogBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_missing.*
-import kotlinx.android.synthetic.main.activity_walk.*
-import kotlinx.android.synthetic.main.backtostart_dialog.*
-import kotlinx.android.synthetic.main.ballon_layout.view.*
-import kotlinx.android.synthetic.main.custom_balloon_layout.*
-import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
-import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
@@ -51,6 +37,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     internal var kakaoMapViewContainer: FrameLayout? = null
 
+    private var flag : Int = 0 // 실종(기본값) = 0, 목격 = 1
 
     // Firebase
     internal val database: DatabaseReference = Firebase.database.reference
@@ -81,7 +68,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     internal val binding get() = _binding!!
 
     // 실종 다이얼로그
-    private lateinit var dialog : DogInfoEnterDialog
+    private lateinit var lostDialog : DogInfoEnterDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         _binding = ActivityMissingBinding.inflate(layoutInflater)
@@ -89,11 +76,11 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         setContentView(binding.root)
         supportActionBar?.show()
 
-        dialog = DogInfoEnterDialog(this)
-        dialog.setLauncher()
+        lostDialog = DogInfoEnterDialog(this)
+        lostDialog.setLauncher()
 
 
-        listen = MarkerEventListener(this,dialog)
+        listen = MarkerEventListener(this,lostDialog)
 
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
@@ -122,7 +109,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,dialog,mapView))
+        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
 
 
         // 좌측 뒤로가기 버튼
@@ -133,6 +120,15 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 //            this.finish()
             onBackPressed()
         }
+
+        binding.radioGroup.setOnCheckedChangeListener { radioGroup, id ->
+            when(id){
+                R.id.radio_button_missing -> flag = 0
+                R.id.radio_button_spot -> flag = 1
+            }
+//            Log.d("현재 실종/목격 카테코리","${this.category}")
+        }
+
     }
 
 
@@ -283,44 +279,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         p0!!.addPOIItem(marker)
 
         checkMessageVisibility(1)
-        // 다이얼로그에 좌표전달
-//        dialog.show(p1)
-
-//        if (validFindBtn) {
-//
-//            val dialog2 = Dialog(this)
-//            // 다이얼로그 테두리 둥글게 만들기
-//            dialog2.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//            dialog2.window?.requestFeature(Window.FEATURE_NO_TITLE)
-//            dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-//            dialog2.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-//            dialog2.setContentView(R.layout.lost_dog_info)
-//
-//            val btnSave = dialog2.findViewById<TextView>(R.id.yes_btn)
-//            val btnCancel = dialog2.findViewById<TextView>(R.id.no_btn)
-//            val receiveTime = dialog2.findViewById<EditText>(R.id.time_input)
-//            val receiveInfo = dialog2.findViewById<EditText>(R.id.content_input)
-//
-//            btnSave.setOnClickListener {
-//                val marker = MapPOIItem().apply {
-//                    markerType = MapPOIItem.MarkerType.YellowPin
-//                    itemName = "실종견"
-//                    mapPoint = p1
-//                    tag = 0
-//                }
-//                kakaoMapView!!.addPOIItem(marker)
-//
-//                dialog2.dismiss()
-//            }
-//
-//            btnCancel.setOnClickListener {
-//                dialog2.dismiss()
-//            }
-//
-//            dialog2.show()
-//
-//            validFindBtn = false
-//        }
     }
 
     /*
@@ -370,13 +328,20 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         return meter / 1000
     }
 
+    // 실종/목격 플래그 반환
+    fun getFlag() : Int {
+        return this.flag
+    }
+
 
     // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: Context,val dialog: DogInfoEnterDialog): MapView.POIItemEventListener {
+    class MarkerEventListener(var context: MissingActivity, val dialog: DogInfoEnterDialog): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
             Log.d("markerClick", "ok")
-            dialog.show(mapView,poiItem)
+            when(context.getFlag()){
+                0 -> dialog.show(mapView,poiItem)
+            }
         }
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
             // 말풍선 클릭 시 (Deprecated)
@@ -400,19 +365,11 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater,val dialog: DogInfoEnterDialog, val mapView: MapView?): CalloutBalloonAdapter {
+    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
 
         private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-//            // 말풍선에서 등록 누르면
-//            mCalloutBalloon.enter_btn.setOnClickListener{
-//                dialog.show(poiItem?.mapPoint)
-//            }
-//            // 삭제 누르면
-//            mCalloutBalloon.delete_btn.setOnClickListener{
-//                mapView?.removePOIItem(poiItem)
-//            }            // 마커 클릭 시 나오는 말풍선
             return mCalloutBalloon
         }
 

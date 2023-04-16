@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
 
-        replaceFragment(NaviWalkFragment())
+        replaceFragment(NaviHomeFragment())
 
         deleteToolbar(NaviMypageFragment())
 
