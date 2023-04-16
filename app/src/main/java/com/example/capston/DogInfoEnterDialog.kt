@@ -165,8 +165,10 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
                 timePickerDialog.show()
-
+            
             }, year, month, day)
+                // 선택가능한 최대 날짜를 오늘로 제한
+                .apply { datePicker.maxDate = System.currentTimeMillis() }
             datePickerDialog.show()
         }
 
@@ -195,6 +197,10 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             uploadImageToStorage(uri)
 
             _dlg?.dismiss()
+
+            activity.kakaoMapViewContainer?.removeAllViews()
+            activity.startActivity(Intent(activity, MissingAfterActivity::class.java))
+            activity.finish()
         }
 
         //cancel 버튼 동작
@@ -509,7 +515,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
         // 파일 업로드 성공
         uploadTask.addOnSuccessListener { taskSnapshot ->
-            Toast.makeText(activity, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
             // 갤러리 불러오기 비활성화
             binding.lostImageArea.isEnabled = false
             binding.lostImageArea.isClickable = false
@@ -523,8 +528,12 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     /*
      * 파이어베이스 db에 포스트 업로드
      */
-    private fun uploadPost(){
-        activity.database.child("post").child("lost").child(activity.uid).child(pet_info.pet_name!!).setValue(post)
+    private fun uploadPost() {
+        val ref = activity.database.child("post").child("lost").child(activity.uid).push()
+        ref.setValue(post).addOnSuccessListener {
+            // post 고유키 저장 - 나중에 쓸데가 있을지도
+            val key = ref.key
+        }
     }
 
     /*

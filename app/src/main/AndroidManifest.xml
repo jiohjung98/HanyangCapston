@@ -129,6 +129,9 @@
             android:name=".MissingActivity"
             android:exported="true" />
         <activity
+            android:name=".MissingAfterActivity"
+            android:exported="true" />
+        <activity
             android:name=".InfoActivity"
             android:exported="true" />
         <activity
