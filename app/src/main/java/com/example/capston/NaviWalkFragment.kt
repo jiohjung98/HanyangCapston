@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -100,27 +101,23 @@ class NaviWalkFragment : Fragment() {
 
         // 현재 반려견 인덱스 불러오기
         database.child("users").child(auth.currentUser!!.uid).child("current_pet").get().addOnSuccessListener{ task ->
+            Log.d("리스너","current_pet addOnSuccessListener listener called")
             if (task.value != null){
                 _cur_pet_num = task.value.toString()
                 Log.d("DB LOAD SUCCESS",cur_pet_num)
                 // DB에서 받아와서 정보 할당하기
                 DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
-                DBpet.addValueEventListener(object: ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        // 등록된 반려견없음 (건너뛰기 등)
-                        if (snapshot.value == null){
+                DBpet.get().addOnSuccessListener { snapshot ->
+                    Log.d("리스너","DBPet addOnSuccessListener listener called")
+                    if (snapshot.value == null){
 //                    Log.d("snapshot", "null")
-                            invalidDog()
-                        }
-                        // 등록된 반려견 있음
-                        else {
-                            validDog(snapshot)
-                        }
+                        invalidDog()
                     }
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
+                    // 등록된 반려견 있음
+                    else {
+                        validDog(snapshot)
                     }
-                })
+                }
             }
             else{
                 Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
@@ -154,6 +151,7 @@ class NaviWalkFragment : Fragment() {
 
         getImageFromStore(snapshot)
         setupMyDogList()
+        setupMyDogHandler()
 
         binding.registerBtn.visibility = View.GONE
         binding.walkBtn.isEnabled = true
@@ -226,9 +224,14 @@ class NaviWalkFragment : Fragment() {
      반려견 선택 스피너 설정
      */
     private fun setupMyDogList(){
+        // 스피너보이게
+        binding.petSelectBox.visibility = View.VISIBLE
         val DogArray = ArrayList<String>()
-        database.child("users").child(auth.currentUser!!.uid).child("pet_list").get().addOnSuccessListener { result ->
-            for (item in result.children) {
+
+        // 이름 읽어오기
+        database.child("users").child(auth.currentUser!!.uid).get().addOnSuccessListener { result ->
+            // DogArray 배열에 DB상 반려견 이름들 추가
+            for (item in result.child("pet_list").children) {
                 Log.d("pet_list", item.child("pet_name").value.toString())
                 DogArray.add(item.child("pet_name").value.toString())
             }
@@ -243,8 +246,10 @@ class NaviWalkFragment : Fragment() {
                         var tv = v as TextView
                         tv.setTextSize(/* size = */ 12f)
                         if (position == count) {
+
                             (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
-//                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
+//                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = "선택"
+
                         }
                         return v
                     }
@@ -259,10 +264,24 @@ class NaviWalkFragment : Fragment() {
             statusAdapter.addAll(DogArray.toMutableList())
             statusAdapter.add(" 선택")
 
+
             _binding!!.petSelectSpinner.adapter = statusAdapter
 
-            dog_ddong_spinner.setSelection(statusAdapter.count)
-            dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
+            pet_select_spinner.setSelection(Integer.parseInt(result.child("current_pet").value.toString()).minus(1))
+            pet_select_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
+        }
+    }
+
+    private fun setupMyDogHandler() {
+        val uid = database.child("users").child(auth.currentUser!!.uid)
+        binding.petSelectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                Log.d("리스너","onItemSelected listener called")
+                uid.child("current_pet").setValue(position.plus(1))
+//                (context as MainActivity).supportFragmentManager.beginTransaction().detach(this@NaviWalkFragment).attach(this@NaviWalkFragment).commit()
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
         }
     }
 
