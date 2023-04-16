@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.backtostart_dialog.*
 import kotlinx.android.synthetic.main.ballon_layout.view.*
@@ -114,7 +115,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             MapPOIItem.ImageOffset(50, 50)
         )
         kakaoMapView.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
         kakaoMapView.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
@@ -251,7 +252,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         }
         tapTimer = timer(period = 3000, initialDelay = 3000) {
             p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
             cancel()
         }
     }
@@ -278,7 +279,9 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             tag = 0
         }
 
+        p0?.removePOIItems(p0.poiItems)
         p0!!.addPOIItem(marker)
+
         checkMessageVisibility(1)
         // 다이얼로그에 좌표전달
 //        dialog.show(p1)
