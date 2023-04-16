@@ -1,7 +1,9 @@
 package com.example.capston
 
 import android.Manifest
+import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,10 +15,10 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -133,15 +135,40 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
         })
 
-        // 시간 텍스트 리스너
-        binding.timeInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable) {
-                validTime = true
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-        })
+        // 날짜 시간 리스너
+        binding.timeInput.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            var date : String
+            var time : String
+
+            val datePickerDialog = DatePickerDialog(activity, R.style.SpinnerDatePickerStyle, DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+                date = (year.toString() + "-" + month + "-" + day)
+
+                val timePickerDialog = TimePickerDialog(activity, R.style.SpinnerTimePickerStyle, TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+                    val selectedDateTime = Calendar.getInstance()
+                    selectedDateTime.set(year, month, day, hour, minute)
+                    time = (hour.toString() + ":" + minute)
+
+                    // 텍스트뷰에 설정된 날짜시간 표시
+                    binding.timeInput.text = (date + " " + time)
+
+                    // Post 객체 값 설정
+                    post.date = date
+                    post.time = time
+
+                    validTime = true
+
+                    checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
+                timePickerDialog.show()
+
+            }, year, month, day)
+            datePickerDialog.show()
+        }
 
         // 상세내용 텍스트 리스너
         binding.contentInput.addTextChangedListener(object : TextWatcher {
@@ -158,14 +185,14 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.yesBtn.setOnClickListener {
             // post 데이터 객체 값 할당
             post.uid = activity.auth.currentUser!!.uid
-            post.time = Integer.parseInt(binding.timeInput.text.toString())
             post.category = 0
             post.pet_info = this.pet_info
             post.content = binding.contentInput.text.toString()
+
+            // post 에 좌표 읽어와 설정
+            setCoordinate(poiItem?.mapPoint)
             // 이미지 storage 업로드
             uploadImageToStorage(uri)
-            //
-            setCoordinate(poiItem?.mapPoint)
 
             _dlg?.dismiss()
         }

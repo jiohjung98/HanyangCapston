@@ -18,8 +18,9 @@ data class PetInfo(
 data class UserPost(
     var uid: String? = null,
     var category : Int? = null, // 실종 = 0, 발견 = 1
-    var time : Int?= null,
     var pet_info : PetInfo? = null,
     var content : String? = null,
-    var coordinate : Pair<Double?,Double?>? = null
+    var coordinate : Pair<Double?,Double?>? = null,
+    var date : String? = null,
+    var time : String? = null
 )
