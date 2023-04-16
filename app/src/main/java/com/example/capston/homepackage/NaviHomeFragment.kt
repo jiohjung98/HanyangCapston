@@ -10,17 +10,23 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
+import com.google.protobuf.Internal
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.*
@@ -43,8 +49,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     //실종 반려견 발견 버튼
     var validFindBtn: Boolean = false
 
-
-
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val RequestPermissionCode = 1
     var mapView: MapView? = null
@@ -62,11 +66,16 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-
     // 실종 다이얼로그
     private lateinit var dialog : DogInfoEnterDialog
 
     private lateinit var mainActivity: MainActivity
+
+    // create Retrofit
+    var retrofit = Retrofit.Builder()
+        .baseUrl("https://run.mocky.io/v3/4c1ead49-5c18-4624-8624-17951e4484f9")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,7 +96,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     ): View? {
         _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
-
         binding.lostBtn.setOnClickListener {
             validLostBtn = true
             val intent = Intent(context, MissingActivity::class.java)
@@ -101,7 +109,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         val view = binding.root
         return view
     }
-
 
     fun findAddress() {
         val mapReverseGeoCoder =
@@ -395,3 +402,4 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
     }
 }
+

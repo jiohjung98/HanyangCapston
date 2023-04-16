@@ -16,7 +16,7 @@ class FindPwFailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.goLoginBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, InfoActivity::class.java)
             startActivity(intent)
         }
     }
