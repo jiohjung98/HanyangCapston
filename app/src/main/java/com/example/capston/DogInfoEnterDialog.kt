@@ -83,7 +83,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     // 갤러리 불러오기 이후 수행할 동작 설정
     fun setLauncher() {
         _dlg?.dismiss()
-        activity.launcher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        activity.lostLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     _uri = result.data?.data
@@ -484,7 +484,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     private fun getImageFromAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        activity.launcher!!.launch(intent)
+        activity.lostLauncher!!.launch(intent)
     }
 
 

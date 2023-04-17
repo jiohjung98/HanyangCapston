@@ -14,11 +14,11 @@
 
         <TextView
             android:id="@+id/adding_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="추가 등록"
-            android:textColor="@color/skyblue"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:padding="10sp"
+            android:layout_margin="10sp"
+            android:background="@drawable/add_dog"
             android:visibility="visible"
             android:enabled="true"
             app:layout_constraintTop_toTopOf="parent"

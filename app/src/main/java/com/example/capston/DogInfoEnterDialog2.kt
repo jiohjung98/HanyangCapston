@@ -42,11 +42,9 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     private val dlg get() = _dlg!!
 
     // 확인버튼 활성화 확인
-    private var validName: Boolean= false
     private var validBreed: Boolean= false
     private var validTime: Boolean= false
     private var validGender : Boolean = false
-    private var validBorn : Boolean = false
     private var validContent: Boolean= false
     private var validImage: Boolean= false
 
@@ -67,11 +65,9 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         _dlg = Dialog(activity)
         _uri = null
 
-        validName = false
         validBreed = false
         validTime = false
         validGender = false
-        validBorn = false
         validContent = false
         validImage = false
 
@@ -83,7 +79,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     // 갤러리 불러오기 이후 수행할 동작 설정
     fun setLauncher() {
         _dlg?.dismiss()
-        activity.launcher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        activity.witLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     _uri = result.data?.data
@@ -111,29 +107,6 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         params.y = 500
         dlg.window!!.attributes = params
 
-        // ↓↓↓ 버튼 및 텍스트리스너 설정
-
-//        binding.nameInput.setOnTouchListener(View.OnTouchListener { v, event ->
-//            when (event.action) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    breed_recycleR.visibility = View.INVISIBLE
-//                    BreedSearch.clearFocus()
-//                }
-//            }
-//            false
-//        })
-
-//        // 이름 텍스트 리스너
-//        binding.nameInput.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(editable: Editable) {
-//                // 이름값 할당
-//                pet_info.pet_name = binding.nameInput.text.toString()
-//                validName = editable.isNotEmpty()
-//                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
-//            }
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-//        })
 
         // 날짜 시간 리스너
         binding.timeInput.setOnClickListener {
@@ -161,7 +134,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
                     validTime = true
 
-                    checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                    checkValid( validBreed, validTime,  validGender, validContent, validImage)
 
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
                 timePickerDialog.show()
@@ -176,7 +149,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.contentInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validContent = true
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -187,7 +160,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.yesBtn.setOnClickListener {
             // post 데이터 객체 값 할당
             post.uid = activity.auth.currentUser!!.uid
-            post.category = 0
+            post.category = 1 // 목격 = 1
             post.pet_info = this.pet_info
             post.content = binding.contentInput.text.toString()
 
@@ -345,7 +318,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
                         Log.d("스피너2", "$validGender")
                     }
                 }
-                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage)
                 // 성별 저장
 //                Log.d("GENDER", "${position.toString()}")
                 if(position==1) // 수
@@ -475,7 +448,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
-        checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+        checkValid( validBreed, validTime,  validGender, validContent, validImage)
     }
 
     /*
@@ -484,7 +457,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     private fun getImageFromAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        activity.launcher!!.launch(intent)
+        activity.witLauncher!!.launch(intent)
     }
 
 
@@ -493,7 +466,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
      */
     private fun uploadImageToStorage(uri: Uri) {
         // storage 참조
-        val storageRef = activity.storage.getReference("images").child("lost")
+        val storageRef = activity.storage.getReference("images").child("witness")
         // storage에 저장할 파일명 선언
         val fileName = activity.auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")
@@ -529,7 +502,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
      * 파이어베이스 db에 포스트 업로드
      */
     private fun uploadPost() {
-        val ref = activity.database.child("post").child("lost").child(activity.uid).push()
+        val ref = activity.database.child("post").child("witness").push()
         ref.setValue(post).addOnSuccessListener {
             // post 고유키 저장 - 나중에 쓸데가 있을지도
             val key = ref.key
@@ -539,9 +512,9 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     /*
      * 확인버튼 검사
      */
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean, v6:Boolean, v7:Boolean){
-        Log.d("Valid", (v1 && v2 && v3 && v4 && v5 && v6 && v7).toString())
-        if(v1 && v2 && v3 && v4 && v5 && v6 && v7){
+    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean){
+        Log.d("Valid", (v1 && v2 && v3 && v4 && v5).toString())
+        if(v1 && v2 && v3 && v4 && v5){
             binding.yesBtn.isEnabled = true
             binding.yesBtn.isClickable = true
         } else {

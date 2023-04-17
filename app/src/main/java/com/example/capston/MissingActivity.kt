@@ -46,7 +46,8 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     internal val uid = auth.currentUser!!.uid
 
     // 갤러리 이미지 가져오기
-    internal var launcher: ActivityResultLauncher<Intent>? = null
+    internal var lostLauncher: ActivityResultLauncher<Intent>? = null
+    internal var witLauncher: ActivityResultLauncher<Intent>? = null
     private var uri : Uri? = null
 
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -70,7 +71,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     // 실종 다이얼로그
     private lateinit var lostDialog : DogInfoEnterDialog
     // 목격 다이얼로그
-    private lateinit var spotDialog : DogInfoEnterDialog2
+    private lateinit var witDialog : DogInfoEnterDialog2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         _binding = ActivityMissingBinding.inflate(layoutInflater)
@@ -81,10 +82,11 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         lostDialog = DogInfoEnterDialog(this)
         lostDialog.setLauncher()
 
-        spotDialog = DogInfoEnterDialog2(this)
+        witDialog = DogInfoEnterDialog2(this)
+        witDialog.setLauncher()
 
 
-        listen = MarkerEventListener(this, lostDialog, spotDialog)
+        listen = MarkerEventListener(this, lostDialog, witDialog)
 
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
@@ -130,7 +132,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
                 R.id.radio_button_missing -> flag = 0
                 R.id.radio_button_spot -> flag = 1
             }
-//            Log.d("현재 실종/목격 카테코리","${this.category}")
+            Log.d("FLAG","${this.flag}")
         }
 
     }
@@ -342,7 +344,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     class MarkerEventListener(var context: MissingActivity, val lostDialog: DogInfoEnterDialog, val spotDialog : DogInfoEnterDialog2): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
-            Log.d("markerClick", "ok")
+//            Log.d("markerClick", "ok")
             when(context.getFlag()){
                 0 -> lostDialog.show(mapView,poiItem)
                 1 -> spotDialog.show(mapView,poiItem)
