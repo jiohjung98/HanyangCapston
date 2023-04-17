@@ -69,6 +69,8 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     // 실종 다이얼로그
     private lateinit var lostDialog : DogInfoEnterDialog
+    // 목격 다이얼로그
+    private lateinit var spotDialog : DogInfoEnterDialog2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         _binding = ActivityMissingBinding.inflate(layoutInflater)
@@ -79,8 +81,10 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         lostDialog = DogInfoEnterDialog(this)
         lostDialog.setLauncher()
 
+        spotDialog = DogInfoEnterDialog2(this)
 
-        listen = MarkerEventListener(this,lostDialog)
+
+        listen = MarkerEventListener(this, lostDialog, spotDialog)
 
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
@@ -335,12 +339,13 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
 
     // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: MissingActivity, val dialog: DogInfoEnterDialog): MapView.POIItemEventListener {
+    class MarkerEventListener(var context: MissingActivity, val lostDialog: DogInfoEnterDialog, val spotDialog : DogInfoEnterDialog2): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
             Log.d("markerClick", "ok")
             when(context.getFlag()){
-                0 -> dialog.show(mapView,poiItem)
+                0 -> lostDialog.show(mapView,poiItem)
+                1 -> spotDialog.show(mapView,poiItem)
             }
         }
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
