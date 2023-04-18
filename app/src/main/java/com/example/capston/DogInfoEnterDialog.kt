@@ -229,13 +229,11 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
     /*
      좌표설정
+     mapPoint.mapPointWCONGCoord.x 사용 고려
      */
     private fun setCoordinate(mapPoint: MapPoint?){
-        val lat = mapPoint?.mapPointGeoCoord?.latitude
-        val lng = mapPoint?.mapPointGeoCoord?.longitude
-        post.coordinate = Pair(mapPoint?.mapPointGeoCoord?.latitude, mapPoint?.mapPointGeoCoord?.longitude)
-        Log.d("위도",lat.toString())
-        Log.d("경도",lng.toString())
+        post.latitude = mapPoint?.mapPointGeoCoord?.latitude
+        post.longitude = mapPoint?.mapPointGeoCoord?.longitude
     }
 
     // 리사이클러뷰 어댑터

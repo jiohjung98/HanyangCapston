@@ -20,7 +20,8 @@ data class UserPost(
     var category : Int? = null, // 실종 = 0, 발견 = 1
     var pet_info : PetInfo? = null,
     var content : String? = null,
-    var coordinate : Pair<Double?,Double?>? = null,
+    var latitude : Double? = null,
+    var longitude : Double? = null,
     var date : String? = null,
     var time : String? = null
 )

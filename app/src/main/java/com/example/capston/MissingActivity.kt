@@ -243,19 +243,13 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        if (p0!!.currentLocationTrackingMode.toString() == "TrackingModeOff") {
-            return
+        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
         }
-        p0!!.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
 
         if (tapTimer != null) {
             tapTimer!!.cancel()
-        }
-        tapTimer = timer(period = 3000, initialDelay = 3000) {
-            p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-            cancel()
         }
     }
 

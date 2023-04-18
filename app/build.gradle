@@ -97,4 +97,7 @@ dependencies {
     // androidx.test:core 라이브러리 추가
     androidTestImplementation 'androidx.test:core:1.4.0'
 
+    // GeoFire
+    implementation("com.firebase:geofire-android:3.1.0")
+//    implementation 'com.github.psteiger:geofire-ktx:0.6.0'
 }

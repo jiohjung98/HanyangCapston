@@ -23,6 +23,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.SpotDogInfoBinding
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.core.GeoHash
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -59,6 +62,8 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
     private lateinit var pet_info : PetInfo
     private lateinit var post : UserPost
+
+    private val geoFire = GeoFire(activity.database.child("geofire"))
 
     fun initialize(){
         _dlg?.dismiss()
@@ -202,13 +207,11 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
     /*
      좌표설정
+     mapPoint.mapPointWCONGCoord.x 사용 고려
      */
     private fun setCoordinate(mapPoint: MapPoint?){
-        val lat = mapPoint?.mapPointGeoCoord?.latitude
-        val lng = mapPoint?.mapPointGeoCoord?.longitude
-        post.coordinate = Pair(mapPoint?.mapPointGeoCoord?.latitude, mapPoint?.mapPointGeoCoord?.longitude)
-        Log.d("위도",lat.toString())
-        Log.d("경도",lng.toString())
+        post.latitude = mapPoint?.mapPointGeoCoord?.latitude
+        post.longitude = mapPoint?.mapPointGeoCoord?.longitude
     }
 
     // 리사이클러뷰 어댑터
@@ -504,8 +507,13 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     private fun uploadPost() {
         val ref = activity.database.child("post").child("witness").push()
         ref.setValue(post).addOnSuccessListener {
-            // post 고유키 저장 - 나중에 쓸데가 있을지도
+            // post 고유키
             val key = ref.key
+            val loc = GeoLocation(post.latitude!!,post.longitude!!)
+            // geofire 아래 post의 key로 쿼리용 위치정보 저장
+            geoFire.setLocation(key, loc)
+            val geoHash = GeoHash(loc)
+//            Log.d("GEO HASH", geoHash.toString())
         }
     }
 

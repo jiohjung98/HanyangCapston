@@ -1,16 +1,13 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +15,14 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.capston.*
 import com.example.capston.databinding.FragmentNaviHomeBinding
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQuery
+import com.firebase.geofire.GeoQueryDataEventListener
+import com.firebase.geofire.GeoQueryEventListener
+import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.android.map.coord.MapCoord
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
@@ -57,8 +61,13 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-
     private lateinit var mainActivity: MainActivity
+    private val auth get() = mainActivity.auth
+    private val database get() = mainActivity.database
+
+    // GeoFire
+    private var geoFire : GeoFire? = null
+    private var geoQuery : GeoQuery? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,9 +96,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
+        geoFire = GeoFire(database.child("geofire"))
 
-        val view = binding.root
-        return view
+        return binding.root
     }
 
 
@@ -133,31 +142,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
     }
 
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        var mainActivity: MainActivity? = null
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 마커 클릭 시 나오는 말풍선
-            name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
-            return mCalloutBalloon
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-            return mCalloutBalloon
-        }
-    }
-
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
-        mapReverseGeoCoder.startFindingAddress()
-    }
-
     // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
@@ -184,6 +168,31 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onDestroy() {
         kakaoMapViewContainer?.removeAllViews()
         super.onDestroy()
+    }
+
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+
+        var mainActivity: MainActivity? = null
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 마커 클릭 시 나오는 말풍선
+            name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
+            return mCalloutBalloon
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            return mCalloutBalloon
+        }
+    }
+
+    fun findAddress() {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     // 위치 권한 설정 확인 함수
@@ -252,25 +261,96 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+        setMarker(p0)
     }
+
+    private fun setMarker(p0: MapView?){
+
+        val bounds = p0?.mapPointBounds!!
+        val center = p0.mapCenterPoint
+
+        val leftX = bounds.bottomLeft.mapPointGeoCoord.longitude // 좌측 경도
+        val leftY = bounds.bottomLeft.mapPointGeoCoord.latitude // 좌측 위도
+
+        val rightX = bounds.topRight.mapPointGeoCoord.longitude // 우측 경도
+        val rightY = bounds.topRight.mapPointGeoCoord.latitude // 우측 위도
+
+        val radius = haversine(leftY,leftX,rightY,rightX)/2.0  // 좌하단~우상단 대각선 거리의 절반
+
+//        Log.i("좌하단","${leftX} + ${leftY}")
+//        Log.i("우상단","${rightX} + ${rightY}")
+
+        setGeoQuery(p0,center,radius)
+    }
+
+    private fun setGeoQuery(mapView: MapView?, center: MapPoint, radius : Double){
+//        Log.d("마커삭제 전",mapView?.poiItems?.size.toString())
+        mapView?.removePOIItems(mapView.poiItems)
+//        Log.d("마커삭제 후",mapView?.poiItems?.size.toString())
+
+        // center(화면중심)에서 radius(km단위)에 속하는 위치데이터들 검색함
+        geoQuery = geoFire?.queryAtLocation(GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude),meterToKillo(radius))
+
+//        Log.d("center", "${center.mapPointGeoCoord.latitude} + ${center.mapPointGeoCoord.longitude}")
+//        Log.d("radius",radius.toString())
+
+        // 검색쿼리의 이벤트 리스너
+        geoQuery!!.addGeoQueryEventListener(object : GeoQueryEventListener {
+            // 아래 구현 - 쿼리로 키가 검색되면 실행됨
+            override fun onKeyEntered(key: String, location: GeoLocation) {
+                // 해당 위치 데이터의 정보를 가져오는 코드 작성
+//                Log.d("=Entered Key", key)
+
+                Log.d("마커위치정보",location.latitude.toString() + " "+ location.longitude.toString())
+                val markerPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
+
+                val marker = MapPOIItem().apply {
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
+                    isCustomImageAutoscale = true
+                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                    itemName = "목격"
+                    mapPoint = markerPoint
+                    isShowCalloutBalloonOnTouch = false
+                    tag = 0
+                }
+
+                mapView!!.addPOIItem(marker)
+            }
+
+            override fun onKeyExited(key: String) {
+                // 위치 데이터가 범위 밖으로 이탈했을 때의 코드 작성
+                Log.d("Exited Key", key)
+            }
+
+            override fun onKeyMoved(key: String, location: GeoLocation) {
+                // 위치 데이터가 이동했을 때의 코드 작성
+            }
+
+            override fun onGeoQueryReady() {
+                // 초기 데이터 검색이 완료되었을 때 호출됩니다.
+
+            }
+
+            override fun onGeoQueryError(error: DatabaseError) {
+                // 위치 데이터 검색 중 에러가 발생했을 때 호출됩니다.
+            }
+        })
+
+    }
+
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        if (p0!!.currentLocationTrackingMode.toString() == "TrackingModeOff") {
-            return
+        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
         }
-        p0!!.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
 
         if (tapTimer != null) {
             tapTimer!!.cancel()
-        }
-        tapTimer = timer(period = 3000, initialDelay = 3000) {
-            p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-            cancel()
         }
     }
 
