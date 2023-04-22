@@ -4,7 +4,7 @@ data class UserData(
     val username: String?,
     val email: String?,
     val pet_list: Any? = null,
-    var current_pet : Int
+    var pet_cnt : Int
 )
 
 data class PetInfo(

@@ -1,6 +1,7 @@
 package com.example.capston
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +44,9 @@ class MainActivity : AppCompatActivity(), CustomDialog {
     // 현재 사용 : 마이페이지 유저정보, DogInfoEnterDialog
     internal val database: DatabaseReference = Firebase.database.reference
     internal val auth = FirebaseAuth.getInstance()
-    internal val storage = FirebaseStorage.getInstance()
+    
+    // 로컬 저장값
+    internal var sharedPreferences: SharedPreferences? = null
 
     internal val uid = auth.currentUser!!.uid
 
@@ -54,19 +57,9 @@ class MainActivity : AppCompatActivity(), CustomDialog {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 로컬에 저장된 현재 반려견 인덱스
+        sharedPreferences = getSharedPreferences("CUR_PET", MODE_PRIVATE);
 
-//        //Doginfo다이얼로그에서 사용하기위함, registerForActivityResult 결과 후 실행할 행동 정의
-//        launcher =
-//            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//                when (result.resultCode) {
-//                    AppCompatActivity.RESULT_OK -> {
-//                        // 전달 받은 이미지 uri를 넣어준다.
-//                        this.uri = result.data?.data
-//                        Log.d("uri변경직후",this.uri.toString())
-////                        Image.setImageURI(this.uri)
-//                    }
-//                }
-//            }
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)

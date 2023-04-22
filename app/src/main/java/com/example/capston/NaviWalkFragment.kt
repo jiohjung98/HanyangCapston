@@ -87,6 +87,14 @@ class NaviWalkFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
+        (activity as AppCompatActivity).supportActionBar?.show()
+
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
         }
@@ -100,29 +108,7 @@ class NaviWalkFragment : Fragment() {
         }
 
         // 현재 반려견 인덱스 불러오기
-        database.child("users").child(auth.currentUser!!.uid).child("current_pet").get().addOnSuccessListener{ task ->
-            Log.d("리스너","current_pet addOnSuccessListener listener called")
-            if (task.value != null){
-                _cur_pet_num = task.value.toString()
-                Log.d("DB LOAD SUCCESS",cur_pet_num)
-                // DB에서 받아와서 정보 할당하기
-                DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
-                DBpet.get().addOnSuccessListener { snapshot ->
-                    Log.d("리스너","DBPet addOnSuccessListener listener called")
-                    if (snapshot.value == null){
-//                    Log.d("snapshot", "null")
-                        invalidDog()
-                    }
-                    // 등록된 반려견 있음
-                    else {
-                        validDog(snapshot)
-                    }
-                }
-            }
-            else{
-                Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
-            }
-        }
+        loadCurrentDog(0)
 
         initAddImage()
 
@@ -131,11 +117,8 @@ class NaviWalkFragment : Fragment() {
         gender = binding.walkGender
         age = binding.walkAge
 
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        setupData()
+        setupStatusHandler()
     }
 
     companion object {
@@ -146,12 +129,58 @@ class NaviWalkFragment : Fragment() {
     }
 
 
+    //메모리 누수 방지
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun onClickWalk(view: View?) {
+        val walkDlg = WalkDialog(mainActivity)
+        walkDlg.setOnOKClickedListener { content ->
+            binding.walkBtn.text = content
+        }
+        walkDlg.show("산책")
+    }
+
+    private fun onClickRegister(view: View?) {
+        (context as MainActivity).supportFragmentManager.beginTransaction().remove(this).commit()
+        (context as MainActivity).startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
+        (context as MainActivity).finish()
+    }
+
+    /*
+    현재 반려견 인덱스 불러오기
+    */
+    private fun loadCurrentDog(flag : Int){
+        // 현재 반려견 인덱스 불러오기
+        // 로컬에 해당 key 없으면 1 -> 아직 등록안했거나, 등록한건 있는데 앱 데이터 초기화
+        // 등록안해서 1이면 아래서 null -> invalid() 들어감
+        var cur_pet = mainActivity.sharedPreferences?.getInt("cur_pet",1)
+
+//        Log.d("loadCurrentDog 반려견 인덱스",cur_pet.toString())
+
+        DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet.toString())
+        DBpet.get().addOnSuccessListener { snapshot ->
+//            Log.d("리스너","DBPet addOnSuccessListener listener called")
+            if (snapshot.value == null){
+//                    Log.d("snapshot", "null")
+                invalidDog()
+            }
+            // 등록된 반려견 있음
+            else {
+                validDog(snapshot)
+                setupMyDogList(cur_pet!!)
+                setupMyDogHandler()
+            }
+        }
+
+    }
+
     private fun validDog(snapshot: DataSnapshot) {
         Log.d("등록 있음", "${snapshot}")
 
         getImageFromStore(snapshot)
-        setupMyDogList()
-        setupMyDogHandler()
 
         binding.registerBtn.visibility = View.GONE
         binding.walkBtn.isEnabled = true
@@ -179,34 +208,6 @@ class NaviWalkFragment : Fragment() {
         petname.text = "등록된 반려견이 없습니다"
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
-        (activity as AppCompatActivity).supportActionBar?.show()
-        setupData()
-        setupStatusHandler()
-    }
-
-    //메모리 누수 방지
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun onClickWalk(view: View?) {
-        val walkDlg = WalkDialog(mainActivity)
-        walkDlg.setOnOKClickedListener { content ->
-            binding.walkBtn.text = content
-        }
-        walkDlg.show("산책")
-    }
-
-    private fun onClickRegister(view: View?) {
-        (context as MainActivity).supportFragmentManager.beginTransaction().remove(this).commit()
-        (context as MainActivity).startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
-        (context as MainActivity).finish()
-    }
-
     /*
      * 갤러리에서 이미지 가져와서 image area에 띄움
      */
@@ -214,7 +215,7 @@ class NaviWalkFragment : Fragment() {
         // database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
         val url = snapshot.child("image_url").value.toString()
         if (isAdded()) {
-            Log.d("IMAGE URL",url)
+//            Log.d("IMAGE URL",url)
             GlideApp.with(this@NaviWalkFragment).load(Uri.parse(url))
                 .into(binding.profile)
         }
@@ -223,7 +224,7 @@ class NaviWalkFragment : Fragment() {
     /*
      반려견 선택 스피너 설정
      */
-    private fun setupMyDogList(){
+    private fun setupMyDogList(cur_pet : Int){
         // 스피너보이게
         binding.petSelectBox.visibility = View.VISIBLE
         val DogArray = ArrayList<String>()
@@ -267,7 +268,9 @@ class NaviWalkFragment : Fragment() {
 
             _binding!!.petSelectSpinner.adapter = statusAdapter
 
-            pet_select_spinner.setSelection(Integer.parseInt(result.child("current_pet").value.toString()).minus(1))
+            // 스피너 onItemSelectedListener 호출됨
+            pet_select_spinner.setSelection(cur_pet.minus(1))
+//            Log.d("setupMyDogList 받은 cur_pet",cur_pet.toString())
             pet_select_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
         }
     }
@@ -276,9 +279,19 @@ class NaviWalkFragment : Fragment() {
         val uid = database.child("users").child(auth.currentUser!!.uid)
         binding.petSelectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                Log.d("리스너","onItemSelected listener called")
-                uid.child("current_pet").setValue(position.plus(1))
-                (context as MainActivity).supportFragmentManager.beginTransaction().detach(this@NaviWalkFragment).attach(this@NaviWalkFragment).commit()
+//                Log.d("onItemSelected listener called position",position.toString())
+
+                // NaviWalk 진입 때마다 setupMyDogList에서 꼭 한번씩 호출됨
+
+                // 반려견 사진, 정보 reload
+                database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(position.plus(1).toString())
+                    .get().addOnSuccessListener { snapshot ->
+                        validDog(snapshot)
+                    }
+
+                mainActivity.sharedPreferences?.edit()?.putInt("cur_pet", position.plus(1))?.apply()
+//                Log.d("변경된 반려견 인덱스", mainActivity.sharedPreferences?.getInt("cur_pet", -1).toString())
+
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
@@ -364,6 +377,9 @@ class NaviWalkFragment : Fragment() {
         }
     }
 
+    /*
+     카메라 버튼 클릭 이벤트 설정
+     */
     private fun initAddImage() {
         binding.camera.setOnClickListener {
             when {

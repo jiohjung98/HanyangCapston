@@ -2,9 +2,9 @@ package com.example.capston
 
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
@@ -25,7 +25,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.ActivityDogRegisterBinding
@@ -37,7 +36,6 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
@@ -58,6 +56,8 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     lateinit var uri: Uri
 
     private lateinit var auth: FirebaseAuth
+
+    private var sharedPreferences: SharedPreferences? = null
 
     private var pet_info = PetInfo()
 
@@ -166,26 +166,27 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         val database: DatabaseReference =
             Firebase.database.reference.child("users").child(auth.currentUser!!.uid)
 
-        var cur_pet_num : Int? = null
+        var next_pet_num : Int? = null
 
-        // 현재 반려견 인덱스 확인
-        database.child("current_pet").get().addOnCompleteListener{ task ->
-            if (task.result.value != null){
-                cur_pet_num = Integer.parseInt(task.result.value.toString())
-                // user/uid/pet_list/현재반려견인덱스+1
-                database.child("pet_list").child((cur_pet_num?.plus(1)).toString()).setValue(pet_info)
-                // db의 현재 반려견 인덱스 변경
-                database.child("current_pet").setValue(cur_pet_num?.plus(1))
+        // 로컬에 저장된 현재 반려견 인덱스 접근
+        sharedPreferences = getSharedPreferences("CUR_PET", MODE_PRIVATE);
+        
+        // 현재 반려견 등록수 확인
+        database.child("pet_cnt").get().addOnSuccessListener{ task ->
+            if (task.value != null){
+                // 새로 등록할 반려견의 인덱스 = 현재 등록수+1
+                next_pet_num = Integer.parseInt(task.value.toString()).plus(1)
+                // 로컬 현재 반려견 인덱스 변경
+                sharedPreferences?.edit()?.putInt("cur_pet", next_pet_num!!)?.apply()
+                // db의 현재 반려견 수 변경
+                database.child("pet_cnt").setValue(next_pet_num)
+                // db에 새 반려견 등록
+                database.child("pet_list").child(next_pet_num.toString()).setValue(pet_info)
             }
             else{
                 Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
             }
         }
-
-        val next_pet_num = cur_pet_num?.plus(1)
-
-        // current 반려견 인덱스 세팅
-
     }
 
     /*
