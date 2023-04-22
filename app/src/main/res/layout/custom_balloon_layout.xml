@@ -21,7 +21,7 @@
             android:id="@+id/ball_tv_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="실종 등록"
+            android:text="목격 정보"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -44,23 +44,17 @@
                 android:id="@+id/enter_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="1sp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center">
 
                 <ImageView
                     android:id="@+id/enter_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/input_info" />
+                    android:layout_width="70sp"
+                    android:layout_height="70sp"
+                    />
 
-                <TextView
-                    android:id="@+id/enter_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:text="입력"
-                    android:textSize="10sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
@@ -76,21 +70,39 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/delete_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/cls_btn" />
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/delete_text"
+                    android:id="@+id/name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="삭제"
-                    android:textSize="10sp" />
+                    android:text=""
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/breed_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text=""
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text=""
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/content_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="상세내용을 보려면 클릭해주세요"
+                    android:textColor="@color/skyblue"
+                    android:textSize="12sp" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
