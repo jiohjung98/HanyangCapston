@@ -47,7 +47,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
-    private var mapBounds : MapPointBounds? = null
     
     // 권한
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -140,6 +139,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
         kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+
+
     }
 
     // 메모리 누수 방지
@@ -255,13 +256,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
+        setMarker(p0)
     }
 
     override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
-        setMarker(p0)
+
     }
 
     private fun setMarker(p0: MapView?){
@@ -284,12 +286,16 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     private fun setGeoQuery(mapView: MapView?, center: MapPoint, radius : Double){
-//        Log.d("마커삭제 전",mapView?.poiItems?.size.toString())
-        mapView?.removePOIItems(mapView.poiItems)
-//        Log.d("마커삭제 후",mapView?.poiItems?.size.toString())
+
 
         // center(화면중심)에서 radius(km단위)에 속하는 위치데이터들 검색함
-        geoQuery = geoFire?.queryAtLocation(GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude),meterToKillo(radius))
+        if(geoQuery == null)
+            geoQuery = geoFire?.queryAtLocation(GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude),meterToKillo(radius))
+        else{
+            geoQuery?.center = GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude)
+            geoQuery?.radius = meterToKillo(radius)
+        }
+
 
 //        Log.d("center", "${center.mapPointGeoCoord.latitude} + ${center.mapPointGeoCoord.longitude}")
 //        Log.d("radius",radius.toString())
@@ -311,8 +317,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                     itemName = "목격"
                     mapPoint = markerPoint
-                    isShowCalloutBalloonOnTouch = false
-                    tag = 0
+                    isShowCalloutBalloonOnTouch = true
+                    tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
                 }
 
                 mapView!!.addPOIItem(marker)
@@ -320,7 +326,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
             override fun onKeyExited(key: String) {
                 // 위치 데이터가 범위 밖으로 이탈했을 때의 코드 작성
-                Log.d("Exited Key", key)
+                // 이탈시 맵에서 삭제
+//                Log.d("Exited Key", key)
+//                Log.d("마커삭제 전",mapView?.poiItems?.size.toString())
+                mapView?.removePOIItem(mapView.findPOIItemByTag(key.hashCode()))
+//                Log.d("마커삭제 후",mapView?.poiItems?.size.toString())
             }
 
             override fun onKeyMoved(key: String, location: GeoLocation) {
@@ -336,7 +346,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 // 위치 데이터 검색 중 에러가 발생했을 때 호출됩니다.
             }
         })
-
     }
 
 
@@ -352,12 +361,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (tapTimer != null) {
             tapTimer!!.cancel()
         }
+        setMarker(p0)
     }
 
     override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+        setMarker(p0)
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
