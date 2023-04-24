@@ -116,9 +116,9 @@ class NaviMypageFragment : Fragment() {
     private fun getFromDB(){
         //카카오로 로그인 시, 마이페이지 프래그먼트에서 이름 띄워주기(무조건 여기(onActivityCreated)에 선언해줘야 오류 안남)
         val nickname = requireView().findViewById<TextView>(R.id.receive_name) // 로그인 버튼
-        val petname = requireView().findViewById<TextView>(R.id.receive_dog_name)
-        val breed = requireView().findViewById<TextView>(R.id.receive_breed)
-        val gender = requireView().findViewById<TextView>(R.id.receive_gender)
+//        val petname = requireView().findViewById<TextView>(R.id.receive_dog_name)
+//        val breed = requireView().findViewById<TextView>(R.id.receive_breed)
+//        val gender = requireView().findViewById<TextView>(R.id.receive_gender)
 
         val uid = database.child("users").child(auth.currentUser!!.uid)
         uid.addValueEventListener(object: ValueEventListener {
@@ -128,12 +128,12 @@ class NaviMypageFragment : Fragment() {
                 // 유저이름 불러오기
                 nickname.text = snapshot.child("username").value.toString()
                 // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
-                petname.text = snapshot.child("pet_list").child("0").child("pet_name").value.toString()
-                breed.text = snapshot.child("pet_list").child("0").child("breed").value.toString()
-                if(snapshot.child("pet_list").child("0").child("gender").value == 1)
-                    gender.text = "♂"
-                else
-                    gender.text = "♀"
+//                petname.text = snapshot.child("pet_list").child("0").child("pet_name").value.toString()
+//                breed.text = snapshot.child("pet_list").child("0").child("breed").value.toString()
+//                if(snapshot.child("pet_list").child("0").child("gender").value == 1)
+//                    gender.text = "♂"
+//                else
+//                    gender.text = "♀"
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
