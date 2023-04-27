@@ -94,7 +94,7 @@ class SplashActivity : AppCompatActivity() {
                 // 정상 분기
                 else{
                     if(isSetLocationPermission())
-                        startActivity(Intent(applicationContext, StartActivity::class.java))
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
                     else
                         startActivity(Intent(applicationContext, PermissionActivity::class.java))
                     finish()
