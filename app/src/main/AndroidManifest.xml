@@ -114,6 +114,9 @@
             <!--            </intent-filter>-->
         </activity>
         <activity
+            android:name=".PermissionActivity"
+            android:exported="true" />
+        <activity
             android:name=".DogRegisterActivity"
             android:exported="true" />
         <activity

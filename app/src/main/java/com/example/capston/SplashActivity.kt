@@ -1,7 +1,9 @@
 package com.example.capston
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.SplashBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -41,11 +44,13 @@ class SplashActivity : AppCompatActivity() {
 
         val user = auth.currentUser
 
-        // 로그인 기록 없으면 로그인화면
+        // 로그인 기록 없으면 시작화면
         if(user == null){
             Handler(Looper.getMainLooper()).postDelayed( {
-                val intent: Intent = Intent(applicationContext, StartActivity::class.java)
-                startActivity(intent)
+                if(isSetLocationPermission())
+                    startActivity(Intent(applicationContext, StartActivity::class.java))
+                else
+                    startActivity(Intent(applicationContext, PermissionActivity::class.java))
                 finish()
             }, 2000)
         // 로그인 기록 있으면
@@ -54,18 +59,6 @@ class SplashActivity : AppCompatActivity() {
             Handler(Looper.getMainLooper()).postDelayed(
                 {
                 isInDB(this,user)
-                // 이메일 인증 안된 유저면 -> 이메일 인증 화면으로
-//                if(!(auth?.currentUser!!.isEmailVerified)) {
-//                    Toast.makeText(this, "이메일 인증 후 사용바랍니다.", Toast.LENGTH_LONG).show()
-//                    val intent = Intent(this, EmailVerifyActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                // 이메일 인증 되어있다면 -> 메인으로
-//                }else {
-//                    val intent: Intent = Intent(applicationContext, MainActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                }
             }, 2000)
         }
 
@@ -76,6 +69,9 @@ class SplashActivity : AppCompatActivity() {
     }
 
 
+    /*
+     DB에 유저정보 있는지 확인
+     */
     private fun isInDB(context: Context, user: FirebaseUser) {
         user.reload()
         val uid = database.child("users").child(user.uid)
@@ -87,15 +83,20 @@ class SplashActivity : AppCompatActivity() {
                 // 회원가입 중 이메일인증 하지 않고 어플 종료 후 재시작했을때 실행되는 분기
                 // auth에는 있으나 db에는 없는 경우
                 if(snapshot.value == null){
+                    // auth에서 삭제
                     user.delete()
-                    val intent = Intent(context, StartActivity::class.java)
-                    startActivity(intent)
+                    if(isSetLocationPermission())
+                        startActivity(Intent(applicationContext, StartActivity::class.java))
+                    else
+                        startActivity(Intent(applicationContext, PermissionActivity::class.java))
                     finish()
                 }
                 // 정상 분기
                 else{
-                    val intent = Intent(context, MainActivity::class.java)
-                    startActivity(intent)
+                    if(isSetLocationPermission())
+                        startActivity(Intent(applicationContext, StartActivity::class.java))
+                    else
+                        startActivity(Intent(applicationContext, PermissionActivity::class.java))
                     finish()
                 }
             }
@@ -112,5 +113,15 @@ class SplashActivity : AppCompatActivity() {
         }
         override fun onAnimationStart(animation: Animation?) {}
         override fun onAnimationRepeat(animation: Animation?) {}
+    }
+
+
+    private fun isSetLocationPermission() : Boolean {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
+        return true
     }
 }
