@@ -75,8 +75,6 @@
             android:layout_marginBottom="10sp"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <include layout="@layout/bottom_sheet"/>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,10 +24,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".LoadingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_loading"
+            android:theme="@style/Theme.Capston.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -106,12 +116,14 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <!--            시작화면 수정용 주석 처리 -->
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+            <!-- 시작화면 수정용 주석 처리 -->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".PermissionActivity"
@@ -142,8 +154,7 @@
             android:exported="true" />
         <activity
             android:name=".EmailVerifyActivity"
-            android:exported = "true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".PostingActivity"
             android:exported="true" />
