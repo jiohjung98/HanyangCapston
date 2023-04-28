@@ -93,7 +93,7 @@ class EmailVerifyActivity : AppCompatActivity() {
             viewBinding.emailResend.isEnabled = false
             viewBinding.emailError.visibility = View.INVISIBLE
             viewBinding.emailResend.visibility = View.INVISIBLE
-            viewBinding.checkEmail.setTextColor(ContextCompat.getColor(this, R.color.grey))
+            viewBinding.checkEmail.setTextColor(ContextCompat.getColor(this, R.color.gray))
             viewBinding.checkEmail.isEnabled = false
             viewBinding.nextBtn.isEnabled = true
         } else {

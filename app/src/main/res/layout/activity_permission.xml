@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+    <RelativeLayout
+        android:id="@+id/permission_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/location"
+        >
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="78dp"
+            android:layout_height="58dp"
+            android:background="@drawable/logo1" />
+
+        <TextView
+            android:id="@+id/receive_name_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginTop="16sp"
+            android:text="권한이 필요합니다."
+            android:textSize="16sp"
+            android:layout_marginLeft="10sp"
+            android:layout_toRightOf="@+id/logo" />
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:layout_marginTop="30sp"
+        app:layout_constraintTop_toBottomOf="@id/permission_title">
+
+        <ImageView
+            android:id="@+id/location_icon"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:background="@drawable/location_permission"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/location_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="위치"
+            android:textColor="@color/black"
+            android:padding="5sp"
+            android:layout_marginLeft="15sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/location_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/location"
+        android:orientation="vertical"
+        android:layout_marginTop="20sp"
+        app:layout_constraintTop_toBottomOf="@id/location">
+
+        <ImageView
+            android:id="@+id/file_icon"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:background="@drawable/folder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/file_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="저장소"
+            android:textColor="@color/black"
+            android:padding="5sp"
+            android:layout_marginLeft="15sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/file_icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <android.widget.Button
+        android:id="@+id/permission_agree_btn"
+        style="@style/ColoredButton"
+        android:layout_width="320sp"
+        android:layout_height="45sp"
+        android:layout_marginBottom="57sp"
+        android:background="@drawable/agree_nextbtn_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:enabled="true"
+        android:text="동의하기" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

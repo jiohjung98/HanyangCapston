@@ -96,7 +96,7 @@ dependencies {
 
     // androidx.test:core 라이브러리 추가
     androidTestImplementation 'androidx.test:core:1.4.0'
-
+    
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
@@ -105,4 +105,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
 
+    // GeoFire
+    implementation("com.firebase:geofire-android:3.1.0")
+//    implementation 'com.github.psteiger:geofire-ktx:0.6.0'
 }

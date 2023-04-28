@@ -196,12 +196,6 @@ class InfoActivity: AppCompatActivity() {
             .addOnFailureListener {
             }
     }
-//
-//    private fun addNewUserToDB(userId: String, name: String, email: String) {
-//        val pet_list = PetListModel(arrayListOf<PetInfo>())
-//        val user_data = UserData(name,email,pet_list)
-//        database.child("users").child(userId).setValue(user_data)
-//    }
 
 //
     internal fun updateUI(user: FirebaseUser?) {

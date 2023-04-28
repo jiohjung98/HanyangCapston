@@ -2,9 +2,9 @@ package com.example.capston
 
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
@@ -25,7 +25,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.ActivityDogRegisterBinding
@@ -37,7 +36,6 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
@@ -58,6 +56,8 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
     lateinit var uri: Uri
 
     private lateinit var auth: FirebaseAuth
+
+    private var sharedPreferences: SharedPreferences? = null
 
     private var pet_info = PetInfo()
 
@@ -113,12 +113,9 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
             addDogToDB(pet_info)
 
             startActivity(intent)
+            finish()
         }
 
-        viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, SignUpComplete::class.java)
-            startActivity(intent)
-        }
         //배경 클릭시 포커스해제
         viewBinding.background.setOnClickListener {
             breed_recycleR.visibility= View.INVISIBLE
@@ -167,12 +164,29 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
      */
     private fun addDogToDB(pet_info : PetInfo){
         val database: DatabaseReference =
-            Firebase.database.reference.child("users")
+            Firebase.database.reference.child("users").child(auth.currentUser!!.uid)
 
-        val pet_info_array = ArrayList<PetInfo>()
-        pet_info_array.add(pet_info)
+        var next_pet_num : Int? = null
 
-        database.child(auth.currentUser!!.uid).child("pet_list").setValue(pet_info_array)
+        // 로컬에 저장된 현재 반려견 인덱스 접근
+        sharedPreferences = getSharedPreferences("CUR_PET", MODE_PRIVATE);
+        
+        // 현재 반려견 등록수 확인
+        database.child("pet_cnt").get().addOnSuccessListener{ task ->
+            if (task.value != null){
+                // 새로 등록할 반려견의 인덱스 = 현재 등록수+1
+                next_pet_num = Integer.parseInt(task.value.toString()).plus(1)
+                // 로컬 현재 반려견 인덱스 변경
+                sharedPreferences?.edit()?.putInt("cur_pet", next_pet_num!!)?.apply()
+                // db의 현재 반려견 수 변경
+                database.child("pet_cnt").setValue(next_pet_num)
+                // db에 새 반려견 등록
+                database.child("pet_list").child(next_pet_num.toString()).setValue(pet_info)
+            }
+            else{
+                Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
+            }
+        }
     }
 
     /*
@@ -266,7 +280,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
         // storage 인스턴스 생성
         val storage = Firebase.storage
         // storage 참조
-        val storageRef = storage.getReference("images").child("users")
+        val storageRef = storage.getReference("images").child("users").child(auth.currentUser!!.uid)
         // storage에 저장할 파일명 선언
         val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")

@@ -10,14 +10,24 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/adding_btn"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:padding="10sp"
+            android:layout_margin="10sp"
+            android:background="@drawable/add_dog"
+            android:visibility="visible"
+            android:enabled="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-
             android:textColor="#191919"
             android:textSize="22dp"
             app:layout_constraintBottom_toTopOf="@id/profile"
@@ -29,14 +39,49 @@
             android:id="@+id/profile"
             android:layout_width="200sp"
             android:layout_height="200sp"
-            android:layout_marginTop="32dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/home_mainimage"
-            app:layout_constraintBottom_toTopOf="@id/walk_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintHorizontal_bias="0.500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/day" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pet_select_box"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/profile"
+            app:layout_constraintStart_toStartOf="@id/profile"
+            app:layout_constraintEnd_toEndOf="@id/profile">
+
+            <TextView
+                android:id="@+id/pet_select_text"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginLeft="12dp"
+                android:text="반려견선택"
+                android:textSize="15.5dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/pet_select_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="100dp"
+                android:spinnerMode="dialog"
+                app:layout_constraintBottom_toBottomOf="@id/pet_select_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/pet_select_text"
+                app:layout_constraintTop_toTopOf="@id/pet_select_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
         <View
@@ -216,11 +261,10 @@
             app:layout_constraintBottom_toTopOf="@id/walk_box"
             app:layout_constraintStart_toEndOf="@id/weight_box">
 
-
             <TextView
                 android:id="@+id/ddong_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="26dp"
+                android:layout_height="28dp"
                 android:layout_marginLeft="12dp"
                 android:text="배변"
                 android:textSize="15.5dp"
@@ -239,7 +283,6 @@
                 app:layout_constraintStart_toEndOf="@id/ddong_text"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <Spinner
                 android:id="@+id/dog_ddong_spinner"
                 android:layout_width="wrap_content"
@@ -251,9 +294,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ddong_line"
                 app:layout_constraintTop_toTopOf="@id/ddong_line" />
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
@@ -444,7 +484,7 @@
             android:layout_marginBottom="52dp"
             android:background="@drawable/record_button"
             android:elevation="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="내 반려견 등록하기"
             android:textSize="15.5dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -59,6 +59,18 @@
         app:layout_constraintTop_toBottomOf="@+id/text1"
         app:layout_constraintStart_toStartOf="@+id/background"
         app:layout_constraintEnd_toEndOf="@id/background" />
+=======
+    <LinearLayout
+        android:id="@+id/pw_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
+        app:layout_constraintStart_toStartOf="@+id/background"
+        app:layout_constraintEnd_toEndOf="@id/background">
+
+    </LinearLayout>
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/go_login_btn"

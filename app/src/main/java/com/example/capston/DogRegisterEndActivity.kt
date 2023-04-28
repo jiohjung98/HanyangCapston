@@ -31,11 +31,4 @@ class DogRegisterEndActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-
-//    viewBinding.nextPageBtn.setOnClickListener {
-//        val intent = Intent(this, DogRegisterEndActivity::class.java)
-//        startActivity(intent)
-//        Toast.makeText(this@DogRegisterActivity, "버튼 클릭 가능", Toast.LENGTH_LONG).show()
-//    }
 }

@@ -10,7 +10,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/background"
     android:layout_width="match_parent"
-    android:background="#F8F4EA"
     android:layout_height="match_parent">
 
     <View
@@ -31,6 +30,8 @@
         android:layout_height="9dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:enabled="false"
         android:background="@drawable/backbtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +61,7 @@
         android:id="@+id/describe1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="누구님, 반가워요 !"
+        android:text="반가워요!"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_marginTop="60dp"
@@ -87,7 +88,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         android:text="건너뛰기"
-        android:textColor="@color/grey"
+        android:textColor="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

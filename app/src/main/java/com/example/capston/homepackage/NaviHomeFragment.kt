@@ -1,32 +1,36 @@
 package com.example.capston.homepackage
 
 import android.Manifest
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import androidx.viewbinding.ViewBinding
 import com.example.capston.*
+import com.example.capston.databinding.CustomBalloonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
-import com.google.protobuf.Internal
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQuery
+import com.firebase.geofire.GeoQueryDataEventListener
+import com.firebase.geofire.GeoQueryEventListener
+import com.google.firebase.database.DatabaseError
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.android.map.coord.MapCoord
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.w3c.dom.Text
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.*
@@ -39,43 +43,36 @@ import kotlin.math.*
 class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
+    // 카카오맵
     var listen: MarkerEventListener? = null
-
     private var kakaoMapViewContainer: FrameLayout? = null
-
-    //내 반려견 실종 버튼
-    var validLostBtn: Boolean = false
-
-    //실종 반려견 발견 버튼
-    var validFindBtn: Boolean = false
-
-    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
-    private val RequestPermissionCode = 1
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
-    private var isStart: Boolean = false
-    private var isPause: Boolean = false
-    private var tapTimer: Timer? = null
-    private val route = ArrayList<ArrayList<Double>>()
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
 
+    // 권한
+    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+    private val RequestPermissionCode = 1
+
+    private var isStart: Boolean = false
+    private var isPause: Boolean = false
+    private var tapTimer: Timer? = null
+    private val route = ArrayList<ArrayList<Double>>()
+
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-    // 실종 다이얼로그
-    private lateinit var dialog : DogInfoEnterDialog
-
     private lateinit var mainActivity: MainActivity
+    private val auth get() = mainActivity.auth
+    private val database get() = mainActivity.database
 
-    // create Retrofit
-    var retrofit = Retrofit.Builder()
-        .baseUrl("https://run.mocky.io/v3/4c1ead49-5c18-4624-8624-17951e4484f9")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    // GeoFire
+    private var geoFire : GeoFire? = null
+    private var geoQuery : GeoQuery? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -93,28 +90,27 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNaviHomeBinding.inflate(inflater, container, false)
 
         binding.lostBtn.setOnClickListener {
-            validLostBtn = true
             val intent = Intent(context, MissingActivity::class.java)
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
         }
 
+        binding.locationBtn.setOnClickListener {
+            kakaoMapView.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+        }
+
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
+        geoFire = GeoFire(database.child("geofire"))
 
-        val view = binding.root
-        return view
+        return binding.root
     }
 
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
-        mapReverseGeoCoder.startFindingAddress()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -126,12 +122,15 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         kakaoMapViewContainer?.removeAllViews()
 
         val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
+
         kakaoMapViewContainer?.addView(kakaoMapView)
 
         kakaoMapView.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
         kakaoMapView.setMapViewEventListener(this)
+
+
         kakaoMapView.setZoomLevel(0, true)
         kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.labrador_icon,
@@ -142,33 +141,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             MapPOIItem.ImageOffset(50, 50)
         )
         kakaoMapView.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
         kakaoMapView.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
-    }
-
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        var mainActivity: MainActivity? = null
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.ballon_layout, null)
-        val name: TextView = mCalloutBalloon.findViewById(R.id.ball_tv_name)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 마커 클릭 시 나오는 말풍선
-            name.text = poiItem?.itemName   // 해당 마커의 정보 이용 가능
-            return mCalloutBalloon
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-            return mCalloutBalloon
-        }
+        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,this))
     }
 
     // 메모리 누수 방지
@@ -197,6 +177,49 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onDestroy() {
         kakaoMapViewContainer?.removeAllViews()
         super.onDestroy()
+    }
+
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(inflater: LayoutInflater, val fragment: NaviHomeFragment): CalloutBalloonAdapter {
+
+        var mainActivity : MainActivity? = null
+        private var database = fragment.database.child("post").child("witness")
+        //        private var mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
+        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 마커 클릭 시 나오는 말풍선
+
+            database.child(poiItem?.itemName!!).get().addOnSuccessListener { task ->
+                viewBinding.timeText.text = (task.child("date").value.toString() + " " + task.child("time").value.toString())
+                viewBinding.nameText.text = "알 수 없음"
+                viewBinding.breedText.text = task.child("pet_info").child("breed").value.toString()
+
+//                mCalloutBalloon.findViewById<TextView>(R.id.name_text).text = "알 수 없음"
+//                mCalloutBalloon.findViewById<TextView>(R.id.breed_text).text =
+//                    task.child("pet_info").child("breed").value.toString()
+//                mCalloutBalloon.findViewById<TextView>(R.id.time_text).text =
+//                    (task.child("date").value.toString() + " " + task.child("time").value.toString())
+                if(fragment.isAdded()) {
+                    GlideApp.with(fragment)
+                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
+                        .into(viewBinding.enterImage)
+                }
+            }
+
+            return viewBinding.root
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            return viewBinding.root
+        }
+    }
+
+    fun findAddress() {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     // 위치 권한 설정 확인 함수
@@ -228,25 +251,26 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-
-        if (!isStart || isPause) {
-            return
-        }
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
-
-        mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
-
-        // 변환 주소 가져오기
-        if (!getAddress) {
-            findAddress()
-        }
+//
+//        if (!isStart || isPause) {
+//            return
+//        }
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+//
+//        route.add(arrayListOf(lat, lon))
+//
+//        mapPoint = p1
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
+//
+//        // 변환 주소 가져오기
+//        if (!getAddress) {
+//            findAddress()
+//        }
     }
+
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
     }
@@ -264,75 +288,113 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+
     }
+
+    private fun setMarker(p0: MapView?){
+
+        val bounds = p0?.mapPointBounds!!
+        val center = p0.mapCenterPoint
+
+        val leftX = bounds.bottomLeft.mapPointGeoCoord.longitude // 좌측 경도
+        val leftY = bounds.bottomLeft.mapPointGeoCoord.latitude // 좌측 위도
+
+        val rightX = bounds.topRight.mapPointGeoCoord.longitude // 우측 경도
+        val rightY = bounds.topRight.mapPointGeoCoord.latitude // 우측 위도
+
+        val radius = haversine(leftY,leftX,rightY,rightX)/2.0  // 좌하단~우상단 대각선 거리의 절반
+
+//        Log.i("좌하단","${leftX} + ${leftY}")
+//        Log.i("우상단","${rightX} + ${rightY}")
+
+        setGeoQuery(p0,center,radius)
+    }
+
+    private fun setGeoQuery(mapView: MapView?, center: MapPoint, radius : Double){
+
+        mapView?.removeAllPOIItems()
+
+        // center(화면중심)에서 radius(km단위)에 속하는 위치데이터들 검색함
+        if(geoQuery == null)
+            geoQuery = geoFire?.queryAtLocation(GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude),meterToKillo(radius))
+        else{
+            geoQuery?.center = GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude)
+            geoQuery?.radius = meterToKillo(radius)
+        }
+
+
+//        Log.d("center", "${center.mapPointGeoCoord.latitude} + ${center.mapPointGeoCoord.longitude}")
+//        Log.d("radius",radius.toString())
+
+        // 검색쿼리의 이벤트 리스너
+        geoQuery!!.addGeoQueryEventListener(object : GeoQueryEventListener {
+            // 아래 구현 - 쿼리로 키가 검색되면 실행됨
+            override fun onKeyEntered(key: String, location: GeoLocation) {
+                // 해당 위치 데이터의 정보를 가져오는 코드 작성
+//                Log.d("=Entered Key", key)
+
+//                Log.d("마커위치정보",location.latitude.toString() + " "+ location.longitude.toString())
+                val markerPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
+
+                val marker = MapPOIItem().apply {
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
+                    isCustomImageAutoscale = true
+                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                    itemName = key
+                    mapPoint = markerPoint
+                    isShowCalloutBalloonOnTouch = true
+                    tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+                }
+                mapView!!.addPOIItem(marker)
+            }
+
+            override fun onKeyExited(key: String) {
+                // 위치 데이터가 범위 밖으로 이탈했을 때의 코드 작성
+                // 이탈시 맵에서 삭제
+//                Log.d("Exited Key", key)
+//                Log.d("마커삭제 전",mapView?.poiItems?.size.toString())
+//                mapView?.removePOIItem(mapView.findPOIItemByTag(key.hashCode()))
+//                Log.d("마커삭제 후",mapView?.poiItems?.size.toString())
+            }
+            override fun onKeyMoved(key: String, location: GeoLocation) {
+                // 위치 데이터가 이동했을 때의 코드 작성
+            }
+            override fun onGeoQueryReady() {
+                // 초기 데이터 검색이 완료되었을 때 호출됩니다.
+
+            }
+            override fun onGeoQueryError(error: DatabaseError) {
+                // 위치 데이터 검색 중 에러가 발생했을 때 호출됩니다.
+            }
+        })
+    }
+
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        if (p0!!.currentLocationTrackingMode.toString() == "TrackingModeOff") {
-            return
+        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
         }
-        p0!!.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
 
         if (tapTimer != null) {
             tapTimer!!.cancel()
         }
-        tapTimer = timer(period = 3000, initialDelay = 3000) {
-            p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
-            cancel()
-        }
+        setMarker(p0)
     }
 
     override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+        setMarker(p0)
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
 
-        // mainActivity 변수 초기화(안해주면 사용 못함)
-        mainActivity = context as MainActivity
-
-        dog_lost_txt.visibility = View.INVISIBLE
-        dog_find_txt.visibility = View.INVISIBLE
-
-        if (validLostBtn) {
-//            dialog.show("Missing Dog Info Dialog")
-        }
-
-        if (validFindBtn) {
-
-            val dialog = Dialog(requireContext())
-            // 다이얼로그 테두리 둥글게 만들기
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-            dialog.setCancelable(true)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-            dialog.setContentView(R.layout.lost_dog_info)
-
-            val btnSave = dialog.findViewById<TextView>(R.id.yes_btn)
-            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-
-            btnSave.setOnClickListener {
-                val marker = MapPOIItem().apply {
-                    markerType = MapPOIItem.MarkerType.YellowPin
-                    itemName = "실종견"
-                    mapPoint = p1
-                    tag = 0
-                }
-                kakaoMapView!!.addPOIItem(marker)
-                dialog.dismiss()
-            }
-            btnCancel.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-            validFindBtn = false
-        }
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
@@ -377,7 +439,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
-            Log.d("markerClick", "ok")
+//            Log.d("markerClick", "ok")
 
         }
 
@@ -402,4 +464,3 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
     }
 }
-

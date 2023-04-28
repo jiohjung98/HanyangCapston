@@ -27,12 +27,15 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
+import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /*
  *  두번째 메뉴, 산책하기
@@ -43,12 +46,17 @@ class NaviWalkFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private val binding get() = _binding!!
     private var _binding: FragmentNaviWalkBinding? = null
+    private val binding get() = _binding!!
 
     private final val REQUEST_FIRST = 1010
-    var pet_info = PetInfo()
+    private var pet_info = PetInfo()
     lateinit var uri: Uri
+
+    // DB에서 불러올 정보들
+    private lateinit var DBpet : DatabaseReference
+    private var _cur_pet_num : String? = null
+    private val cur_pet_num get() = _cur_pet_num!!
 
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
     private lateinit var mainActivity: MainActivity
@@ -78,15 +86,15 @@ class NaviWalkFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
+        (activity as AppCompatActivity).supportActionBar?.show()
 
-        if (binding == null) {
-            return
-        }
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
         }
@@ -95,30 +103,22 @@ class NaviWalkFragment : Fragment() {
             onClickRegister(view)
         }
 
-        getImageFromStore()
+        binding.addingBtn.setOnClickListener {
+            onClickRegister(view)
+        }
+
+        // 현재 반려견 인덱스 불러오기
+        loadCurrentDog(0)
 
         initAddImage()
 
-        petname = requireView().findViewById<TextView>(R.id.walk_name)
-        breed = requireView().findViewById<TextView>(R.id.walk_breed)
-        gender = requireView().findViewById<TextView>(R.id.walk_gender)
-        age = requireView().findViewById<TextView>(R.id.walk_age)
+        petname = binding.walkName
+        breed = binding.walkBreed
+        gender = binding.walkGender
+        age = binding.walkAge
 
-        // DB에서 받아와서 정보 할당하기
-        val uid = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0")
-        uid.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // 등록된 반려견없음 (건너뛰기 등)
-                if(snapshot.value == null)
-                    invalidDog()
-                // 등록된 반려견 있음
-                else
-                    validDog(snapshot)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("DATABASE LOAD ERROR","정보 불러오기 실패")
-            }
-        })
+        setupData()
+        setupStatusHandler()
     }
 
     companion object {
@@ -128,39 +128,6 @@ class NaviWalkFragment : Fragment() {
             }
     }
 
-
-    private fun validDog(snapshot: DataSnapshot) {
-        Log.d("등록 있음", "${snapshot}")
-            binding.walkBtn.isEnabled = true
-            binding!!.walkBtn.visibility = View.VISIBLE
-
-            // 데이터가 변경되면 리스너가 감지함
-            // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
-            // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
-            petname.text = snapshot.child("pet_name").value.toString()
-            breed.text = snapshot.child("breed").value.toString()
-            age.text = snapshot.child("born").value.toString() + "년생"
-            if (snapshot.child("gender").value == 1)
-                gender.text = "♂"
-            else
-                gender.text = "♀"
-    }
-
-    private fun invalidDog(){
-//        Log.d("등록 없음","${snapshot}")
-        binding.registerBtn.visibility = View.VISIBLE
-        binding.walkAgeSlash.visibility = View.INVISIBLE
-        binding.walkBreedSlash.visibility = View.INVISIBLE
-        petname.text = "등록된 반려견이 없습니다"
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
-        (activity as AppCompatActivity).supportActionBar?.show()
-        setupData()
-        setupStatusHandler()
-    }
 
     //메모리 누수 방지
     override fun onDestroyView() {
@@ -177,59 +144,176 @@ class NaviWalkFragment : Fragment() {
     }
 
     private fun onClickRegister(view: View?) {
-        mainActivity.startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
-        mainActivity.finish()
+        (context as MainActivity).supportFragmentManager.beginTransaction().remove(this).commit()
+        (context as MainActivity).startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
+        (context as MainActivity).finish()
+    }
+
+    /*
+    현재 반려견 인덱스 불러오기
+    */
+    private fun loadCurrentDog(flag : Int){
+        // 현재 반려견 인덱스 불러오기
+        // 로컬에 해당 key 없으면 1 -> 아직 등록안했거나, 등록한건 있는데 앱 데이터 초기화
+        // 등록안해서 1이면 아래서 null -> invalid() 들어감
+        var cur_pet = mainActivity.sharedPreferences?.getInt("cur_pet",1)
+
+//        Log.d("loadCurrentDog 반려견 인덱스",cur_pet.toString())
+
+        DBpet = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet.toString())
+        DBpet.get().addOnSuccessListener { snapshot ->
+//            Log.d("리스너","DBPet addOnSuccessListener listener called")
+            if (snapshot.value == null){
+//                    Log.d("snapshot", "null")
+                invalidDog()
+            }
+            // 등록된 반려견 있음
+            else {
+                validDog(snapshot)
+                setupMyDogList(cur_pet!!)
+                setupMyDogHandler()
+            }
+        }
+
+    }
+
+    private fun validDog(snapshot: DataSnapshot) {
+        Log.d("등록 있음", "${snapshot}")
+
+        getImageFromStore(snapshot)
+
+        binding.registerBtn.visibility = View.GONE
+        binding.walkBtn.isEnabled = true
+        binding.walkBtn.visibility = View.VISIBLE
+
+        // 데이터가 변경되면 리스너가 감지함
+        // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
+        // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
+        petname.text = snapshot.child("pet_name").value.toString()
+        breed.text = snapshot.child("breed").value.toString()
+        age.text = snapshot.child("born").value.toString() + "년생"
+        if (snapshot.child("gender").value == 1)
+            gender.text = "♂"
+        else
+            gender.text = "♀"
+    }
+
+    private fun invalidDog(){
+        Log.d("등록 없음","")
+        binding.registerBtn.visibility = View.VISIBLE
+        binding.walkAgeSlash.visibility = View.INVISIBLE
+        binding.walkBreedSlash.visibility = View.INVISIBLE
+        binding.addingBtn.visibility = View.INVISIBLE
+        binding.addingBtn.isEnabled = false
+        petname.text = "등록된 반려견이 없습니다"
     }
 
     /*
      * 갤러리에서 이미지 가져와서 image area에 띄움
      */
-    private fun getImageFromStore() {
-        val url = database.child("users").child(auth.currentUser!!.uid).child("pet_list").child("0").child("image_url")
-        url.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (MainActivity() == null) {
-                    return;
-                }
-                Log.d("IMAGE URL","${Uri.parse(snapshot.value.toString())}")
-                if (isAdded()) {
-                    GlideApp.with(this@NaviWalkFragment).load(Uri.parse(snapshot.value.toString()))
-                        .into(binding.profile)
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
+    private fun getImageFromStore(snapshot: DataSnapshot) {
+        // database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(cur_pet_num)
+        val url = snapshot.child("image_url").value.toString()
+        if (isAdded()) {
+//            Log.d("IMAGE URL",url)
+            GlideApp.with(this@NaviWalkFragment).load(Uri.parse(url))
+                .into(binding.profile)
+        }
     }
 
+    /*
+     반려견 선택 스피너 설정
+     */
+    private fun setupMyDogList(cur_pet : Int){
+        // 스피너보이게
+        binding.petSelectBox.visibility = View.VISIBLE
+        val DogArray = ArrayList<String>()
+
+        // 이름 읽어오기
+        database.child("users").child(auth.currentUser!!.uid).get().addOnSuccessListener { result ->
+            // DogArray 배열에 DB상 반려견 이름들 추가
+            for (item in result.child("pet_list").children) {
+                Log.d("pet_list", item.child("pet_name").value.toString())
+                DogArray.add(item.child("pet_name").value.toString())
+            }
+            val statusAdapter =
+                object : ArrayAdapter<String>(requireContext(), R.layout.gender_spinner) {
+                    override fun getView(
+                        position: Int,
+                        convertView: View?,
+                        parent: ViewGroup
+                    ): View {
+                        val v = super.getView(position, convertView, parent)
+                        var tv = v as TextView
+                        tv.setTextSize(/* size = */ 12f)
+                        if (position == count) {
+
+                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
+//                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = "선택"
+
+                        }
+                        return v
+                    }
+
+                    override fun getCount(): Int {
+                        return super.getCount() - 1
+                    }
+                }
+
+            statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            statusAdapter.addAll(DogArray.toMutableList())
+            statusAdapter.add(" 선택")
 
 
+            _binding!!.petSelectSpinner.adapter = statusAdapter
+
+            // 스피너 onItemSelectedListener 호출됨
+            pet_select_spinner.setSelection(cur_pet.minus(1))
+//            Log.d("setupMyDogList 받은 cur_pet",cur_pet.toString())
+            pet_select_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
+        }
+    }
+
+    private fun setupMyDogHandler() {
+        val uid = database.child("users").child(auth.currentUser!!.uid)
+        binding.petSelectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+//                Log.d("onItemSelected listener called position",position.toString())
+
+                // NaviWalk 진입 때마다 setupMyDogList에서 꼭 한번씩 호출됨
+
+                // 반려견 사진, 정보 reload
+                database.child("users").child(auth.currentUser!!.uid).child("pet_list").child(position.plus(1).toString())
+                    .get().addOnSuccessListener { snapshot ->
+                        validDog(snapshot)
+                    }
+
+                mainActivity.sharedPreferences?.edit()?.putInt("cur_pet", position.plus(1))?.apply()
+//                Log.d("변경된 반려견 인덱스", mainActivity.sharedPreferences?.getInt("cur_pet", -1).toString())
+
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+    }
 
     private fun setupData() {
-
         val statusData = resources.getStringArray(R.array.spinner_ddong)
-
         val statusAdapter = object : ArrayAdapter<String>(requireContext(),R.layout.gender_spinner) {
-
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
                 val v = super.getView(position, convertView, parent)
                 var tv = v as TextView
                 tv.setTextSize(/* size = */ 12f)
                 if (position == count) {
-
                     (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
 //                    (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = " 선택"
-
                 }
                 return v
             }
-
             override fun getCount(): Int {
                 return super.getCount() - 1
             }
-
         }
 
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -237,7 +321,7 @@ class NaviWalkFragment : Fragment() {
         statusAdapter.addAll(statusData.toMutableList())
         statusAdapter.add(" 선택")
 
-        _binding!!.dogDdongSpinner.adapter = statusAdapter
+        binding.dogDdongSpinner.adapter = statusAdapter
 
         dog_ddong_spinner.setSelection(statusAdapter.count)
         dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
@@ -249,17 +333,12 @@ class NaviWalkFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when(position) {
                     0 -> {
-
                     }
                     else -> {
-
                     }
                 }
-
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
-
             }
         }
     }
@@ -298,6 +377,9 @@ class NaviWalkFragment : Fragment() {
         }
     }
 
+    /*
+     카메라 버튼 클릭 이벤트 설정
+     */
     private fun initAddImage() {
         binding.camera.setOnClickListener {
             when {

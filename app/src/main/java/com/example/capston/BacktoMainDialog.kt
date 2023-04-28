@@ -5,17 +5,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.*
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.BacktomainDialogBinding
 
 
-class BacktoMainDialog(private val context : AppCompatActivity) {
+class BacktoMainDialog(private val activity: MissingActivity) {
     private lateinit var listener : MyDialogOKClickedListener
     private lateinit var binding : BacktomainDialogBinding
-    private var BackMainDialog = Dialog(context)   //부모 액티비티의 context 가 들어감
+    private var BackMainDialog = Dialog(activity)   //부모 액티비티의 context 가 들어감
 
     fun show() {
-        binding = BacktomainDialogBinding.inflate(context.layoutInflater)
+        binding = BacktomainDialogBinding.inflate(activity.layoutInflater)
 
         // 다이얼로그 테두리 둥글게 만들기
         BackMainDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -51,9 +52,10 @@ class BacktoMainDialog(private val context : AppCompatActivity) {
     }
 
     private fun backProcess(){
-        val intent = Intent(context, MainActivity::class.java)
-        context.startActivity(intent)
-        context.finish()
+        activity.kakaoMapViewContainer?.removeAllViews()
+        val intent = Intent(activity, MainActivity::class.java)
+        activity.startActivity(intent)
+        activity.finish()
     }
 
     interface MyDialogOKClickedListener {

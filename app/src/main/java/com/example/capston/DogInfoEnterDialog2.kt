@@ -22,7 +22,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.capston.databinding.LostDogInfoBinding
+import com.example.capston.databinding.SpotDogInfoBinding
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.core.GeoHash
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -30,23 +33,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick  {
+class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClick  {
 
     private final val REQUEST_FIRST = 1010
 
     private lateinit var listener : MyDialogOKClickedListener
-    private var _binding : LostDogInfoBinding? = null
+    private var _binding : SpotDogInfoBinding? = null
     private val binding get() = _binding!!
 
     private var _dlg : Dialog? = null   //부모 액티비티의 context 가 들어감
     private val dlg get() = _dlg!!
 
     // 확인버튼 활성화 확인
-    private var validName: Boolean= false
     private var validBreed: Boolean= false
     private var validTime: Boolean= false
     private var validGender : Boolean = false
-    private var validBorn : Boolean = false
     private var validContent: Boolean= false
     private var validImage: Boolean= false
 
@@ -62,16 +63,16 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     private lateinit var pet_info : PetInfo
     private lateinit var post : UserPost
 
+    private val geoFire = GeoFire(activity.database.child("geofire"))
+
     fun initialize(){
         _dlg?.dismiss()
         _dlg = Dialog(activity)
         _uri = null
 
-        validName = false
         validBreed = false
         validTime = false
         validGender = false
-        validBorn = false
         validContent = false
         validImage = false
 
@@ -83,7 +84,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     // 갤러리 불러오기 이후 수행할 동작 설정
     fun setLauncher() {
         _dlg?.dismiss()
-        activity.lostLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        activity.witLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     _uri = result.data?.data
@@ -95,7 +96,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
     fun show(mapView: MapView?,poiItem: MapPOIItem?) {
         initialize()
-        _binding = LostDogInfoBinding.inflate(activity.layoutInflater)
+        _binding = SpotDogInfoBinding.inflate(activity.layoutInflater)
 
         // 다이얼로그 테두리 둥글게 만들기
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -111,29 +112,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         params.y = 500
         dlg.window!!.attributes = params
 
-        // ↓↓↓ 버튼 및 텍스트리스너 설정
-
-        binding.nameInput.setOnTouchListener(View.OnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    breed_recycleR.visibility = View.INVISIBLE
-                    BreedSearch.clearFocus()
-                }
-            }
-            false
-        })
-
-        // 이름 텍스트 리스너
-        binding.nameInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable) {
-                // 이름값 할당
-                pet_info.pet_name = binding.nameInput.text.toString()
-                validName = editable.isNotEmpty()
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-        })
 
         // 날짜 시간 리스너
         binding.timeInput.setOnClickListener {
@@ -161,7 +139,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
                     validTime = true
 
-                    checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                    checkValid( validBreed, validTime,  validGender, validContent, validImage)
 
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
                 timePickerDialog.show()
@@ -176,7 +154,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.contentInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validContent = true
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -187,7 +165,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.yesBtn.setOnClickListener {
             // post 데이터 객체 값 할당
             post.uid = activity.auth.currentUser!!.uid
-            post.category = 0
+            post.category = 1 // 목격 = 1
             post.pet_info = this.pet_info
             post.content = binding.contentInput.text.toString()
 
@@ -219,8 +197,8 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         setupGenderData()
         setupGenderHandler()
 
-        setupAgeData()
-        setupAgeHandler()
+//        setupAgeData()
+//        setupAgeHandler()
 
         initAddImage()
 
@@ -279,7 +257,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             editText.setHintTextColor(Color.BLACK)
             // 포커스 초기화
             BreedSearch.clearFocus()
-            binding.nameInput.clearFocus()
+//            binding.nameInput.clearFocus()
             Log.d("견종이름",breedAdapter.choose_breed)
             // 견종 저장
             pet_info.breed = breedAdapter.choose_breed
@@ -343,7 +321,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                         Log.d("스피너2", "$validGender")
                     }
                 }
-                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage)
                 // 성별 저장
 //                Log.d("GENDER", "${position.toString()}")
                 if(position==1) // 수
@@ -357,56 +335,56 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         }
     }
 
-    private fun setupAgeData() {
-        val ageData = activity.resources.getStringArray(R.array.spinner_age)
-        val ageAdapter = object : ArrayAdapter<String>(activity, R.layout.breed_spinner) {
-
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent)
-                if (position == count) {
-                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
-                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
-                }
-                return v
-            }
-            override fun getCount(): Int {
-                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
-                return super.getCount() - 1
-            }
-        }
-        ageAdapter.addAll(ageData.toMutableList())
-        ageAdapter.add("출생연도를 선택해주세요.")
-
-        binding.bornSpinner.adapter = ageAdapter
-
-        binding.bornSpinner.setSelection(ageAdapter.count)
-        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
-    }
-
-    private fun setupAgeHandler() {
-        binding.bornSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                breed_recycleR.visibility= View.INVISIBLE
-                BreedSearch.clearFocus()
-                when (position) {
-                    0 -> {
-                        validBorn = true
-                    }
-                    else -> {
-                        validBorn = true
-                        Log.d("스피너3", "$validBorn")
-                    }
-                }
-                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
-                // 출생년도 저장
-                pet_info.born = binding.bornSpinner.selectedItem.toString()
-//                Log.d("BORN YEAR", "${pet_info.born}")
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                validBorn = false
-            }
-        }
-    }
+//    private fun setupAgeData() {
+//        val ageData = activity.resources.getStringArray(R.array.spinner_age)
+//        val ageAdapter = object : ArrayAdapter<String>(activity, R.layout.breed_spinner) {
+//
+//            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+//                val v = super.getView(position, convertView, parent)
+//                if (position == count) {
+//                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
+//                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
+//                }
+//                return v
+//            }
+//            override fun getCount(): Int {
+//                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
+//                return super.getCount() - 1
+//            }
+//        }
+//        ageAdapter.addAll(ageData.toMutableList())
+//        ageAdapter.add("출생연도를 선택해주세요.")
+//
+//        binding.bornSpinner.adapter = ageAdapter
+//
+//        binding.bornSpinner.setSelection(ageAdapter.count)
+//        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+//    }
+//
+//    private fun setupAgeHandler() {
+//        binding.bornSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+//                breed_recycleR.visibility= View.INVISIBLE
+//                BreedSearch.clearFocus()
+//                when (position) {
+//                    0 -> {
+//                        validBorn = true
+//                    }
+//                    else -> {
+//                        validBorn = true
+//                        Log.d("스피너3", "$validBorn")
+//                    }
+//                }
+//                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+//                // 출생년도 저장
+//                pet_info.born = binding.bornSpinner.selectedItem.toString()
+////                Log.d("BORN YEAR", "${pet_info.born}")
+//            }
+//            override fun onNothingSelected(p0: AdapterView<*>?) {
+//                validBorn = false
+//            }
+//        }
+//    }
 
     private fun dipToPixels(dipValue: Float): Float {
         return TypedValue.applyDimension(
@@ -418,7 +396,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
 
     fun setOnOKClickedListener(listener: (String) -> Unit) {
-        this.listener = object: DogInfoEnterDialog.MyDialogOKClickedListener {
+        this.listener = object: DogInfoEnterDialog2.MyDialogOKClickedListener {
             override fun onOKClicked(content: String) {
                 listener(content)
             }
@@ -473,7 +451,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
-        checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+        checkValid( validBreed, validTime,  validGender, validContent, validImage)
     }
 
     /*
@@ -482,7 +460,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     private fun getImageFromAlbum() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        activity.lostLauncher!!.launch(intent)
+        activity.witLauncher!!.launch(intent)
     }
 
 
@@ -491,7 +469,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      */
     private fun uploadImageToStorage(uri: Uri) {
         // storage 참조
-        val storageRef = activity.storage.getReference("images").child("lost")
+        val storageRef = activity.storage.getReference("images").child("witness")
         // storage에 저장할 파일명 선언
         val fileName = activity.auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")
@@ -527,19 +505,24 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      * 파이어베이스 db에 포스트 업로드
      */
     private fun uploadPost() {
-        val ref = activity.database.child("post").child("lost").child(activity.uid).push()
+        val ref = activity.database.child("post").child("witness").push()
         ref.setValue(post).addOnSuccessListener {
-            // post 고유키 저장 - 나중에 쓸데가 있을지도
+            // post 고유키
             val key = ref.key
+            val loc = GeoLocation(post.latitude!!,post.longitude!!)
+            // geofire 아래 post의 key로 쿼리용 위치정보 저장
+            geoFire.setLocation(key, loc)
+            val geoHash = GeoHash(loc)
+//            Log.d("GEO HASH", geoHash.toString())
         }
     }
 
     /*
      * 확인버튼 검사
      */
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean, v6:Boolean, v7:Boolean){
-        Log.d("Valid", (v1 && v2 && v3 && v4 && v5 && v6 && v7).toString())
-        if(v1 && v2 && v3 && v4 && v5 && v6 && v7){
+    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean){
+        Log.d("Valid", (v1 && v2 && v3 && v4 && v5).toString())
+        if(v1 && v2 && v3 && v4 && v5){
             binding.yesBtn.isEnabled = true
             binding.yesBtn.isClickable = true
         } else {
