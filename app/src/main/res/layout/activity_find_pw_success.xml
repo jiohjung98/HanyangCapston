@@ -41,7 +41,7 @@
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="회원가입 시 설정한 비밀번호는"
+        android:text="비밀번호 재설정 링크를"
         android:textColor="#574444"
         android:textSize="13dp"
         android:layout_marginTop="25dp"
@@ -58,21 +58,11 @@
         app:layout_constraintStart_toStartOf="@+id/background"
         app:layout_constraintEnd_toEndOf="@id/background">
 
-    <TextView
-        android:id="@+id/receive_pw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="22dp"
-        android:text="ddd"
-        android:layout_gravity="center"
-        />
-
         <TextView
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="입니다."
+            android:text="이메일로 전송했습니다."
             android:textColor="#574444"
             android:textSize="13dp"
             android:layout_marginStart="3dp"

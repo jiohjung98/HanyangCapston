@@ -10,7 +10,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/background"
     android:layout_width="match_parent"
-    android:background="#F8F4EA"
     android:layout_height="match_parent">
 
     <View
