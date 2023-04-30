@@ -1,11 +1,13 @@
 package com.example.capston
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityMissingAfterBinding
 import kotlinx.android.synthetic.main.activity_dog_register.*
 
+@Suppress("DEPRECATION")
 class MissingAfterActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMissingAfterBinding
@@ -20,5 +22,10 @@ class MissingAfterActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+
+        Handler().postDelayed(Runnable {
+            val intent = Intent(this, TrackingActivity::class.java)
+            startActivity(intent)
+        }, 3000)
     }
 }

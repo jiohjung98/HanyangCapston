@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".DogRegisterEndActivity">
 
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieView"
         android:layout_width="0dp"
@@ -63,12 +62,10 @@
         android:background="@drawable/agree_nextbtn_color"
         android:gravity="center"
         android:enabled="true"
-        android:text="다음으로 이동"
+        android:text="메인으로 이동"
         android:textColor="#FFF3E5"
         android:layout_marginBottom="57dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
