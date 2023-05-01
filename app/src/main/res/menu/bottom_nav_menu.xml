@@ -3,26 +3,20 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/bottom_nav_selector_home"
+        android:icon="@drawable/walk_click_icon"
         android:checkable="false"
-        android:title="산책" />
+        android:title="실종" />
 
 
     <item
         android:id="@+id/navigation_community"
-        android:icon="@drawable/bottom_nav_selector_calendar"
+        android:icon="@drawable/map_click_icon"
         android:checkable="false"
-        android:title="실종" />
-
-    <item
-        android:id="@+id/navigation_calendar"
-        android:icon="@drawable/bottom_nav_selector_community"
-        android:checkable="false"
-        android:title="커뮤니티" />
+        android:title="산책" />
 
     <item
         android:id="@+id/navigation_mypage"
-        android:icon="@drawable/bottom_nav_selector_mypage"
+        android:icon="@drawable/setting_click_icon"
         android:checkable="false"
         android:title="마이페이지" />
 

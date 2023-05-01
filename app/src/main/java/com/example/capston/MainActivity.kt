@@ -110,9 +110,9 @@ class MainActivity : AppCompatActivity(), CustomDialog {
                     R.id.navigation_community -> {
                         NaviWalkFragment()
                     }
-                    R.id.navigation_calendar -> {
-                        Calendar_fragment()
-                    }
+//                    R.id.navigation_calendar -> {
+//                        Calendar_fragment()
+//                    }
                     else -> {
                         NaviMypageFragment()
                     }

@@ -22,7 +22,7 @@
             android:visibility="visible"
             android:enabled="true"
             android:layout_marginEnd="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ddong_btn"
             app:layout_constraintTop_toTopOf="@id/profile" />
 
         <TextView
@@ -200,7 +200,6 @@
             app:layout_constraintTop_toTopOf="@id/walk_age" />
 
         <Button
-
             android:id="@+id/walkBtn"
             android:layout_width="65sp"
             android:layout_height="0dp"
@@ -209,6 +208,8 @@
             android:fontFamily="@font/dungeon"
             android:background="@drawable/circle"
             android:visibility="invisible"
+            android:layout_marginStart="20sp"
+            app:layout_constraintStart_toEndOf="@+id/ddong_btn"
             app:layout_constraintTop_toTopOf="@id/walk_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
@@ -223,6 +224,8 @@
             android:fontFamily="@font/dungeon"
             android:background="@drawable/circle"
             android:visibility="visible"
+            android:layout_marginStart="20sp"
+            app:layout_constraintStart_toEndOf="@+id/ddong_btn"
             app:layout_constraintTop_toTopOf="@id/walk_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
@@ -238,15 +241,9 @@
             android:background="@drawable/circle"
             android:visibility="visible"
             app:layout_constraintTop_toTopOf="@id/walk_name"
-            app:layout_constraintStart_toEndOf="@id/walk_gender"
-            app:layout_constraintEnd_toStartOf="@id/register_btn"
+            app:layout_constraintEnd_toEndOf="@+id/profile"
             app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
             android:layout_marginStart="150sp" />
-
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
