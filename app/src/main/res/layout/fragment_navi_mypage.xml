@@ -162,7 +162,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="32dp"
         android:background="@drawable/confirm_btn" />
-    
 
     <TextView
         android:id="@+id/change_pw"
@@ -310,6 +309,7 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/teamName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="인지조화"

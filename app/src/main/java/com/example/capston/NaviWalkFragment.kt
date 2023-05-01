@@ -118,7 +118,7 @@ class NaviWalkFragment : Fragment() {
         age = binding.walkAge
 
         setupData()
-        setupStatusHandler()
+//        setupStatusHandler()
     }
 
     companion object {
@@ -321,27 +321,27 @@ class NaviWalkFragment : Fragment() {
         statusAdapter.addAll(statusData.toMutableList())
         statusAdapter.add(" 선택")
 
-        binding.dogDdongSpinner.adapter = statusAdapter
-
-        dog_ddong_spinner.setSelection(statusAdapter.count)
-        dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
+//        binding.dogDdongSpinner.adapter = statusAdapter
+//
+//        dog_ddong_spinner.setSelection(statusAdapter.count)
+//        dog_ddong_spinner.dropDownVerticalOffset = dipToPixels(15f).toInt()
     }
 
 
-    private fun setupStatusHandler() {
-        _binding?.dogDdongSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                when(position) {
-                    0 -> {
-                    }
-                    else -> {
-                    }
-                }
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-    }
+//    private fun setupStatusHandler() {
+//        _binding?.dogDdongSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+//                when(position) {
+//                    0 -> {
+//                    }
+//                    else -> {
+//                    }
+//                }
+//            }
+//            override fun onNothingSelected(p0: AdapterView<*>?) {
+//            }
+//        }
+//    }
 
 
     private fun dipToPixels(dipValue: Float): Float {

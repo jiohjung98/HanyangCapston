@@ -68,6 +68,15 @@
         app:layout_constraintTop_toBottomOf="@+id/line"
         tools:listitem="@layout/layout_community_rc_view_item" />
 
+    <net.daum.mf.map.api.MapView
+        android:id="@+id/trackingMapView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/line"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
 
 
 
