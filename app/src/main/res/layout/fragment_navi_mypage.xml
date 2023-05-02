@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/my_page_fr"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,11 +31,11 @@
      <androidx.constraintlayout.widget.ConstraintLayout
          android:id="@+id/topView"
          android:layout_width="match_parent"
-         android:layout_height="70dp"
+         android:layout_height="80sp"
          app:layout_constraintStart_toStartOf="parent"
          app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintTop_toTopOf="parent"
-         android:background="#F8F4EA">
+         >
 
          <TextView
              android:id="@+id/receive_name"
@@ -37,10 +45,11 @@
              android:text=""
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintBottom_toBottomOf="@+id/topView"
+             android:layout_marginStart="35sp"
              android:fontFamily="@font/dungeon"
              android:textColor="@color/black"
-             android:layout_marginTop="25dp"
-             android:layout_marginStart="32dp" />
+             />
 
          <TextView
              android:id="@+id/text"
@@ -53,220 +62,211 @@
              app:layout_constraintStart_toEndOf="@id/receive_name"
              app:layout_constraintTop_toTopOf="@id/receive_name"
               />
-
-<!--         <TextView-->
-<!--             android:id="@+id/dog_text"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:textSize="20sp"-->
-<!--             android:text="반려견 정보:"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             app:layout_constraintStart_toStartOf="@+id/receive_name"-->
-<!--             app:layout_constraintTop_toBottomOf="@id/receive_name"-->
-<!--             android:layout_marginTop="10dp" />-->
-
-
-
-<!--         <TextView-->
-<!--             android:id="@+id/receive_dog_name"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:text=""-->
-<!--             android:textSize="20sp"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             android:layout_marginStart="10dp"-->
-<!--             app:layout_constraintTop_toTopOf="@+id/dog_text"-->
-<!--             app:layout_constraintBottom_toBottomOf="@+id/dog_text"-->
-<!--             app:layout_constraintStart_toEndOf="@+id/dog_text"/>-->
-
-<!--         <TextView-->
-<!--             android:id="@+id/text1"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:text="/"-->
-<!--             android:textSize="20sp"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             app:layout_constraintTop_toTopOf="@+id/dog_text"-->
-<!--             app:layout_constraintBottom_toBottomOf="@+id/dog_text"-->
-<!--             app:layout_constraintStart_toEndOf="@+id/receive_dog_name"-->
-<!--             />-->
-
-<!--         <TextView-->
-<!--             android:id="@+id/receive_breed"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:text=""-->
-<!--             android:textSize="20dp"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             app:layout_constraintTop_toTopOf="@+id/dog_text"-->
-<!--             app:layout_constraintBottom_toBottomOf="@+id/dog_text"-->
-<!--             app:layout_constraintStart_toEndOf="@+id/text1"/>-->
-
-<!--         <TextView-->
-<!--             android:id="@+id/text2"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:text="/"-->
-<!--             android:textSize="20dp"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             app:layout_constraintTop_toTopOf="@+id/dog_text"-->
-<!--             app:layout_constraintBottom_toBottomOf="@+id/dog_text"-->
-<!--             app:layout_constraintStart_toEndOf="@+id/receive_breed"/>-->
-<!--         <TextView-->
-<!--             android:id="@+id/receive_gender"-->
-<!--             android:layout_width="wrap_content"-->
-<!--             android:layout_height="wrap_content"-->
-<!--             android:text=""-->
-<!--             android:textSize="20dp"-->
-<!--             android:fontFamily="@font/dungeon"-->
-<!--             android:textColor="@color/google_login"-->
-<!--             app:layout_constraintTop_toTopOf="@+id/dog_text"-->
-<!--             app:layout_constraintBottom_toBottomOf="@+id/dog_text"-->
-<!--             app:layout_constraintStart_toEndOf="@+id/text2"/>-->
      </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dog_frame"
+        android:layout_width="0dp"
+        android:layout_height="80sp"
+        android:layout_marginStart="35sp"
+        android:layout_marginEnd="35sp"
+        android:background="@drawable/dogframe"
         app:layout_constraintTop_toBottomOf="@+id/topView"
-        android:background="#DADADA" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+<!--    <View-->
+<!--        android:id="@+id/line"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="2dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/topView"-->
+<!--        android:background="#DADADA" />-->
+
+    <TextView
+        android:id="@+id/adminTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="계정관리"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dog_frame"
+        android:layout_marginStart="35sp"
+        android:layout_marginTop="20sp" />
 
     <TextView
         android:id="@+id/dog_admin"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15sp"
         android:text="반려견 관리"
+        android:textColor="@color/black"
         android:fontFamily="@font/dungeon"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line" />
+        android:layout_marginStart="35sp"
+        app:layout_constraintStart_toStartOf="@id/adminTxt"
+        app:layout_constraintTop_toBottomOf="@+id/adminTxt" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/write_detail_btn"
-        android:layout_width="7dp"
-        android:layout_height="13dp"
-        app:layout_constraintTop_toTopOf="@+id/dog_admin"
-        app:layout_constraintBottom_toBottomOf="@+id/dog_admin"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/confirm_btn" />
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/write_detail_btn"-->
+<!--        android:layout_width="7dp"-->
+<!--        android:layout_height="13dp"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/dog_admin"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/dog_admin"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginRight="35dp"-->
+<!--        android:background="@drawable/confirm_btn" />-->
 
     <TextView
         android:id="@+id/change_pw"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20sp"
         android:text="비밀번호 변경"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        android:layout_marginStart="35sp"
+        app:layout_constraintStart_toStartOf="@id/dog_admin"
         app:layout_constraintTop_toBottomOf="@+id/dog_admin" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/change_pw_btn"
-        android:layout_width="7dp"
-        android:layout_height="13dp"
-        app:layout_constraintTop_toTopOf="@+id/change_pw"
-        app:layout_constraintBottom_toBottomOf="@+id/change_pw"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/confirm_btn" />
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/change_pw_btn"-->
+<!--        android:layout_width="7dp"-->
+<!--        android:layout_height="13dp"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/change_pw"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/change_pw"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginRight="35dp"-->
+<!--        android:background="@drawable/confirm_btn" />-->
+
+        <View
+            android:id="@+id/admin_line"
+            android:layout_width="0dp"
+            android:layout_height="2sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginStart="30sp"
+            android:layout_marginEnd="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/change_pw"
+            android:background="#DADADA" />
+
+
+    <TextView
+        android:id="@+id/serviceTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="서비스설정"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/admin_line"
+        android:layout_marginStart="35sp"
+        android:layout_marginTop="20sp" />
+
 
     <TextView
         android:id="@+id/service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15sp"
         android:text="서비스 약관"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/change_pw" />
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@id/serviceTxt"
+        app:layout_constraintTop_toBottomOf="@+id/serviceTxt" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/service_detail_btn"
-        android:layout_width="7dp"
-        android:layout_height="13dp"
-        app:layout_constraintTop_toTopOf="@+id/service"
-        app:layout_constraintBottom_toBottomOf="@+id/service"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/confirm_btn" />
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/service_detail_btn"-->
+<!--        android:layout_width="7dp"-->
+<!--        android:layout_height="13dp"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/service"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/service"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginRight="35dp"-->
+<!--        android:background="@drawable/confirm_btn" />-->
 
     <TextView
         android:id="@+id/question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
         android:text="자주 묻는 질문"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        android:layout_marginTop="20sp"
+        app:layout_constraintStart_toStartOf="@id/serviceTxt"
         app:layout_constraintTop_toBottomOf="@+id/service" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/question_btn"
-        android:layout_width="7dp"
-        android:layout_height="13dp"
-        app:layout_constraintTop_toTopOf="@+id/question"
-        app:layout_constraintBottom_toBottomOf="@+id/question"
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/question_btn"-->
+<!--        android:layout_width="7dp"-->
+<!--        android:layout_height="13dp"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/question"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/question"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginRight="35dp"-->
+<!--        android:background="@drawable/confirm_btn" />-->
+
+    <View
+        android:id="@+id/service_line"
+        android:layout_width="0dp"
+        android:layout_height="2sp"
+        android:layout_marginTop="25sp"
+        android:layout_marginStart="30sp"
+        android:layout_marginEnd="30sp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/confirm_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/question"
+        android:background="#DADADA" />
+
+    <TextView
+        android:id="@+id/companyTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="고객센터"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/service_line"
+        android:layout_marginStart="35sp"
+        android:layout_marginTop="20sp" />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15sp"
+        android:text="전화 문의"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@id/companyTxt"
+        app:layout_constraintTop_toBottomOf="@+id/companyTxt" />
 
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15sp"
         android:text="이메일 문의"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question" />
-
-    <TextView
-        android:id="@+id/version_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
-        android:text="버전"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
-
-    <TextView
-        android:id="@+id/version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/version_text"
-        app:layout_constraintBottom_toBottomOf="@+id/version_text"
-        android:text="0.0.10"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp" />
-
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@id/companyTxt"
+        app:layout_constraintTop_toBottomOf="@+id/phone" />
 
     <View
         android:id="@+id/line2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="2dp"
+        android:layout_marginStart="30sp"
+        android:layout_marginEnd="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/version_text"
-        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        android:layout_marginTop="25sp"
         android:background="#DADADA" />
 
     <TextView
@@ -275,7 +275,7 @@
         android:layout_height="wrap_content"
         android:text="회원탈퇴"
         android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="@+id/version"
+        app:layout_constraintEnd_toEndOf="@+id/line2"
         app:layout_constraintTop_toBottomOf="@+id/line2" />
 
     <TextView
@@ -290,13 +290,13 @@
 
     <TextView
         android:id="@+id/call"
-        android:layout_marginBottom="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="대표전화: 010-2851-5729"
         android:textSize="12dp"
-        app:layout_constraintStart_toStartOf="@id/dog_admin"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_marginTop="5sp"
+        app:layout_constraintTop_toBottomOf="@+id/location"
+        app:layout_constraintStart_toStartOf="@id/teamName"/>
 
     <TextView
         android:id="@+id/location"
@@ -304,20 +304,34 @@
         android:layout_height="wrap_content"
         android:text="경기 안산시 상록구 한양대학로 55"
         android:textSize="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/call"
-        app:layout_constraintStart_toStartOf="@+id/call"
+        android:layout_marginTop="8sp"
+        app:layout_constraintTop_toBottomOf="@+id/teamName"
+        app:layout_constraintStart_toStartOf="@id/teamName"
         android:layout_marginBottom="4dp" />
 
     <TextView
         android:id="@+id/teamName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40sp"
         android:text="인지조화"
         android:textSize="14dp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/location"
-        app:layout_constraintStart_toStartOf="@+id/call"
-        android:layout_marginBottom="6dp" />
+        app:layout_constraintTop_toBottomOf="@+id/withdraw"
+        app:layout_constraintStart_toStartOf="@id/companyTxt" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="버전: 1.0.1"
+        android:textSize="12dp"
+        android:layout_marginTop="5sp"
+        android:layout_marginStart="35sp"
+        android:layout_marginBottom="20sp"
+        app:layout_constraintStart_toStartOf="@+id/teamName"
+        app:layout_constraintTop_toBottomOf="@+id/call" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -58,7 +58,7 @@ class NaviMypageFragment : Fragment() {
 //        return view
         binding = FragmentNaviMypageBinding.inflate(inflater, container, false)
 
-        binding.serviceDetailBtn.setOnClickListener{
+        binding.service.setOnClickListener{
 //            childFragmentManager.beginTransaction().apply {
 //                replace(R.id.my_page_fr, serviceFragment)
 //                addToBackStack(null)
@@ -71,7 +71,7 @@ class NaviMypageFragment : Fragment() {
             }
         }
 
-        binding.changePwBtn.setOnClickListener{
+        binding.changePw.setOnClickListener{
             parentFragmentManager.beginTransaction().apply {
                 replace(R.id.main_frm, changePwFragment)
                     .addToBackStack(null)
@@ -79,7 +79,7 @@ class NaviMypageFragment : Fragment() {
             }
         }
 
-        binding.writeDetailBtn.setOnClickListener{
+        binding.dogAdmin.setOnClickListener{
             parentFragmentManager.beginTransaction().apply {
                 replace(R.id.main_frm, wroteFragment)
                     .addToBackStack(null)

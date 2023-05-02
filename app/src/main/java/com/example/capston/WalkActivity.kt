@@ -540,7 +540,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private fun runningDog() {
         runningDogImageTimer = timer(period = 100) {
             runOnUiThread {
-                runningDogImg.setBackgroundResource(runningDogImage[runningDogImageCounter++])
+//                runningDogImg.setBackgroundResource(runningDogImage[runningDogImageCounter++])
                 if (runningDogImageCounter > 7) {
                     runningDogImageCounter = 0
                 }
@@ -550,7 +550,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     private fun stopRunningDog() {
         runningDogImageTimer!!.cancel()
-        runningDogImg.setBackgroundResource(runningDogImage[0])
+//        runningDogImg.setBackgroundResource(runningDogImage[0])
     }
 
     override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {

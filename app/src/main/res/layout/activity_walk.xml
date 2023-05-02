@@ -24,13 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
-        <ImageView
-            android:id="@+id/runningDogImg"
-            android:layout_width="150dp"
-            android:layout_height="120dp"
-            android:background="@drawable/running_dog_1"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
 
@@ -59,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
+                android:textColor="@color/black"
                 android:textSize="35dp"
                 android:textStyle="bold"
                 android:gravity="center"/>
@@ -67,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
+            android:textColor="@color/black"
             android:textSize="35dp"
             android:textStyle="bold"
             android:gravity="center"/>
@@ -80,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:text="00"
                 android:textSize="35dp"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>
@@ -88,6 +84,7 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textSize="35dp"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"/>
         <LinearLayout
@@ -100,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:text="00"
                 android:textSize="35dp"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>
@@ -149,6 +147,7 @@
                 android:text="0"
                 android:textSize="20dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 />
 
             <TextView
@@ -157,6 +156,7 @@
                 android:layout_height="wrap_content"
                 android:text="m"
                 android:textSize="20dp"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 />
         </LinearLayout>
@@ -173,23 +173,25 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textSize="20dp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="kcal"
                 android:textSize="20dp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-    <!--재생, 종료, 카메라 레이아웃-->
+    <!--시작, 종료, 배변 레이아웃-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
-        android:layout_weight="1.2"
-        android:padding="20dp"
+        android:layout_weight="1.5"
+
         android:gravity="center">
 
         <RelativeLayout
@@ -211,6 +213,8 @@
                 android:layout_height="30dp"
                 android:background="@drawable/toilet_icon"
                 android:backgroundTint="#626262" />
+
+
         </RelativeLayout>
 
         <RelativeLayout
