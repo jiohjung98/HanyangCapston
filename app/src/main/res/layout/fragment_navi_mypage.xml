@@ -31,7 +31,7 @@
      <androidx.constraintlayout.widget.ConstraintLayout
          android:id="@+id/topView"
          android:layout_width="match_parent"
-         android:layout_height="80sp"
+         android:layout_height="70sp"
          app:layout_constraintStart_toStartOf="parent"
          app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintTop_toTopOf="parent"
@@ -67,13 +67,92 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dog_frame"
         android:layout_width="0dp"
-        android:layout_height="80sp"
+        android:layout_height="100sp"
         android:layout_marginStart="35sp"
         android:layout_marginEnd="35sp"
         android:background="@drawable/dogframe"
         app:layout_constraintTop_toBottomOf="@+id/topView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:background="@drawable/home_mainimage"
+            android:layout_marginStart="20sp"
+            app:layout_constraintTop_toTopOf="@+id/dog_frame"
+            app:layout_constraintBottom_toBottomOf="@+id/dog_frame"
+            app:layout_constraintStart_toStartOf="@+id/dog_frame"/>
+
+        <TextView
+            android:id="@+id/walk_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            android:textSize="22sp"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="10sp"
+            app:layout_constraintStart_toEndOf="@+id/profile"
+            app:layout_constraintTop_toTopOf="@+id/profile" />
+
+        <TextView
+            android:id="@+id/walk_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            app:layout_constraintStart_toStartOf="@+id/walk_name"
+            app:layout_constraintTop_toBottomOf="@+id/walk_name"
+            app:layout_constraintBottom_toBottomOf="@id/profile" />
+
+        <TextView
+            android:id="@+id/walk_age_slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / "
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            app:layout_constraintStart_toEndOf="@+id/walk_age"
+            app:layout_constraintTop_toTopOf="@+id/walk_age"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_age"/>
+
+
+        <TextView
+            android:id="@+id/walk_breed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            app:layout_constraintStart_toEndOf="@+id/walk_age_slash"
+            app:layout_constraintTop_toBottomOf="@+id/walk_name"
+            app:layout_constraintBottom_toBottomOf="@id/profile" />
+
+        <TextView
+            android:id="@+id/walk_breed_slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / "
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            app:layout_constraintStart_toEndOf="@+id/walk_breed"
+            app:layout_constraintTop_toTopOf="@+id/walk_age"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_age"/>
+
+        <TextView
+            android:id="@+id/walk_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
+            app:layout_constraintTop_toBottomOf="@+id/walk_name"
+            app:layout_constraintBottom_toBottomOf="@id/profile" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--    <View-->
 <!--        android:id="@+id/line"-->
@@ -93,7 +172,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dog_frame"
         android:layout_marginStart="35sp"
-        android:layout_marginTop="20sp" />
+        android:layout_marginTop="30sp" />
 
     <TextView
         android:id="@+id/dog_admin"
@@ -144,7 +223,7 @@
         <View
             android:id="@+id/admin_line"
             android:layout_width="0dp"
-            android:layout_height="2sp"
+            android:layout_height="1sp"
             android:layout_marginTop="25sp"
             android:layout_marginStart="30sp"
             android:layout_marginEnd="30sp"
@@ -213,7 +292,7 @@
     <View
         android:id="@+id/service_line"
         android:layout_width="0dp"
-        android:layout_height="2sp"
+        android:layout_height="1sp"
         android:layout_marginTop="25sp"
         android:layout_marginStart="30sp"
         android:layout_marginEnd="30sp"
@@ -260,7 +339,7 @@
     <View
         android:id="@+id/line2"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="1sp"
         android:layout_marginStart="30sp"
         android:layout_marginEnd="30sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -329,6 +408,7 @@
         android:layout_marginTop="5sp"
         android:layout_marginStart="35sp"
         android:layout_marginBottom="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/teamName"
         app:layout_constraintTop_toBottomOf="@+id/call" />
 
