@@ -83,10 +83,8 @@ class LogoutDialog(private val context : AppCompatActivity) {
             context.startActivity(intent)
             logoutDlg.dismiss()
             (context as Activity).finish()
-        }, 3000)
+        }, 2000)
     }
-
-
 }
 
 //

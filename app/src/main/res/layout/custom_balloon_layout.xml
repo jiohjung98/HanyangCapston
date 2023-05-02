@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ball_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="300sp"
+    android:layout_height="100sp"
     android:layout_margin="4px"
     app:cardCornerRadius="8px">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300sp"
+        android:layout_height="100sp"
         android:layout_gravity="center"
         android:background="@drawable/balloon_bubble_bg"
         android:elevation="20dp"
@@ -19,8 +19,8 @@
 
         <TextView
             android:id="@+id/ball_tv_name1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48sp"
+            android:layout_height="15sp"
             android:text="목격 정보"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="12sp"
@@ -30,8 +30,8 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutCompat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/balloon_bubble_in"
             android:gravity="center"
             android:orientation="horizontal"
@@ -42,8 +42,8 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/enter_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
                 android:padding="1sp"
                 android:layout_weight="1"
                 android:clickable="true"
@@ -51,23 +51,23 @@
 
                 <ImageView
                     android:id="@+id/enter_image"
-                    android:layout_width="70sp"
-                    android:layout_height="70sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="1sp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="10sp"
                 android:background="#999999" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/delete_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150sp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:gravity="center"
@@ -75,30 +75,30 @@
 
                 <TextView
                     android:id="@+id/name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
                     android:layout_marginLeft="3dp"
                     android:text=""
                     android:textSize="12sp" />
                 <TextView
                     android:id="@+id/breed_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
                     android:layout_marginLeft="3dp"
                     android:text=""
                     android:textSize="12sp" />
                 <TextView
                     android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
                     android:layout_marginLeft="3dp"
                     android:text=""
                     android:textSize="12sp" />
                 <TextView
                     android:id="@+id/content_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
+                    android:layout_marginLeft="3sp"
                     android:text="상세내용을 보려면 클릭해주세요"
                     android:textColor="@color/skyblue"
                     android:textSize="12sp" />

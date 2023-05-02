@@ -87,18 +87,19 @@ class EmailVerifyActivity : AppCompatActivity() {
     }
 
     private fun onClickCheckEmail(){
-        auth.currentUser!!.reload()
-        if (auth.currentUser?.isEmailVerified == true) {
-            Log.d("valid", "메일인증확인")
-            viewBinding.emailResend.isEnabled = false
-            viewBinding.emailError.visibility = View.INVISIBLE
-            viewBinding.emailResend.visibility = View.INVISIBLE
-            viewBinding.checkEmail.setTextColor(ContextCompat.getColor(this, R.color.gray))
-            viewBinding.checkEmail.isEnabled = false
-            viewBinding.nextBtn.isEnabled = true
-        } else {
-            Log.d("invalid", "${auth.currentUser?.isEmailVerified}")
-            Toast.makeText(this, "메일함을 확인해주세요.", Toast.LENGTH_LONG).show()
+        auth.currentUser!!.reload().addOnSuccessListener { task->
+            if (auth.currentUser?.isEmailVerified == true) {
+                Log.d("valid", "메일인증확인")
+                viewBinding.emailResend.isEnabled = false
+                viewBinding.emailError.visibility = View.INVISIBLE
+                viewBinding.emailResend.visibility = View.INVISIBLE
+                viewBinding.checkEmail.setTextColor(ContextCompat.getColor(this, R.color.gray))
+                viewBinding.checkEmail.isEnabled = false
+                viewBinding.nextBtn.isEnabled = true
+            } else {
+                Log.d("invalid", "${auth.currentUser?.isEmailVerified}")
+                Toast.makeText(this, "메일함을 확인해주세요.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

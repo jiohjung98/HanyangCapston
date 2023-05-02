@@ -10,7 +10,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.SplashBinding
@@ -22,7 +21,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 
 class SplashActivity : AppCompatActivity() {
@@ -47,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
         // 로그인 기록 없으면 시작화면
         if(user == null){
             Handler(Looper.getMainLooper()).postDelayed( {
-                if(isSetLocationPermission())
+                if(isSetPermission())
                     startActivity(Intent(applicationContext, StartActivity::class.java))
                 else
                     startActivity(Intent(applicationContext, PermissionActivity::class.java))
@@ -85,7 +83,7 @@ class SplashActivity : AppCompatActivity() {
                 if(snapshot.value == null){
                     // auth에서 삭제
                     user.delete()
-                    if(isSetLocationPermission())
+                    if(isSetPermission())
                         startActivity(Intent(applicationContext, StartActivity::class.java))
                     else
                         startActivity(Intent(applicationContext, PermissionActivity::class.java))
@@ -93,7 +91,7 @@ class SplashActivity : AppCompatActivity() {
                 }
                 // 정상 분기
                 else{
-                    if(isSetLocationPermission())
+                    if(isSetPermission())
                         startActivity(Intent(applicationContext, MainActivity::class.java))
                     else
                         startActivity(Intent(applicationContext, PermissionActivity::class.java))
@@ -116,7 +114,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
 
-    private fun isSetLocationPermission() : Boolean {
+    private fun isSetPermission() : Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {

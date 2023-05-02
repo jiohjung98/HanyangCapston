@@ -29,12 +29,13 @@
                 />
 
             <TextView
+                android:id="@+id/context_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="로그아웃"
+                android:text=""
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:paddingTop="22dp"
                 />
 
@@ -44,6 +45,5 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#999999" />
-
     </LinearLayout>
 </FrameLayout>

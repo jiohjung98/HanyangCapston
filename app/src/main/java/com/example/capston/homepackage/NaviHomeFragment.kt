@@ -5,17 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import com.bumptech.glide.request.target.Target
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.example.capston.*
+import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.CustomBalloonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.firebase.geofire.GeoFire
@@ -23,16 +27,19 @@ import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQuery
 import com.firebase.geofire.GeoQueryDataEventListener
 import com.firebase.geofire.GeoQueryEventListener
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import de.hdodenhof.circleimageview.CircleImageView
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.ballon_layout.view.*
 import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import net.daum.android.map.coord.MapCoord
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
-import org.w3c.dom.Text
 import java.util.*
-import kotlin.concurrent.timer
+import kotlin.coroutines.resumeWithException
 import kotlin.math.*
 
 
@@ -116,7 +123,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
-        listen = MarkerEventListener(mainActivity)
+        listen = MarkerEventListener(mainActivity, this)
 
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
@@ -177,43 +184,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onDestroy() {
         kakaoMapViewContainer?.removeAllViews()
         super.onDestroy()
-    }
-
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater, val fragment: NaviHomeFragment): CalloutBalloonAdapter {
-
-        var mainActivity : MainActivity? = null
-        private var database = fragment.database.child("post").child("witness")
-        //        private var mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
-        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 마커 클릭 시 나오는 말풍선
-
-            database.child(poiItem?.itemName!!).get().addOnSuccessListener { task ->
-                viewBinding.timeText.text = (task.child("date").value.toString() + " " + task.child("time").value.toString())
-                viewBinding.nameText.text = "알 수 없음"
-                viewBinding.breedText.text = task.child("pet_info").child("breed").value.toString()
-
-//                mCalloutBalloon.findViewById<TextView>(R.id.name_text).text = "알 수 없음"
-//                mCalloutBalloon.findViewById<TextView>(R.id.breed_text).text =
-//                    task.child("pet_info").child("breed").value.toString()
-//                mCalloutBalloon.findViewById<TextView>(R.id.time_text).text =
-//                    (task.child("date").value.toString() + " " + task.child("time").value.toString())
-                if(fragment.isAdded()) {
-                    GlideApp.with(fragment)
-                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
-                        .into(viewBinding.enterImage)
-                }
-            }
-
-            return viewBinding.root
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-            return viewBinding.root
-        }
     }
 
     fun findAddress() {
@@ -322,7 +292,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             geoQuery?.radius = meterToKillo(radius)
         }
 
-
 //        Log.d("center", "${center.mapPointGeoCoord.latitude} + ${center.mapPointGeoCoord.longitude}")
 //        Log.d("radius",radius.toString())
 
@@ -332,6 +301,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             override fun onKeyEntered(key: String, location: GeoLocation) {
                 // 해당 위치 데이터의 정보를 가져오는 코드 작성
 //                Log.d("=Entered Key", key)
+
+                // DB의 마커정보들 불러오기 ->
 
 //                Log.d("마커위치정보",location.latitude.toString() + " "+ location.longitude.toString())
                 val markerPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
@@ -345,6 +316,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     mapPoint = markerPoint
                     isShowCalloutBalloonOnTouch = true
                     tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+//                    customCalloutBalloon = CustomBalloonAdapter(layoutInflater, requireContext(), this,this@NaviHomeFragment)
                 }
                 mapView!!.addPOIItem(marker)
             }
@@ -372,6 +344,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+        setMarker(p0)
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
@@ -383,7 +356,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (tapTimer != null) {
             tapTimer!!.cancel()
         }
-        setMarker(p0)
+//        setMarker(p0)
     }
 
     override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
@@ -431,16 +404,123 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         return meter / 1000
     }
 
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
+
+        private var database = fragment.database.child("post").child("witness")
+        //        private var mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
+        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+
+//        init {
+//            viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+//            Log.d("HERE", "${viewBinding}")
+//            database.child(poiItem?.itemName!!).get().addOnSuccessListener { task ->
+//                viewBinding.timeText.text =
+//                    (task.child("date").value.toString() + " " + task.child("time").value.toString())
+//                viewBinding.nameText.text = "알 수 없음"
+//                viewBinding.breedText.text = task.child("pet_info").child("breed").value.toString()
+//
+//                if (fragment.isAdded()) {
+//                    GlideApp.with(fragment)
+//                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
+//                        .into(viewBinding.enterImage)
+//                }
+//                Log.d("말풍선 로드", "DONE")
+//            }
+//        }
+
+        // 오버라이드는 코루틴 쓸 수가 없다.
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            Log.d("getCalloutBalloon", "call")
+
+            return setBalloon(poiItem)
+        }
+
+        private fun setBalloon(poiItem: MapPOIItem?): View {
+            GlobalScope.launch(Dispatchers.Main) {
+                val task = suspendCancellableCoroutine<DataSnapshot> { continuation ->
+                    database.child(poiItem?.itemName!!).get().addOnSuccessListener {
+                        continuation.resume(it, null)
+                    }.addOnFailureListener {
+                        continuation.resumeWithException(it)
+                    }
+                }
+
+                viewBinding.timeText.text = (task.child("date").value.toString() + " " + task.child("time").value.toString())
+                viewBinding.nameText.text = "알 수 없음"
+                viewBinding.breedText.text = task.child("pet_info").child("breed").value.toString()
+
+                if(fragment.isAdded()) {
+                    GlideApp.with(fragment)
+                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
+                        .into(viewBinding.enterImage)
+                }
+                Log.d("말풍선 로드","DONE")
+            }
+
+            return viewBinding.root
+        }
+
+//        private fun setBalloon(poiItem: MapPOIItem?) : View {
+//            database.child(poiItem?.itemName!!).get().addOnSuccessListener { task ->
+//                viewBinding.timeText.text = (task.child("date").value.toString() + " " + task.child("time").value.toString())
+////                viewBinding.nameText.text = "알 수 없음"
+//                viewBinding.breedText.text = task.child("pet_info").child("breed").value.toString()
+//
+//                if(fragment.isAdded()) {
+//                    GlideApp.with(fragment)
+//                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
+////                        .listener(object : RequestListener<Drawable> {
+////                            override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+////                                Log.d("Glide", "이미지 불러오기 실패")
+////                                // 이미지 불러오지 못해도 일단 말풍선 띄워야하므로
+////                                return false
+////                            }
+////                            override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+////                                Log.d("Glide", "OnResourceReady")
+////                                return false
+////                            }
+////                        })
+//                        .into(viewBinding.enterImage)
+//                }
+//                Log.d("말풍선 세팅","DONE")
+//            }
+//            return viewBinding.root
+//        }
+
+
+
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            return viewBinding.root
+        }
+    }
+
 
     // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
+    class MarkerEventListener(val mainActivity: MainActivity, val fragment: NaviHomeFragment): MapView.POIItemEventListener {
 
-        lateinit var mainActivity: MainActivity
+        private var database = mainActivity.database.child("post").child("witness")
 
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
             // 마커 클릭 시
-//            Log.d("markerClick", "ok")
+            Log.d("MARKER CLICK", "ok")
 
+//            poiItem?.customCalloutBalloon = fragment.layoutInflater.inflate(R.layout.custom_balloon_layout, null)
+//
+//            database.child(poiItem?.itemName!!).get().addOnSuccessListener { task ->
+//                poiItem.customCalloutBalloon?.time_text?.text =
+//                    (task.child("date").value.toString() + " " + task.child("time").value.toString())
+//                poiItem.customCalloutBalloon?.name_text?.text = "알 수 없음"
+//                poiItem.customCalloutBalloon?.breed_text?.text = task.child("pet_info").child("breed").value.toString()
+//
+//                if(fragment.isAdded()) {
+//                    GlideApp.with(fragment)
+//                        .load(Uri.parse(task.child("pet_info").child("image_url").value.toString()))
+//                        .into(poiItem.customCalloutBalloon?.enter_image!!)
+//                }
+//            }
         }
 
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
@@ -448,11 +528,12 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
         }
 
-        override fun onCalloutBalloonOfPOIItemTouched(
+        override fun onCalloutBalloonOfPOIItemTouched (
             mapView: MapView?,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
         ) {
+
         }
 
         override fun onDraggablePOIItemMoved(

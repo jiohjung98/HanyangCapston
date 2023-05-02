@@ -11,7 +11,7 @@
     <View
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="0sp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,8 +56,8 @@
         android:text=""
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="18dp"
-        android:layout_marginTop="2dp"
+        android:textSize="18sp"
+        android:layout_marginTop="2sp"
         app:layout_constraintStart_toEndOf="@id/back_button"
         app:layout_constraintTop_toBottomOf="@+id/text1" />
 
@@ -205,26 +205,26 @@
         android:id="@+id/tv_new_re_pw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="새 비밀번호"
+        android:text="새 비밀번호 확인"
         android:textColor="#191919"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginLeft="15sp"
         app:layout_constraintTop_toBottomOf="@+id/pw2_layout"
         app:layout_constraintStart_toStartOf="@+id/cur_pw">
     </TextView>
 
     <EditText
         android:id="@+id/re_pw"
-        android:layout_width="340dp"
-        android:layout_height="43dp"
+        android:layout_width="340sp"
+        android:layout_height="43sp"
         android:layout_gravity="center"
         android:background="@drawable/info_edittext_rounded_corner_rectangle"
         android:hint="새 비밀번호를 다시 입력해주세요."
         android:inputType="textPassword"
-        android:textSize="16dp"
-        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        android:layout_marginTop="5sp"
         app:layout_constraintTop_toBottomOf="@+id/tv_new_re_pw"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -232,11 +232,11 @@
 
     <LinearLayout
         android:id="@+id/pw3_layout"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_width="0sp"
+        android:layout_height="20sp"
         android:orientation="horizontal"
         android:visibility="invisible"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="16sp"
         app:layout_constraintTop_toBottomOf="@+id/re_pw"
         app:layout_constraintStart_toStartOf="@+id/re_pw"
         app:layout_constraintEnd_toEndOf="@+id/re_pw">
