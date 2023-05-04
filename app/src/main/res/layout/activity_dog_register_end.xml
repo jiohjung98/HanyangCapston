@@ -69,8 +69,7 @@
     <View
         android:id="@+id/background"
         android:layout_width="320dp"
-        android:layout_height="146dp"
-        android:background="@drawable/background1"
+        android:layout_height="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/go_homepage_btn"
@@ -81,37 +80,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="반려견 등록이 완료되었습니다!"
-        android:textColor="#574444"
-        android:textStyle="bold"
-        android:textSize="16dp"
-        android:layout_marginTop="30dp"
+        android:fontFamily="@font/dungeon"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@id/background"
         app:layout_constraintStart_toStartOf="@+id/background"
-        app:layout_constraintTop_toTopOf="@id/background" />
-
-    <TextView
-        android:id="@+id/dog_register_text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="우리 아이의 건강 정보를 기록해"
-        android:textColor="#574444"
-        android:textSize="13dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="@id/background"
-        app:layout_constraintStart_toStartOf="@id/background"
-        app:layout_constraintTop_toBottomOf="@+id/dog_register_text1" />
-
-    <TextView
-        android:id="@+id/dog_register_text3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="다양한 멍플래닛 서비스를 이용해주세요!"
-        android:textColor="#574444"
-        android:textSize="13dp"
-        android:layout_marginTop="7dp"
-        app:layout_constraintEnd_toEndOf="@id/background"
-        app:layout_constraintStart_toStartOf="@id/background"
-        app:layout_constraintTop_toBottomOf="@+id/dog_register_text2" />
+        app:layout_constraintTop_toTopOf="@id/background"
+        app:layout_constraintBottom_toBottomOf="@+id/background"/>
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -121,7 +96,7 @@
         android:background="@drawable/start_button"
         android:gravity="center"
         android:text="메인으로 이동"
-        android:textColor="#FFF3E5"
+        android:textColor="@color/white"
         android:layout_marginBottom="57dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

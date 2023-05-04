@@ -31,19 +31,20 @@
         android:id="@+id/background"
         android:layout_width="340dp"
         android:layout_height="100dp"
-        android:background="@drawable/background1"
+        android:layout_marginBottom="148dp"
+        app:layout_constraintBottom_toTopOf="@+id/go_login_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="150dp"
-        app:layout_constraintBottom_toTopOf="@+id/go_login_btn"/>
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="해당 이메일로 비밀번호"
-        android:textColor="#574444"
-        android:textSize="13dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
         android:layout_marginTop="25dp"
         app:layout_constraintEnd_toEndOf="@+id/background"
         app:layout_constraintStart_toStartOf="@+id/background"
@@ -54,22 +55,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="재설정 링크를 보냈습니다."
-        android:textColor="#574444"
-        android:textSize="13dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/text1"
         app:layout_constraintStart_toStartOf="@+id/background"
         app:layout_constraintEnd_toEndOf="@id/background" />
-=======
-    <LinearLayout
-        android:id="@+id/pw_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/text1"
-        app:layout_constraintStart_toStartOf="@+id/background"
-        app:layout_constraintEnd_toEndOf="@id/background">
 
-    </LinearLayout>
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -80,7 +72,7 @@
         android:background="@drawable/start_button"
         android:gravity="center"
         android:text="로그인 화면으로 이동"
-        android:textColor="#FFF3E5"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
