@@ -16,21 +16,23 @@
             android:id="@+id/kakaoMapView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="horizontal" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/location_btn"
             android:layout_width="45sp"
             android:layout_height="45sp"
             android:background="@drawable/location"
-            android:layout_marginRight="15sp"
-            android:layout_marginTop="20sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginBottom="10sp"
+            app:layout_constraintEnd_toEndOf="@id/lost_btn"
+            app:layout_constraintStart_toStartOf="@+id/lost_btn"
+            app:layout_constraintBottom_toTopOf="@+id/lost_btn"/>
 
         <TextView
             android:id="@+id/dog_lost_txt"
@@ -63,17 +65,18 @@
 
         <Button
             android:id="@+id/lost_btn"
-            android:layout_width="130sp"
-            android:layout_height="wrap_content"
-            android:text="실종/목격 등록"
-            android:background="@drawable/agree_nextbtn_color"
-            android:textColor="@color/white"
+            android:layout_width="45sp"
+            android:layout_height="45sp"
+            android:background="@drawable/circle"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="등록"
+            android:textSize="14sp"
+            android:layout_marginRight="20sp"
+            android:layout_marginBottom="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20sp"
-            android:layout_marginBottom="10sp"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+
 
 
 
