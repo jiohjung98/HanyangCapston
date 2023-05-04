@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="멍찾아"
-                android:textColor="#FCCE65"
+                android:textColor="#FF974C"
                 android:fontFamily="@font/dungeon"
                 android:layout_marginStart="8dp"
                 android:textAppearance="@style/some_id"
@@ -133,7 +133,7 @@
             android:id="@+id/toolbarline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#FCCE65"
+            android:background="#FF974C"
             app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
         <FrameLayout

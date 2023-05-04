@@ -25,12 +25,11 @@
         android:id="@+id/tv_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="38dp"
         android:layout_marginTop="40dp"
         android:text="이메일"
         android:textSize="16dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_id"
         app:layout_constraintTop_toBottomOf="@+id/logo_login" />
 
     <EditText
@@ -57,12 +56,11 @@
         android:id="@+id/tv_pw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="38dp"
         android:layout_marginTop="20dp"
         android:text="비밀번호"
         android:textSize="16dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_pw"
         app:layout_constraintTop_toBottomOf="@+id/et_id"
         app:layout_goneMarginTop="8dp"></TextView>
 
@@ -130,7 +128,7 @@
         android:layout_gravity="center|bottom"
         android:layout_marginTop="45dp"
         android:background="@drawable/agree_nextbtn_color"
-        android:textColor="@color/btn_back"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
@@ -154,7 +152,7 @@
             android:layout_height="wrap_content"
             android:text="계정이 없으신가요?"
             android:textColor="#191919"
-            android:textSize="12dp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/info_btn"
@@ -163,8 +161,8 @@
             android:layout_marginStart="4dp"
             android:layout_toRightOf="@id/text"
             android:text="회원가입"
-            android:textColor="#d4bbaf"
-            android:textSize="12dp" />
+            android:textColor="#FF974C"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <TextView
@@ -175,7 +173,7 @@
         android:layout_marginTop="30dp"
         android:text="비밀번호 찾기"
         android:textColor="#191919"
-        android:textSize="12dp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
