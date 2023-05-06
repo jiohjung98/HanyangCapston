@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="목격 정보"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -98,9 +98,9 @@
                     android:id="@+id/content_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginLeft="4dp"
                     android:text="상세내용을 보려면 클릭해주세요"
-                    android:textColor="@color/skyblue"
+                    android:textColor="#FF974C"
                     android:textSize="12sp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

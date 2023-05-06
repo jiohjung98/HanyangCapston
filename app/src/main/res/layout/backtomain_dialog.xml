@@ -22,17 +22,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="26dp"
-                android:background="@drawable/logo1"
-                />
-
             <TextView
                 android:id="@+id/back_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/dungeon"
                 android:text="메인화면으로 돌아가시겠어요?"
                 android:textColor="@color/black"
                 android:textSize="22sp"
@@ -58,11 +53,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:fontFamily="@font/dungeon"
                 android:gravity="center"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 android:text="네"
-                android:textColor="#C7DA91" />
+                android:textColor="#FF974C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="1dp"
@@ -77,6 +73,7 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="아니오"
+                android:fontFamily="@font/dungeon"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#FCCE65" />

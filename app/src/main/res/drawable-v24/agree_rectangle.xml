@@ -2,7 +2,9 @@
 <!--  res/drawable/textbackground.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#FDF4E3"/>
+    <solid android:color="@color/white"/>
+    <stroke android:color="#FF974C"
+        android:width="3sp"/>
     <corners android:topLeftRadius="30dp"
         android:topRightRadius="30dp">
 

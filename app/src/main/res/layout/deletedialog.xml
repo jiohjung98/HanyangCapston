@@ -22,11 +22,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="26dp"
-                android:background="@drawable/logo1"
-                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -34,6 +29,7 @@
                 android:gravity="center"
                 android:text="정말 멍플래닛을\n탈퇴하시겠습니까?"
                 android:textColor="@color/black"
+                android:fontFamily="@font/dungeon"
                 android:textSize="22sp"
                 android:paddingTop="20dp"
                 />
@@ -60,8 +56,9 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/dungeon"
                 android:text="네"
-                android:textColor="#C7DA91" />
+                android:textColor="#FF974C" />
 
             <View
                 android:layout_width="1dp"
@@ -75,6 +72,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="8dp"
+                android:fontFamily="@font/dungeon"
                 android:text="아니오"
                 android:textSize="20sp"
                 android:textStyle="bold"

@@ -22,12 +22,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="26dp"
-                android:background="@drawable/logo1"
-                />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,6 +29,7 @@
                 android:text="반려견 등록은 다음에 하시겠어요?"
                 android:textColor="@color/black"
                 android:textSize="22sp"
+                android:fontFamily="@font/dungeon"
                 android:paddingTop="20dp"
                 />
 
@@ -60,8 +55,9 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/dungeon"
                 android:text="네"
-                android:textColor="#C7DA91" />
+                android:textColor="#FF974C" />
 
             <View
                 android:layout_width="1dp"
@@ -76,6 +72,7 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="아니오"
+                android:fontFamily="@font/dungeon"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#FCCE65" />
