@@ -208,10 +208,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 millisecView.text = if (millisec < 10) "0$millisec" else "$millisec"
 
 
-                distanceView.text = "이동거리: " + String.format("%.2f", walkingDistance)
-                calorieView.text = "칼로리 소모량: " + String.format("%.2f", walkingCalorie)
-
-
+                distanceView.text = String.format("%.2f", walkingDistance)
+                calorieView.text = String.format("%.2f", walkingCalorie)
 
                 dialog2.show()
 
@@ -219,6 +217,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 Handler(Looper.getMainLooper()).postDelayed({
                     val intent = Intent(this, MainActivity::class.java)
                     // 아래 removeAllViews() 안넣어주면 튕김
+                    kakaoMapView2.removeAllViews()
                     this.startActivity(intent)
                     (this as Activity).finish()
                 }, 3000)

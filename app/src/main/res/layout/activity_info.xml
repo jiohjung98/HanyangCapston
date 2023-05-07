@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:background="@color/main"
+    android:background="#f6f5f2"
     android:orientation="vertical"
     tools:context=".InfoActivity">
 
@@ -13,7 +13,7 @@
         android:id="@+id/background"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:background="#FDF4E3"
+        android:background="#f6f5f2"
         android:orientation="vertical"
         tools:context=".InfoActivity">
 

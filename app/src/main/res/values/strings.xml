@@ -59,7 +59,7 @@
 
     <string name="notice_time">"12.34"</string>
 
-    <string name="walk">지금 바로 <b>산책</b>을 시작할까요?</string>
+    <string name="walk">지금 바로 산책을 시작할까요?</string>
     <string name="title_activity_loading">LoadingActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

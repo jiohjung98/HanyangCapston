@@ -19,20 +19,78 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+<!--        <Button-->
+<!--            android:id="@+id/location_btn"-->
+<!--            android:layout_width="43sp"-->
+<!--            android:layout_height="43sp"-->
+<!--            android:background="@drawable/location"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/location_background"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/location_background"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/location_background"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/location_background"/>-->
+
+        <LinearLayout
             android:id="@+id/location_btn"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="45sp"
             android:layout_height="45sp"
-            android:background="@drawable/location"
             android:layout_marginBottom="10sp"
             app:layout_constraintEnd_toEndOf="@id/lost_btn"
             app:layout_constraintStart_toStartOf="@+id/lost_btn"
-            app:layout_constraintBottom_toTopOf="@+id/lost_btn"/>
+            app:layout_constraintBottom_toTopOf="@+id/lost_btn">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/location_btnn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                app:civ_border_overlay="false"
+                app:civ_border_width="1sp"
+                app:civ_border_color="#FF974C"
+                android:src="@drawable/location"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lost_btn"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20sp"
+            android:layout_marginBottom="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/lost_btnn"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:background="@drawable/circle"
+                app:civ_border_overlay="false"
+                app:civ_border_width="1sp"
+                app:civ_border_color="#FF974C"
+                android:layout_gravity="center"
+                android:src="@drawable/lost" />
+        </LinearLayout>
+
+<!--        <Button-->
+<!--            android:id="@+id/lost_btn"-->
+<!--            android:layout_width="45sp"-->
+<!--            android:layout_height="45sp"-->
+<!--            android:background="@drawable/circle"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="등록"-->
+<!--            android:textSize="14sp"-->
+<!--            android:layout_marginRight="20sp"-->
+<!--            android:layout_marginBottom="20sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
 
         <TextView
             android:id="@+id/dog_lost_txt"
@@ -61,24 +119,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/kakaoMapView"
             android:layout_marginTop="10sp" />
-
-
-        <Button
-            android:id="@+id/lost_btn"
-            android:layout_width="45sp"
-            android:layout_height="45sp"
-            android:background="@drawable/circle"
-            android:textStyle="bold"
-            android:text="등록"
-            android:textSize="14sp"
-            android:layout_marginRight="20sp"
-            android:layout_marginBottom="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

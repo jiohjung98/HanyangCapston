@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/notosans_medium"
-            android:text="&#160;&#160;&#160;&#160;&#160;&#160;인공지능을 통해\n유사 반려견을 찾아주는!"
+            android:text="&#160;&#160;&#160;&#160;&#160;인공지능을 통해\n내 반려견을 찾아주는!"
             android:textSize="15.5sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

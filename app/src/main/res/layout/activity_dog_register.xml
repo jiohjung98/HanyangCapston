@@ -2,7 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/background"
-    android:background="#FFF0E5"
+    android:background="#f6f5f2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

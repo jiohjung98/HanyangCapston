@@ -74,6 +74,19 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var geoFire : GeoFire? = null
     private var geoQuery : GeoQuery? = null
 
+    // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
+    private var currentLocation: MapPoint? = null
+
+    private val currentLocationEventListener = object : MapView.CurrentLocationEventListener {
+        override fun onCurrentLocationUpdate(mapView: MapView, mapPoint: MapPoint, v: Float) {
+            // 현재 위치 갱신 시 호출되는 콜백 함수
+            currentLocation = mapPoint
+        }
+        override fun onCurrentLocationDeviceHeadingUpdate(mapView: MapView, v: Float) {}
+        override fun onCurrentLocationUpdateFailed(mapView: MapView) {}
+        override fun onCurrentLocationUpdateCancelled(mapView: MapView) {}
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // 2. Context를 액티비티로 형변환해서 할당
@@ -103,6 +116,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             kakaoMapView.currentLocationTrackingMode =
                 MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         }
+
 
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity

@@ -11,65 +11,20 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent">
-    <RelativeLayout
-        android:id="@+id/hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/complete"
-        >
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="78dp"
-            android:layout_height="58dp"
-            android:background="@drawable/logo1" />
-
-<!--        <TextView-->
-<!--            android:id="@+id/receive_name_txt"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:text=""-->
-<!--            android:textSize="16dp"-->
-<!--            android:layout_marginLeft="10dp"-->
-<!--            android:layout_toRightOf="@+id/logo" />-->
-
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:text=""-->
-<!--            android:textSize="16dp"-->
-<!--            android:layout_toRightOf="@+id/receive_name_txt" />-->
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/logo"
-            android:textColor="@color/black"
-            android:layout_marginTop="15sp"
-            android:layout_marginLeft="10sp"
-            android:textSize="16dp"
-            android:text="반가워요 !" />
-    </RelativeLayout>
 
     <TextView
-        android:id="@+id/complete"
-        android:layout_width="320dp"
-        android:layout_height="77dp"
-        android:layout_marginTop="37dp"
-        android:background="@drawable/signupcomplete_box"
-        app:layout_constraintTop_toBottomOf="@+id/hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:fontFamily="@font/dungeon"
+        android:text="회원가입이 완료되었습니다!"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:text="회원가입이 완료되었습니다."/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
