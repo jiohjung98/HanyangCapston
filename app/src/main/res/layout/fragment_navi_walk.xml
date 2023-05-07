@@ -18,7 +18,7 @@
             android:layout_height="32sp"
             android:padding="10sp"
             android:layout_margin="10sp"
-            android:background="@drawable/add_dog"
+            android:background="@drawable/add_dog1"
             android:visibility="visible"
             android:enabled="true"
             android:layout_marginEnd="20sp"
@@ -43,7 +43,7 @@
             android:layout_height="200sp"
             android:layout_marginBottom="12dp"
             android:layout_marginTop="50sp"
-            android:background="@drawable/home_mainimage"
+            android:background="@drawable/home_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.500"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +102,7 @@
             android:layout_width="43dp"
             android:layout_height="43dp"
             android:layout_marginEnd="-4dp"
-            android:background="@drawable/camera"
+            android:background="@drawable/camera1"
             app:layout_constraintBottom_toBottomOf="@id/profile"
             app:layout_constraintEnd_toEndOf="@id/profile" />
 

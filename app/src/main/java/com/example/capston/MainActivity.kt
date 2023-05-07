@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.capston.databinding.ActivityMainBinding
 import com.example.capston.homepackage.CustomDialog
 import com.example.capston.homepackage.NaviHomeFragment
@@ -26,14 +28,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 
 
-class MainActivity : AppCompatActivity(), CustomDialog {
+class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-
-
-    private var oneFragment: NaviHomeFragment? = null
-    private var twoFragment: NaviWalkFragment? = null
-    private var threeFragment: Calendar_fragment? = null
-    private var fourFragment: NaviMypageFragment? = null
+//    private var oneFragment: NaviHomeFragment? = null
+//    private var twoFragment: NaviWalkFragment? = null
+//    private var threeFragment: Calendar_fragment? = null
+//    private var fourFragment: NaviMypageFragment? = null
 
     internal var launcher: ActivityResultLauncher<Intent>? = null
     private var uri : Uri? = null
@@ -105,20 +105,25 @@ class MainActivity : AppCompatActivity(), CustomDialog {
             changeFragment(
                 when (item.itemId) {
                     R.id.navigation_home -> {
+                        item.setIcon(R.drawable.lost_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
+                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
                         NaviHomeFragment()
                     }
                     R.id.navigation_community -> {
+                        item.setIcon(R.drawable.paw1_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
+                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
                         NaviWalkFragment()
                     }
-//                    R.id.navigation_calendar -> {
-//                        Calendar_fragment()
-//                    }
                     else -> {
+                        item.setIcon(R.drawable.set_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
+                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
                         NaviMypageFragment()
                     }
                 }
             )
-
             true
         }
 
@@ -147,23 +152,10 @@ class MainActivity : AppCompatActivity(), CustomDialog {
 //        mapView = null
     }
 
-
     private fun deleteToolbar(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frm, fragment!!)
         fragmentTransaction.commit()
     }
-
-    override fun onLikedBtnClicked() {
-        val intent = Intent(this, SplashActivity::class.java)
-        startActivity(intent)
-    }
-
-    override fun onSubscribeBtnClicked() {
-        val intent = Intent(this, SplashActivity::class.java)
-        startActivity(intent)
-    }
-
-
 }

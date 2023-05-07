@@ -156,6 +156,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:background="#FFFFFF"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

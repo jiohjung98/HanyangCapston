@@ -21,12 +21,11 @@
             android:id="@+id/ball_tv_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="목격 정보"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutCompat"
@@ -102,7 +101,6 @@
                     android:text="상세내용을 보려면 클릭해주세요"
                     android:textColor="#FF974C"
                     android:textSize="12sp" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>

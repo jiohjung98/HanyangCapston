@@ -147,11 +147,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         kakaoMapView.setZoomLevel(0, true)
         kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
-            R.drawable.labrador_icon,
+            R.drawable.dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         kakaoMapView.setCustomCurrentLocationMarkerImage(
-            R.drawable.labrador_icon,
+            R.drawable.dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         kakaoMapView.currentLocationTrackingMode =

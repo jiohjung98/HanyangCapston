@@ -3,21 +3,18 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/walk_click_icon"
-        android:checkable="false"
+        android:icon="@drawable/lost"
         android:title="실종" />
 
 
     <item
         android:id="@+id/navigation_community"
-        android:icon="@drawable/map_click_icon"
-        android:checkable="false"
+        android:icon="@drawable/paw1"
         android:title="산책" />
 
     <item
         android:id="@+id/navigation_mypage"
-        android:icon="@drawable/setting_click_icon"
-        android:checkable="false"
-        android:title="마이페이지" />
+        android:icon="@drawable/set"
+        android:title="설정" />
 
 </menu>
