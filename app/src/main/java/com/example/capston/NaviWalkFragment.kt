@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.FragmentNaviWalkBinding
@@ -22,29 +24,44 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.loopj.android.http.AsyncHttpClient
+import com.loopj.android.http.JsonHttpResponseHandler
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
+import org.json.JSONObject
+import retrofit2.http.Header
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import com.loopj.android.http.RequestParams
 
 /*
  *  두번째 메뉴, 산책하기
  */
 @Suppress("DEPRECATION")
 class NaviWalkFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    companion object{
+        const val API_KEY: String = "81761cea11a6583c64a10a57912dfb98"
+        const val WEATHER_URL: String = "https://api.openweathermap.org/data/2.5/weather"
+        const val MIN_TIME: Long = 5000
+        const val MIN_DISTANCE: Float = 1000F
+        const val WEATHER_REQUEST: Int = 102
+    }
+
+    private lateinit var weatherState: TextView
+    private lateinit var temperature: TextView
+    private lateinit var weatherTip: TextView
+    private lateinit var weatherIcon: ImageView
+
+    private lateinit var mLocationManager: LocationManager
+    private lateinit var mLocationListener: LocationListener
 
     private var _binding: FragmentNaviWalkBinding? = null
     private val binding get() = _binding!!
@@ -84,16 +101,30 @@ class NaviWalkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
 
-        return binding.root
+        val fragmentBinding = FragmentNaviWalkBinding.inflate(inflater, container, false)
+        _binding = fragmentBinding
+        return fragmentBinding.root
+
+        // Inflate the layout for this fragment
+//        _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
+//
+//        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
         (activity as AppCompatActivity).supportActionBar?.show()
+
+////       binding?.NaviWalkFragment = this
+//        _binding?.NaviWalkFragment = this
+        binding?.apply {
+            temperature = temperatureTv
+            weatherState = weatherTv
+//            weatherTip = weatherTipTv
+            weatherIcon = weatherIc
+        }
 
         binding.walkBtn.setOnClickListener {
             onClickWalk(view)
@@ -121,12 +152,12 @@ class NaviWalkFragment : Fragment() {
 //        setupStatusHandler()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NaviWalkFragment().apply {
-            }
-    }
+//    companion object {
+//        @JvmStatic
+//        fun newInstance(param1: String, param2: String) =
+//            NaviWalkFragment().apply {
+//            }
+//    }
 
 
     //메모리 누수 방지
@@ -350,6 +381,69 @@ class NaviWalkFragment : Fragment() {
             dipValue,
             resources.displayMetrics
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getWeatherInCurrentLocation()
+    }
+
+    private fun getWeatherInCurrentLocation(){
+        mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        mLocationListener = LocationListener { p0 ->
+            val params: RequestParams = RequestParams()
+            params.put("lat", p0.latitude)
+            params.put("lon", p0.longitude)
+            params.put("appid", Companion.API_KEY)
+            doNetworking(params)
+        }
+
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), WEATHER_REQUEST)
+            return
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
+    }
+
+    private fun doNetworking(params: RequestParams) {
+        var client = AsyncHttpClient()
+        client.get(WEATHER_URL, params, object: JsonHttpResponseHandler(){
+            override fun onSuccess(
+                statusCode: Int,
+                headers: Array<out cz.msebera.android.httpclient.Header>?,
+                response: JSONObject?
+            ) {
+                val weatherData = WeatherData().fromJson(response)
+                if (weatherData != null) {
+                    updateWeather(weatherData)
+                }
+            }
+        })
+    }
+
+
+    private fun updateWeather(weather: WeatherData) {
+        temperature.setText(weather.tempString+" ℃")
+        weatherState.setText(weather.weatherType)
+        val resourceID = resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
+        weatherIcon.setImageResource(resourceID)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(mLocationManager!=null){
+            mLocationManager.removeUpdates(mLocationListener)
+        }
     }
 
     /*

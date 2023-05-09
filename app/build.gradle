@@ -127,4 +127,6 @@ dependencies {
 
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:3.0.7'
+
+    implementation 'com.loopj.android:android-async-http:1.4.10'
 }

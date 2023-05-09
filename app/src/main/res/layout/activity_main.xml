@@ -41,7 +41,7 @@
                 android:id="@+id/toolBarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="멍찾아"
+                android:text="PawPaw"
                 android:textColor="#FF974C"
                 android:fontFamily="@font/dungeon"
                 android:layout_marginStart="8dp"

@@ -382,4 +382,3 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 }
 
-
