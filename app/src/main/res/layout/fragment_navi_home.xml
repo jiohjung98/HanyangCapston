@@ -56,41 +56,41 @@
                 />
         </LinearLayout>
 
-<!--        <LinearLayout-->
-<!--            android:id="@+id/lost_btn"-->
-<!--            xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="20sp"-->
-<!--            android:layout_marginBottom="20sp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent">-->
-
-<!--            <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                android:id="@+id/lost_btnn"-->
-<!--                android:layout_width="45sp"-->
-<!--                android:layout_height="45sp"-->
-<!--                android:background="@drawable/circle"-->
-<!--                app:civ_border_overlay="false"-->
-<!--                app:civ_border_width="1sp"-->
-<!--                app:civ_border_color="#FF974C"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:src="@drawable/lost" />-->
-<!--        </LinearLayout>-->
-
-        <Button
+        <LinearLayout
             android:id="@+id/lost_btn"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="45sp"
             android:layout_height="45sp"
-            android:background="@drawable/circle"
-            android:textStyle="bold"
-            android:text="등록"
-            android:textSize="14sp"
             android:layout_marginRight="20sp"
             android:layout_marginBottom="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/lost_btnn"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:background="@drawable/circle"
+                app:civ_border_overlay="false"
+                app:civ_border_width="1sp"
+                app:civ_border_color="#FF974C"
+                android:layout_gravity="center"
+                android:src="@drawable/pencel_64" />
+        </LinearLayout>
+
+<!--        <Button-->
+<!--            android:id="@+id/lost_btn"-->
+<!--            android:layout_width="45sp"-->
+<!--            android:layout_height="45sp"-->
+<!--            android:background="@drawable/circle"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="등록"-->
+<!--            android:textSize="14sp"-->
+<!--            android:layout_marginRight="20sp"-->
+<!--            android:layout_marginBottom="20sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
 
         <TextView
             android:id="@+id/dog_lost_txt"

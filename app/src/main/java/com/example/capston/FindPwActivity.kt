@@ -10,6 +10,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.example.capston.databinding.ActivityFindPwBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_find_pw.*
 import kotlinx.android.synthetic.main.activity_find_pw.next_page_btn
@@ -23,12 +26,16 @@ class FindPwActivity : AppCompatActivity() {
     var validEditText1: Boolean = false
     var validEditText2: Boolean = false
 
+    lateinit var auth : FirebaseAuth
+
     private lateinit var binding: ActivityFindPwBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFindPwBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth =FirebaseAuth.getInstance()
 
         binding.nameEdtText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -93,9 +100,7 @@ class FindPwActivity : AppCompatActivity() {
             }
 
             if((email.contains("@")) && (name.isNotEmpty())) {
-                // db에 회원정보있으면 find_pw_success로, 없으면 find_pw_fail로
-                val intent = Intent(this, FindPwSuccessActivity::class.java)
-                startActivity(intent)
+                findPassword()
             }
         }
     }
@@ -107,4 +112,50 @@ class FindPwActivity : AppCompatActivity() {
         email_edit_text.clearFocus()
         return true
     }
+
+    fun findPassword() {
+        val auth = FirebaseAuth.getInstance()
+        val email = binding.emailEditText.text.toString()
+        if (email.length != 0) {
+            auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val intent = Intent(this, FindPwSuccessActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+        }
+        else {
+            val intent = Intent(this, FindPwFailActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    // 이메일 없는 경우 처리해야되는데 아직 안함
+
+//    // 사용자 이메일 가져오기
+//    private fun getEmail () : String? {
+//        val user = Firebase.auth.currentUser
+//        if (user != null) {
+//            user?.let {
+//                val email = user.email
+//                return email.toString()
+//            }
+//        } else {
+//            // No user is signed in
+//            return null
+//        }
+//    }
+//        FirebaseAuth.getInstance().sendPasswordResetEmail(email_edit_text.text.toString())
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    // db에 회원정보있으면 find_pw_success로, 없으면 find_pw_fail로
+//                    val intent = Intent(this, FindPwSuccessActivity::class.java)
+//                    startActivity(intent)
+//                } else {
+//                    val intent = Intent(this, FindPwFailActivity::class.java)
+//                    startActivity(intent)
+//                }
+//            }
+
 }

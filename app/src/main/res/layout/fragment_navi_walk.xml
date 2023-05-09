@@ -102,7 +102,7 @@
             android:layout_width="43dp"
             android:layout_height="43dp"
             android:layout_marginEnd="-4dp"
-            android:background="@drawable/camera1"
+            android:background="@drawable/camera2"
             app:layout_constraintBottom_toBottomOf="@id/profile"
             app:layout_constraintEnd_toEndOf="@id/profile" />
 
