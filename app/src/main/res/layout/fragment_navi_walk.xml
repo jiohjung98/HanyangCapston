@@ -130,43 +130,36 @@
                 app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
                 app:layout_constraintTop_toTopOf="@id/walk_age" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/pet_select_box"
-                android:layout_width="90sp"
-                android:layout_height="30sp"
-                android:background="@drawable/weather_background"
+            <TextView
+                android:id="@+id/pet_select_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="  "
+                android:textAlignment="center"
+                android:gravity="center"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toStartOf="@+id/profile"
+                app:layout_constraintEnd_toEndOf="@+id/profile"
+                app:layout_constraintTop_toTopOf="@+id/pet_select_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/pet_select_spinner"
+                 />
+
+            <Spinner
+                android:id="@+id/pet_select_spinner"
                 android:elevation="4dp"
                 android:visibility="visible"
                 android:layout_marginTop="10sp"
+                android:layout_width="90sp"
+                android:layout_height="30sp"
+                android:dropDownWidth="100dp"
+                android:background="@drawable/dog_register_frame"
+                android:spinnerMode="dialog"
                 app:layout_constraintTop_toBottomOf="@id/profile"
                 app:layout_constraintStart_toStartOf="@id/profile"
                 app:layout_constraintEnd_toEndOf="@id/profile"
-                app:layout_constraintBottom_toBottomOf="@+id/topView">
-
-                <TextView
-                    android:id="@+id/pet_select_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="2sp"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Spinner
-                    android:id="@+id/pet_select_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:dropDownWidth="100dp"
-                    android:spinnerMode="dialog"
-                    app:layout_constraintBottom_toBottomOf="@id/pet_select_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/pet_select_text"
-                    app:layout_constraintTop_toTopOf="@id/pet_select_text" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintBottom_toBottomOf="@+id/topView" />
 
             <ImageView
                 android:id="@+id/adding_btn"
@@ -176,9 +169,9 @@
                 android:enabled="true"
                 android:padding="10sp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/pet_select_box"
+                app:layout_constraintBottom_toBottomOf="@+id/pet_select_spinner"
                 app:layout_constraintEnd_toEndOf="@id/topView"
-                app:layout_constraintTop_toTopOf="@id/pet_select_box"
+                app:layout_constraintTop_toTopOf="@id/pet_select_spinner"
                 android:layout_marginEnd="35sp"/>
 
             <ImageButton
@@ -375,7 +368,6 @@
                 android:layout_marginEnd="30sp"
                 android:layout_marginBottom="20sp"
                 android:layout_marginTop="20sp"
-                android:elevation="10dp"
                 />
 
             <Button

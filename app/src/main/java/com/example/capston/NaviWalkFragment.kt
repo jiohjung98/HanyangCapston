@@ -14,33 +14,31 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import com.example.capston.databinding.FragmentNaviWalkBinding
-import com.example.capston.homepackage.WalkDialog
+import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_dog_register.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
+import kotlinx.android.synthetic.main.lost_dog_info.*
+import net.daum.mf.map.api.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlinx.android.synthetic.main.fragment_navi_home.*
-import net.daum.mf.map.api.*
 import kotlin.math.*
+
 
 /*
  *  두번째 메뉴, 산책하기
@@ -375,7 +373,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
      */
     private fun setupMyDogList(cur_pet : Int){
         // 스피너보이게
-        binding.petSelectBox.visibility = View.VISIBLE
+//        binding.petSelectBox.visibility = View.VISIBLE
         val DogArray = ArrayList<String>()
 
         // 이름 읽어오기
@@ -395,11 +393,10 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                         val v = super.getView(position, convertView, parent)
                         var tv = v as TextView
                         tv.setTextSize(/* size = */ 12f)
+                        tv.gravity = Gravity.CENTER
                         if (position == count) {
-
                             (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
 //                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = "선택"
-
                         }
                         return v
                     }

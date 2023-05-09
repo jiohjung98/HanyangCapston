@@ -13,6 +13,6 @@
     <item
         android:drawable="@drawable/orange_btn"
         android:gravity="center|end"
-        android:width="10dp"
-        android:height="10dp" />
+        android:width="10sp"
+        android:height="10sp" />
 </layer-list>
