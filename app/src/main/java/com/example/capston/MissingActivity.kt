@@ -1,15 +1,18 @@
 package com.example.capston
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,6 +22,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_missing.*
+import kotlinx.android.synthetic.main.activity_walk.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
@@ -91,40 +96,39 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         // 뷰 추가 전 기존 뷰 삭제
         kakaoMapViewContainer?.removeAllViews()
 
-        val kakaoMapView = findViewById<MapView>(R.id.miss_kakaoMapView)
-        kakaoMapViewContainer?.addView(kakaoMapView)
+        mapView = MapView(this)
+        val mapViewContainer = kakaoMapView4 as ViewGroup
+        mapViewContainer.addView(mapView)
 
-        kakaoMapView.setPOIItemEventListener(listen)
+        mapView!!.setMapViewEventListener(this)
+
+        mapView!!.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
-        kakaoMapView.setMapViewEventListener(this)
-        kakaoMapView.setZoomLevel(0, true)
-        kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
+        mapView!!.setMapViewEventListener(this)
+        mapView!!.setZoomLevel(0, true)
+        mapView!!.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.labrador_icon,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView.setCustomCurrentLocationMarkerImage(
+        mapView!!.setCustomCurrentLocationMarkerImage(
             R.drawable.labrador_icon,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView.currentLocationTrackingMode =
+        mapView!!.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-        Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
-        kakaoMapView.setCurrentLocationEventListener(this)
+        Log.d("트래킹", mapView!!.currentLocationTrackingMode.toString())
+        mapView!!.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+        mapView!!.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
 
 
         // 좌측 뒤로가기 버튼
         binding.backBtn.setOnClickListener {
-//            kakaoMapViewContainer?.removeAllViews()
-//            val intent = Intent(this, MainActivity::class.java)
-//            this.startActivity(intent)
-//            this.finish()
-            onBackPressed()
+            goToMain()
         }
 
         binding.radioGroup.setOnCheckedChangeListener { radioGroup, id ->
@@ -136,7 +140,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         }
 
     }
-
 
     fun findAddress() {
         val mapReverseGeoCoder =
@@ -168,8 +171,9 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onBackPressed() {
-        val backDialog = BacktoMainDialog(this)
-        backDialog.show()
+        goToMain()
+//        val backDialog = BacktoMainDialog(this)
+//        backDialog.show()
     }
 
     // 위치 권한 설정 확인 함수
@@ -379,6 +383,30 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 //            address.text = "getPressedCalloutBalloon"
             return mCalloutBalloon
         }
+    }
+
+    fun goToMain() {
+        val dialog = Dialog(this)
+        // 다이얼로그 테두리 둥글게 만들기
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+        dialog.setContentView(R.layout.backtomain_dialog)
+
+        val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+        val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+
+        btnOk.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            kakaoMapView4.removeAllViews()
+            startActivity(intent)
+            finish()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }
 

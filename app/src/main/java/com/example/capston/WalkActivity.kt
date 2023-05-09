@@ -81,33 +81,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
-//
-//        var weights: ArrayList<String>? = null
-//        val extra = intent.extras
-//
-//        if (extra != null) {
-//            val nameData = intent.getStringArrayListExtra("animalName")
-//            val weightData = intent.getStringArrayListExtra("animalWeight")
-//            if (nameData != null && weightData != null) {
-//                animal = nameData
-//                weights = weightData
-//
-//            } else {
-////                val intent = Intent(this, WalkActivity::class.java)
-////                startActivity(intent)
-//                finish()
-//                return
-//            }
-//        } else {
-////            val intent = Intent(this, WalkActivity::class.java)
-////            startActivity(intent)
-//            finish()
-//            return
-//        }
-////
-//        weights!!.forEach(fun(weight) {
-//            fullAmount.add(((weight.toDouble()*30)+70)*1.4 / 2)
-//        })
 
         pauseFab.visibility = View.GONE
         toiletFab.visibility = View.GONE
@@ -158,84 +131,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
         }
         camera_btn.setOnClickListener {
-            isPause = true
-            pauseTimer()
-            pauseFab.visibility = View.GONE
-            toiletFab.visibility = View.GONE
-            playFab.visibility = View.VISIBLE
-            resetFab.visibility = View.VISIBLE
-
-
-            val dialog = Dialog(this)
-            // 다이얼로그 테두리 둥글게 만들기
-            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-            dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-            dialog.setContentView(R.layout.walk_end_alert_dialog)
-
-            val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
-            val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-
-
-            btnOk.setOnClickListener {
-                val dialog2 = Dialog(this)
-                // 다이얼로그 테두리 둥글게 만들기
-                dialog2?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog2?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-                dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
-                dialog2.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-                dialog2.setContentView(R.layout.walk_end_dialog)
-
-                val params: WindowManager.LayoutParams = dialog2.window!!.attributes
-                params?.width = WindowManager.LayoutParams.MATCH_PARENT
-                params?.y = 500
-                dialog2.window?.attributes = params as WindowManager.LayoutParams
-
-
-                val distanceView = dialog2.findViewById<TextView>(R.id.distance)
-                val calorieView = dialog2.findViewById<TextView>(R.id.calorie)
-                val minuteView = dialog2.findViewById<TextView>(R.id.minute)
-                val secondView = dialog2.findViewById<TextView>(R.id.second)
-                val millisecView = dialog2.findViewById<TextView>(R.id.millisec)
-
-                val minute = (time / 6000) % 60 // 1분
-                val second = (time / 100) % 60 // 1초
-                val millisec = time % 100 // 0.01초
-
-                minuteView.text = if (minute < 10) "0$minute" else "$minute"
-                secondView.text = if (second < 10) "0$second" else "$second"
-                millisecView.text = if (millisec < 10) "0$millisec" else "$millisec"
-
-
-                distanceView.text = String.format("%.2f", walkingDistance)
-                calorieView.text = String.format("%.2f", walkingCalorie)
-
-                dialog2.show()
-
-//                액티비티로 이동(첫화면)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(this, MainActivity::class.java)
-                    // 아래 removeAllViews() 안넣어주면 튕김
-                    kakaoMapView2.removeAllViews()
-                    this.startActivity(intent)
-                    (this as Activity).finish()
-                }, 3000)
-
-                dialog.dismiss()
-            }
-
-            btnCancel.setOnClickListener {
-                startTimer()
-                runningDog()
-                pauseFab.visibility = View.VISIBLE
-                toiletFab.visibility = View.VISIBLE
-                playFab.visibility = View.GONE
-                resetFab.visibility = View.GONE
-                dialog.dismiss()
-            }
-
-            dialog.show()
+            goToMain()
         }
     }
 
@@ -623,10 +519,87 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = Intent(this, MainActivity::class.java)
-        kakaoMapView2.removeAllViews()
-        startActivity(intent)
-        finish()
+        goToMain()
+    }
+
+    fun goToMain() {
+        isPause = true
+        pauseTimer()
+        pauseFab.visibility = View.GONE
+        toiletFab.visibility = View.GONE
+        playFab.visibility = View.VISIBLE
+        resetFab.visibility = View.VISIBLE
+
+
+        val dialog = Dialog(this)
+        // 다이얼로그 테두리 둥글게 만들기
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+        dialog.setContentView(R.layout.walk_end_alert_dialog)
+
+        val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+        val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+
+
+        btnOk.setOnClickListener {
+            val dialog2 = Dialog(this)
+            // 다이얼로그 테두리 둥글게 만들기
+            dialog2?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog2?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+            dialog2.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+            dialog2.setContentView(R.layout.walk_end_dialog)
+
+            val params: WindowManager.LayoutParams = dialog2.window!!.attributes
+            params?.width = WindowManager.LayoutParams.MATCH_PARENT
+            params?.y = 500
+            dialog2.window?.attributes = params as WindowManager.LayoutParams
+
+
+            val distanceView = dialog2.findViewById<TextView>(R.id.distance)
+            val calorieView = dialog2.findViewById<TextView>(R.id.calorie)
+            val minuteView = dialog2.findViewById<TextView>(R.id.minute)
+            val secondView = dialog2.findViewById<TextView>(R.id.second)
+            val millisecView = dialog2.findViewById<TextView>(R.id.millisec)
+
+            val minute = (time / 6000) % 60 // 1분
+            val second = (time / 100) % 60 // 1초
+            val millisec = time % 100 // 0.01초
+
+            minuteView.text = if (minute < 10) "0$minute" else "$minute"
+            secondView.text = if (second < 10) "0$second" else "$second"
+            millisecView.text = if (millisec < 10) "0$millisec" else "$millisec"
+
+
+            distanceView.text = String.format("%.2f", walkingDistance)
+            calorieView.text = String.format("%.2f", walkingCalorie)
+
+            dialog2.show()
+
+//                액티비티로 이동(첫화면)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(this, MainActivity::class.java)
+                // 아래 removeAllViews() 안넣어주면 튕김
+                kakaoMapView2.removeAllViews()
+                this.startActivity(intent)
+                (this as Activity).finish()
+            }, 3000)
+
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            startTimer()
+            runningDog()
+            pauseFab.visibility = View.VISIBLE
+            toiletFab.visibility = View.VISIBLE
+            playFab.visibility = View.GONE
+            resetFab.visibility = View.GONE
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

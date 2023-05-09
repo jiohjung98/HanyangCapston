@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/orange_shape"
+        android:background="@drawable/weather_background"
         android:gravity="center"
         android:layout_marginBottom="20dp">
 

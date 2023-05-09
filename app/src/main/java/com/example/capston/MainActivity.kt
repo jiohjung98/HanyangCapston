@@ -26,6 +26,7 @@ import com.kakao.sdk.common.util.Utility
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.android.synthetic.main.fragment_navi_walk.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -105,18 +106,30 @@ class MainActivity : AppCompatActivity() {
             changeFragment(
                 when (item.itemId) {
                     R.id.navigation_home -> {
+                        if (kakaoMapView3 != null) {
+                            kakaoMapView3.removeAllViews()
+                        }
                         item.setIcon(R.drawable.lost_color)
                         binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
                         binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
                         NaviHomeFragment()
                     }
                     R.id.navigation_community -> {
+                        if (kakaoMapView != null) {
+                        kakaoMapView!!.removeAllViews()
+                        }
                         item.setIcon(R.drawable.paw1_color)
                         binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
                         binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
                         NaviWalkFragment()
                     }
                     else -> {
+                        if (kakaoMapView != null) {
+                            kakaoMapView!!.removeAllViews()
+                        }
+                        if (kakaoMapView3 != null) {
+                            kakaoMapView3.removeAllViews()
+                        }
                         item.setIcon(R.drawable.set_color)
                         binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
                         binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
@@ -139,7 +152,14 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
+
     private fun replaceFragment(naviCommunityFragment: Fragment) {
+        if (kakaoMapView != null) {
+            kakaoMapView!!.removeAllViews()
+        }
+        if (kakaoMapView3 != null) {
+            kakaoMapView3.removeAllViews()
+        }
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frm, naviCommunityFragment)

@@ -25,6 +25,7 @@ import com.firebase.geofire.GeoQueryDataEventListener
 import com.firebase.geofire.GeoQueryEventListener
 import com.google.firebase.database.DatabaseError
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_walk.*
 import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.android.map.coord.MapCoord
@@ -113,10 +114,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
 
         binding.locationBtn.setOnClickListener {
-            kakaoMapView.currentLocationTrackingMode =
+            mapView!!.currentLocationTrackingMode =
                 MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         }
-
 
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
@@ -132,45 +132,52 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         listen = MarkerEventListener(mainActivity)
 
-        // 뷰 추가 전 기존 뷰 삭제
-        kakaoMapViewContainer?.removeAllViews()
+//        // 뷰 추가 전 기존 뷰 삭제
+//        kakaoMapViewContainer?.removeAllViews()
+//
+//
+//
+//        val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
+//
+//        kakaoMapViewContainer?.addView(kakaoMapView)
 
-        val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
+        mapView = MapView(mainActivity)
+        val mapViewContainer = kakaoMapView as ViewGroup
+        mapViewContainer.addView(mapView)
 
-        kakaoMapViewContainer?.addView(kakaoMapView)
-
-        kakaoMapView.setPOIItemEventListener(listen)
+        mapView!!.setPOIItemEventListener(listen)
 
         isSetLocationPermission()
-        kakaoMapView.setMapViewEventListener(this)
+        mapView!!.setMapViewEventListener(this)
 
 
-        kakaoMapView.setZoomLevel(0, true)
-        kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
+        mapView!!.setZoomLevel(0, true)
+        mapView!!.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView.setCustomCurrentLocationMarkerImage(
+        mapView!!.setCustomCurrentLocationMarkerImage(
             R.drawable.dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
-        kakaoMapView.currentLocationTrackingMode =
+        mapView!!.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-        Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
-        kakaoMapView.setCurrentLocationEventListener(this)
+        Log.d("트래킹", mapView!!.currentLocationTrackingMode.toString())
+        mapView!!.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        kakaoMapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,this))
+        mapView!!.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater,this))
     }
 
     // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        kakaoMapView!!.removeAllViews()
         kakaoMapViewContainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
-        mapView?.onPause() // 맵뷰를 일시정지
-        mapView = null // 맵뷰 변수를 null로 설정
+//        mapView?.onPause() // 맵뷰를 일시정지
+//        mapView = null // 맵뷰 변수를 null로 설정
     }
 
     override fun onResume() {
@@ -178,6 +185,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (mapView != null) {
             mapView!!.onResume()
         }
+//        binding.kakaoMapViewContainer.addView(mapView)
         this._binding = null
     }
 
@@ -191,6 +199,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onDestroy() {
         kakaoMapViewContainer?.removeAllViews()
         super.onDestroy()
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        binding.kakaoMapViewContainer?.removeAllViews()
     }
 
     // 커스텀 말풍선 클래스

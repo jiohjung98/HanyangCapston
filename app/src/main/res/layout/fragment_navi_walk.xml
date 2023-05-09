@@ -1,288 +1,503 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/homecontainer"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homecontainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".homepackage.HomeRecord">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
+        <View
+            android:id="@+id/center_line"
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="120sp"/>
 
-        <TextView
-            android:id="@+id/adding_btn"
-            android:layout_width="32sp"
-            android:layout_height="32sp"
-            android:padding="10sp"
-            android:layout_margin="10sp"
-            android:background="@drawable/add_dog1"
-            android:visibility="visible"
-            android:enabled="true"
-            android:layout_marginEnd="20sp"
-            app:layout_constraintTop_toTopOf="@id/profile"
-            app:layout_constraintStart_toEndOf="@id/profile"
-            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <TextView
-            android:id="@+id/day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#191919"
-            android:textSize="22dp"
-            app:layout_constraintBottom_toTopOf="@id/profile"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ttopView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FF974C"
+            app:layout_constraintBottom_toTopOf="@id/center_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile"
-            android:layout_width="200sp"
-            android:layout_height="200sp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="50sp"
-            android:background="@drawable/home_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.500"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/day" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/pet_select_box"
-            android:layout_width="100sp"
-            android:layout_height="48dp"
-            android:layout_marginTop="20sp"
-            android:background="@color/white"
-            android:elevation="4dp"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/profile"
-            app:layout_constraintStart_toStartOf="@id/profile"
-            app:layout_constraintEnd_toEndOf="@id/profile">
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FF974C"
+            app:layout_constraintBottom_toTopOf="@id/weather_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
 
-            <TextView
-                android:id="@+id/pet_select_text"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp"
-                android:layout_marginLeft="12dp"
-                android:textSize="15.5dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="30sp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/home_image"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topView"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/pet_select_spinner"
+            <TextView
+                android:id="@+id/walk_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:dropDownWidth="100dp"
-                android:spinnerMode="dialog"
-                app:layout_constraintBottom_toBottomOf="@id/pet_select_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/pet_select_text"
-                app:layout_constraintTop_toTopOf="@id/pet_select_text" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_marginStart="50sp"
+                android:layout_marginTop="20sp"
+                android:fontFamily="@font/dungeon"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                app:layout_constraintStart_toEndOf="@+id/profile"
+                app:layout_constraintTop_toTopOf="@+id/profile" />
+
+            <TextView
+                android:id="@+id/walk_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:fontFamily="@font/dungeon"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="@+id/walk_name"
+                app:layout_constraintTop_toBottomOf="@+id/walk_name" />
+
+            <TextView
+                android:id="@+id/walk_age_slash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:fontFamily="@font/dungeon"
+                android:text="/"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/walk_age"
+                app:layout_constraintStart_toEndOf="@+id/walk_age"
+                app:layout_constraintTop_toTopOf="@id/walk_age" />
 
 
+            <TextView
+                android:id="@+id/walk_breed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:fontFamily="@font/dungeon"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/walk_age"
+                app:layout_constraintStart_toEndOf="@+id/walk_age_slash"
+                app:layout_constraintTop_toTopOf="@id/walk_age" />
 
-        <View
-            android:id="@+id/oo"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginTop="140sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/walk_breed_slash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:fontFamily="@font/dungeon"
+                android:text="/"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/walk_age"
+                app:layout_constraintStart_toEndOf="@+id/walk_breed"
+                app:layout_constraintTop_toTopOf="@id/walk_age" />
 
-        <ImageButton
-            android:id="@+id/camera"
-            android:layout_width="43dp"
-            android:layout_height="43dp"
-            android:layout_marginEnd="-4dp"
-            android:background="@drawable/camera2"
-            app:layout_constraintBottom_toBottomOf="@id/profile"
-            app:layout_constraintEnd_toEndOf="@id/profile" />
+            <TextView
+                android:id="@+id/walk_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:fontFamily="@font/dungeon"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/walk_age"
+                app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
+                app:layout_constraintTop_toTopOf="@id/walk_age" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/color_background"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/agree_rectangle"
-            android:outlineProvider="none"
-            android:translationZ="-1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/oo"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="0dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/pet_select_box"
+                android:layout_width="90sp"
+                android:layout_height="30sp"
+                android:background="@drawable/weather_background"
+                android:elevation="4dp"
+                android:visibility="visible"
+                android:layout_marginTop="10sp"
+                app:layout_constraintTop_toBottomOf="@id/profile"
+                app:layout_constraintStart_toStartOf="@id/profile"
+                app:layout_constraintEnd_toEndOf="@id/profile"
+                app:layout_constraintBottom_toBottomOf="@+id/topView">
 
-        <TextView
-            android:id="@+id/walk_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintTop_toTopOf="@+id/color_background"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="30sp"
-            android:layout_marginTop="30sp"/>
+                <TextView
+                    android:id="@+id/pet_select_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="2sp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/walk_age"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:fontFamily="@font/dungeon"
-            android:layout_marginTop="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/walk_name"
-            app:layout_constraintStart_toStartOf="@+id/walk_name"
-           />
-
-        <TextView
-            android:id="@+id/walk_age_slash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:text="/"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintBottom_toBottomOf="@id/walk_age"
-            app:layout_constraintStart_toEndOf="@+id/walk_age"
-            app:layout_constraintTop_toTopOf="@id/walk_age" />
-
-
-        <TextView
-            android:id="@+id/walk_breed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintBottom_toBottomOf="@id/walk_age"
-            app:layout_constraintStart_toEndOf="@+id/walk_age_slash"
-            app:layout_constraintTop_toTopOf="@id/walk_age" />
-
-        <TextView
-            android:id="@+id/walk_breed_slash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:text="/"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintBottom_toBottomOf="@id/walk_age"
-            app:layout_constraintStart_toEndOf="@+id/walk_breed"
-            app:layout_constraintTop_toTopOf="@id/walk_age" />
-
-
-        <TextView
-            android:id="@+id/walk_gender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintBottom_toBottomOf="@id/walk_age"
-            app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
-            app:layout_constraintTop_toTopOf="@id/walk_age" />
-
-        <Button
-            android:id="@+id/walkBtn"
-            android:layout_width="65sp"
-            android:layout_height="0dp"
-            android:text="산책"
-            android:textSize="20sp"
-            android:fontFamily="@font/dungeon"
-            android:background="@drawable/circle"
-            android:visibility="invisible"
-            android:layout_marginStart="20sp"
-            app:layout_constraintTop_toTopOf="@id/walk_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
-            android:layout_marginEnd="30sp" />
-
-        <Button
-            android:id="@+id/register_btn"
-            android:layout_width="65sp"
-            android:layout_height="0dp"
-            android:text="등록"
-            android:textSize="20sp"
-            android:fontFamily="@font/dungeon"
-            android:background="@drawable/circle"
-            android:visibility="visible"
-            android:layout_marginStart="20sp"
-            app:layout_constraintTop_toTopOf="@id/walk_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
-            android:layout_marginEnd="30sp" />
-
-        <Button
-            android:id="@+id/ddong_btn"
-            android:layout_width="65sp"
-            android:layout_height="0dp"
-            android:text="배변"
-            android:textSize="20sp"
-            android:fontFamily="@font/dungeon"
-            android:background="@drawable/circle"
-            android:visibility="visible"
-            app:layout_constraintTop_toTopOf="@id/walk_name"
-            app:layout_constraintEnd_toStartOf="@id/walkBtn"
-            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"
-            android:layout_marginEnd="10sp"
-             />
-
-        <RelativeLayout
-            android:id="@+id/weather_tip_container"
-            android:padding="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/ddong_btn"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+                <Spinner
+                    android:id="@+id/pet_select_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:dropDownWidth="100dp"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintBottom_toBottomOf="@id/pet_select_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/pet_select_text"
+                    app:layout_constraintTop_toTopOf="@id/pet_select_text" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
-                android:id="@+id/weather_ic"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/sun"
-                />
+                android:id="@+id/adding_btn"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:background="@drawable/add_dog"
+                android:enabled="true"
+                android:padding="10sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/pet_select_box"
+                app:layout_constraintEnd_toEndOf="@id/topView"
+                app:layout_constraintTop_toTopOf="@id/pet_select_box"
+                android:layout_marginEnd="35sp"/>
 
-            <LinearLayout
-                android:id="@+id/weather_txt_container"
+            <ImageButton
+                android:id="@+id/camera"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:background="@drawable/camera"
+                app:layout_constraintTop_toTopOf="@+id/adding_btn"
+                app:layout_constraintBottom_toBottomOf="@+id/adding_btn"
+                app:layout_constraintEnd_toStartOf="@+id/adding_btn"
+                android:layout_marginEnd="20sp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/weather_info"
+            android:layout_width="match_parent"
+            android:layout_height="100sp"
+            android:background="@drawable/weather_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/center_line"
+            app:layout_constraintBottom_toBottomOf="@+id/center_line"
+            android:layout_marginStart="30sp"
+            android:layout_marginEnd="30sp"
+            android:elevation="10dp" >
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="0dp"
+                android:layout_height="25sp"
+                android:src="@drawable/sun"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/vertical_left_line"
+                app:layout_constraintEnd_toStartOf="@id/img2"
+                android:layout_marginTop="10sp"
+                app:layout_constraintHorizontal_weight="1"/>
+
+            <ImageView
+                app:layout_constraintHorizontal_weight="1"
+                android:id="@+id/img2"
+                android:layout_width="0dp"
+                android:layout_height="25sp"
+                android:src="@drawable/perfect"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@id/img3"
+                app:layout_constraintTop_toTopOf="@+id/img1"
+                app:layout_constraintStart_toEndOf="@+id/img1" />
+
+            <ImageView
+                app:layout_constraintHorizontal_weight="1"
+                android:id="@+id/img3"
+                android:layout_width="0dp"
+                android:layout_height="25sp"
+                android:src="@drawable/good"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/img1"
+                app:layout_constraintStart_toEndOf="@+id/img2" />
+
+            <TextView
+                android:id="@+id/loc_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/weather_ic">
-                <TextView
-                    android:id="@+id/temperature_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="25sp"
-                    tools:text="00" />
-                <TextView
-                    android:id="@+id/weather_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Sunny"/>
-            </LinearLayout>
-        </RelativeLayout>
+                android:text="안산시 상록구"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/vertical_left_line"
+                app:layout_constraintTop_toBottomOf="@+id/img1"
+                android:layout_marginTop="10sp"/>
+
+            <TextView
+                android:id="@+id/dust1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="미세먼지"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toStartOf="@id/vertical_left_line"
+                app:layout_constraintEnd_toEndOf="@+id/vertical_right_line"
+                app:layout_constraintTop_toBottomOf="@+id/img1"
+                android:layout_marginTop="10sp"/>
+
+            <TextView
+                android:id="@+id/dust2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="초미세먼지"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toStartOf="@id/vertical_right_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img1"
+                android:layout_marginTop="10sp"/>
+
+            <TextView
+                android:id="@+id/temperature_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="°C"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toStartOf="@id/loc_txt"
+                app:layout_constraintEnd_toEndOf="@id/loc_txt"
+                app:layout_constraintTop_toBottomOf="@id/loc_txt"
+                app:layout_constraintBottom_toBottomOf="@+id/vertical_left_line"
+               />
+            
+            <TextView
+                android:id="@+id/dust1_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="좋음"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toEndOf="@+id/vertical_left_line"
+                app:layout_constraintEnd_toStartOf="@+id/vertical_right_line"
+                app:layout_constraintTop_toBottomOf="@+id/dust1"
+                app:layout_constraintBottom_toBottomOf="@+id/vertical_left_line" />
+
+            <TextView
+                android:id="@+id/dust2_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="보통"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:fontFamily="@font/dungeon"
+                app:layout_constraintStart_toEndOf="@+id/vertical_right_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dust2"
+                app:layout_constraintBottom_toBottomOf="@+id/vertical_left_line" />
+
+            <View
+                android:id="@+id/vertical_center_line"
+                android:layout_width="1sp"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <View
+                android:id="@+id/vertical_left_line"
+                android:layout_width="1sp"
+                android:layout_height="match_parent"
+                android:background="#DADADA"
+                app:layout_constraintStart_toEndOf="@+id/img1"
+                app:layout_constraintEnd_toStartOf="@+id/img2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="10sp" />
+
+            <View
+                android:id="@+id/vertical_right_line"
+                android:layout_width="1sp"
+                android:layout_height="match_parent"
+                android:background="#DADADA"
+                app:layout_constraintStart_toEndOf="@+id/img2"
+                app:layout_constraintEnd_toStartOf="@+id/img3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="10sp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomView"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            app:layout_constraintTop_toBottomOf="@id/weather_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/kakaoMapView3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/weather_background"
+                app:layout_constraintTop_toTopOf="@+id/bottomView"
+                app:layout_constraintBottom_toTopOf="@+id/walkBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="30sp"
+                android:layout_marginEnd="30sp"
+                android:layout_marginBottom="20sp"
+                android:layout_marginTop="20sp"
+                android:elevation="10dp"
+                />
+
+            <Button
+                android:id="@+id/walkBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="산책하러 가기"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/agree_nextbtn_act"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="20sp"
+                android:layout_marginStart="30sp"
+                android:layout_marginEnd="30sp"/>
+
+            <Button
+                android:id="@+id/register_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="등록하러 가기"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/agree_nextbtn_act"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="20sp"
+                android:layout_marginStart="30sp"
+                android:layout_marginEnd="30sp"/>
+
+
+
+<!--        <Button-->
+<!--            android:id="@+id/walkBtn"-->
+<!--            android:layout_width="65sp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:text="산책"-->
+<!--            android:textSize="20sp"-->
+<!--            android:fontFamily="@font/dungeon"-->
+<!--            android:background="@drawable/circle"-->
+<!--            android:visibility="invisible"-->
+<!--            android:layout_marginStart="20sp"-->
+<!--            app:layout_constraintTop_toTopOf="@id/walk_name"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"-->
+<!--            android:layout_marginEnd="30sp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/register_btn"-->
+<!--            android:layout_width="65sp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:text="등록"-->
+<!--            android:textSize="20sp"-->
+<!--            android:fontFamily="@font/dungeon"-->
+<!--            android:background="@drawable/circle"-->
+<!--            android:visibility="visible"-->
+<!--            android:layout_marginStart="20sp"-->
+<!--            app:layout_constraintTop_toTopOf="@id/walk_name"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"-->
+<!--            android:layout_marginEnd="30sp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/ddong_btn"-->
+<!--            android:layout_width="65sp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:text="배변"-->
+<!--            android:textSize="20sp"-->
+<!--            android:fontFamily="@font/dungeon"-->
+<!--            android:background="@drawable/circle"-->
+<!--            android:visibility="visible"-->
+<!--            app:layout_constraintTop_toTopOf="@id/walk_name"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/walkBtn"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/walk_gender"-->
+<!--            android:layout_marginEnd="10sp"-->
+<!--             />-->
+
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/weather_tip_container"-->
+<!--            android:padding="8dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/ddong_btn"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/weather_ic"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:src="@drawable/sun"-->
+<!--                />-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/weather_txt_container"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_toEndOf="@id/weather_ic">-->
+<!--                <TextView-->
+<!--                    android:id="@+id/temperature_tv"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textSize="25sp"-->
+<!--                    tools:text="00" />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/weather_tv"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    tools:text="Sunny"/>-->
+<!--            </LinearLayout>-->
+<!--        </RelativeLayout>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

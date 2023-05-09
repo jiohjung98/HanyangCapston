@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
@@ -25,9 +26,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -41,27 +44,31 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import com.loopj.android.http.RequestParams
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import net.daum.mf.map.api.*
+import kotlin.math.*
 
 /*
  *  두번째 메뉴, 산책하기
  */
 @Suppress("DEPRECATION")
-class NaviWalkFragment : Fragment() {
-    companion object{
-        const val API_KEY: String = "81761cea11a6583c64a10a57912dfb98"
-        const val WEATHER_URL: String = "https://api.openweathermap.org/data/2.5/weather"
-        const val MIN_TIME: Long = 5000
-        const val MIN_DISTANCE: Float = 1000F
-        const val WEATHER_REQUEST: Int = 102
-    }
+class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
+    MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
-    private lateinit var weatherState: TextView
-    private lateinit var temperature: TextView
-    private lateinit var weatherTip: TextView
-    private lateinit var weatherIcon: ImageView
+    // 카카오맵
+    var listen: NaviHomeFragment.MarkerEventListener? = null
+    private var kakaoMapViewContainer: FrameLayout? = null
+    var mapView: MapView? = null
+    private var polyline: MapPolyline? = null
+    var mapPoint: MapPoint? = null
+    private var getAddress: Boolean = false
+    private var addressAdmin: String = ""
+    private var addressLocality: String = ""
+    private var addressThoroughfare: String = ""
 
-    private lateinit var mLocationManager: LocationManager
-    private lateinit var mLocationListener: LocationListener
+    // 권한
+    var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+    private val RequestPermissionCode = 1
 
     private var _binding: FragmentNaviWalkBinding? = null
     private val binding get() = _binding!!
@@ -85,6 +92,19 @@ class NaviWalkFragment : Fragment() {
     private lateinit var gender : TextView
     private lateinit var age : TextView
 
+    // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
+    private var currentLocation: MapPoint? = null
+
+    private val currentLocationEventListener = object : MapView.CurrentLocationEventListener {
+        override fun onCurrentLocationUpdate(mapView: MapView, mapPoint: MapPoint, v: Float) {
+            // 현재 위치 갱신 시 호출되는 콜백 함수
+            currentLocation = mapPoint
+        }
+        override fun onCurrentLocationDeviceHeadingUpdate(mapView: MapView, v: Float) {}
+        override fun onCurrentLocationUpdateFailed(mapView: MapView) {}
+        override fun onCurrentLocationUpdateCancelled(mapView: MapView) {}
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // 2. Context를 액티비티로 형변환해서 할당
@@ -101,32 +121,88 @@ class NaviWalkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val fragmentBinding = FragmentNaviWalkBinding.inflate(inflater, container, false)
-        _binding = fragmentBinding
-        return fragmentBinding.root
-
-        // Inflate the layout for this fragment
-//        _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
-//
-//        return binding.root
+//         Inflate the layout for this fragment
+        _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // fragment 액션바 보여주기(선언안해주면 다른 프레그먼트에서 선언한 .hide() 때문인지 모든 프레그먼트에서 액션바 안보임
         (activity as AppCompatActivity).supportActionBar?.show()
+//
+        mapView = MapView(mainActivity)
+        val mapViewContainer = kakaoMapView3 as ViewGroup
+        mapViewContainer.addView(mapView)
+
+        mapView!!.setPOIItemEventListener(listen)
+
+        isSetLocationPermission()
+        mapView!!.setMapViewEventListener(this)
+
+
+        mapView!!.setZoomLevel(0, true)
+        mapView!!.setCustomCurrentLocationMarkerTrackingImage(
+            R.drawable.dog_icon_64,
+            MapPOIItem.ImageOffset(50, 50)
+        )
+        mapView!!.setCustomCurrentLocationMarkerImage(
+            R.drawable.dog_icon_64,
+            MapPOIItem.ImageOffset(50, 50)
+        )
+        mapView!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+        Log.d("트래킹", mapView!!.currentLocationTrackingMode.toString())
+        mapView!!.setCurrentLocationEventListener(this)
+        polyline = MapPolyline()
+        polyline!!.tag = 1000
+        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+
+
+//        listen = NaviHomeFragment.MarkerEventListener(mainActivity)
+//
+//        // 뷰 추가 전 기존 뷰 삭제
+//        homecontainer?.removeAllViews()
+//
+//        val kakaoMapView = view.findViewById<MapView>(R.id.walk_map_view)
+//
+//        homecontainer?.addView(kakaoMapView)
+//
+//        kakaoMapView.setPOIItemEventListener(listen)
+//
+//        isSetLocationPermission()
+//        kakaoMapView.setMapViewEventListener(this)
+
+//
+//        kakaoMapView.setZoomLevel(0, true)
+//        kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
+//            R.drawable.dog_icon_64,
+//            MapPOIItem.ImageOffset(50, 50)
+//        )
+//        kakaoMapView.setCustomCurrentLocationMarkerImage(
+//            R.drawable.dog_icon_64,
+//            MapPOIItem.ImageOffset(50, 50)
+//        )
+//        kakaoMapView.currentLocationTrackingMode =
+//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+//        Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
+//        kakaoMapView.setCurrentLocationEventListener(this)
+//        polyline = MapPolyline()
+//        polyline!!.tag = 1000
+//        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+
 
 ////       binding?.NaviWalkFragment = this
 //        _binding?.NaviWalkFragment = this
-        binding?.apply {
-            temperature = temperatureTv
-            weatherState = weatherTv
-//            weatherTip = weatherTipTv
-            weatherIcon = weatherIc
-        }
+//        binding?.apply {
+//            temperature = temperatureTv
+////            weatherState = weatherTv
+////            weatherTip = weatherTipTv
+////            weatherIcon = weatherIc
+//        }
 
         binding.walkBtn.setOnClickListener {
+            kakaoMapView3!!.removeAllViews()
             onClickWalk(view)
         }
 
@@ -159,10 +235,39 @@ class NaviWalkFragment : Fragment() {
 //            }
 //    }
 
+    // 위치 권한 설정 확인 함수
+    private fun isSetLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermission()
+        }
+    }
 
-    //메모리 누수 방지
+    // 위치 권한 설정
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            mainActivity,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            RequestPermissionCode
+        )
+        mainActivity.recreate()
+    }
+
+
+    // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        kakaoMapView3.removeAllViews()
+//        homecontainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
+//        mapView?.onPause() // 맵뷰를 일시정지
+//        mapView = null // 맵뷰 변수를 null로 설정
         _binding = null
     }
 
@@ -224,9 +329,9 @@ class NaviWalkFragment : Fragment() {
         breed.text = snapshot.child("breed").value.toString()
         age.text = snapshot.child("born").value.toString() + "년생"
         if (snapshot.child("gender").value == 1)
-            gender.text = "♂"
+            gender.text = "남아"
         else
-            gender.text = "♀"
+            gender.text = "여아"
     }
 
     private fun invalidDog(){
@@ -382,69 +487,69 @@ class NaviWalkFragment : Fragment() {
             resources.displayMetrics
         )
     }
-
-    override fun onResume() {
-        super.onResume()
-        getWeatherInCurrentLocation()
-    }
-
-    private fun getWeatherInCurrentLocation(){
-        mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        mLocationListener = LocationListener { p0 ->
-            val params: RequestParams = RequestParams()
-            params.put("lat", p0.latitude)
-            params.put("lon", p0.longitude)
-            params.put("appid", Companion.API_KEY)
-            doNetworking(params)
-        }
-
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), WEATHER_REQUEST)
-            return
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
-    }
-
-    private fun doNetworking(params: RequestParams) {
-        var client = AsyncHttpClient()
-        client.get(WEATHER_URL, params, object: JsonHttpResponseHandler(){
-            override fun onSuccess(
-                statusCode: Int,
-                headers: Array<out cz.msebera.android.httpclient.Header>?,
-                response: JSONObject?
-            ) {
-                val weatherData = WeatherData().fromJson(response)
-                if (weatherData != null) {
-                    updateWeather(weatherData)
-                }
-            }
-        })
-    }
-
-
-    private fun updateWeather(weather: WeatherData) {
-        temperature.setText(weather.tempString+" ℃")
-        weatherState.setText(weather.weatherType)
-        val resourceID = resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
-        weatherIcon.setImageResource(resourceID)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if(mLocationManager!=null){
-            mLocationManager.removeUpdates(mLocationListener)
-        }
-    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        getWeatherInCurrentLocation()
+//    }
+//
+//    private fun getWeatherInCurrentLocation(){
+//        mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//
+//        mLocationListener = LocationListener { p0 ->
+//            val params: RequestParams = RequestParams()
+//            params.put("lat", p0.latitude)
+//            params.put("lon", p0.longitude)
+//            params.put("appid", Companion.API_KEY)
+//            doNetworking(params)
+//        }
+//
+//
+//        if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), WEATHER_REQUEST)
+//            return
+//        }
+//        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
+//        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener)
+//    }
+//
+//    private fun doNetworking(params: RequestParams) {
+//        var client = AsyncHttpClient()
+//        client.get(WEATHER_URL, params, object: JsonHttpResponseHandler(){
+//            override fun onSuccess(
+//                statusCode: Int,
+//                headers: Array<out cz.msebera.android.httpclient.Header>?,
+//                response: JSONObject?
+//            ) {
+//                val weatherData = WeatherData().fromJson(response)
+//                if (weatherData != null) {
+//                    updateWeather(weatherData)
+//                }
+//            }
+//        })
+//    }
+//
+//
+//    private fun updateWeather(weather: WeatherData) {
+//        temperature.setText(weather.tempString+" ℃")
+//        weatherState.setText(weather.weatherType)
+//        val resourceID = resources.getIdentifier(weather.icon, "drawable", activity?.packageName)
+//        weatherIcon.setImageResource(resourceID)
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        if(mLocationManager!=null){
+//            mLocationManager.removeUpdates(mLocationListener)
+//        }
+//    }
 
     /*
     * 갤러리 접근 권한 획득 후 작업
@@ -576,5 +681,136 @@ class NaviWalkFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(mainActivity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
             }
+    }
+
+    override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
+    }
+
+    override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+//
+//        if (!isStart || isPause) {
+//            return
+//        }
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+//
+//        route.add(arrayListOf(lat, lon))
+//
+//        mapPoint = p1
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
+//
+//        // 변환 주소 가져오기
+//        if (!getAddress) {
+//            findAddress()
+//        }
+    }
+
+
+    override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
+    }
+
+    override fun onCurrentLocationUpdateFailed(p0: MapView?) {
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewInitialized(p0: MapView?) {
+    }
+
+    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+        }
+    }
+
+    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+
+    }
+
+    override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
+    }
+
+    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
+        getAddress = true
+        val address = p1!!.split(" ")
+        addressAdmin = address[0]
+        addressLocality = address[1]
+        addressThoroughfare = address[2]
+        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val edit = pref.edit()
+        edit.putString("addressAdmin", address[0])
+        edit.putString("addressLocality", address[1])
+        edit.putString("addressThoroughfare", address[2])
+        edit.apply()
+    }
+
+    // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
+    private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val r = 6372.8;
+        val dLat = Math.toRadians(lat2 - lat1);
+        val dLon = Math.toRadians(lon2 - lon1);
+        val rLat1 = Math.toRadians(lat1);
+        val rLat2 = Math.toRadians(lat2);
+        var dist = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2);
+        dist = 2 * asin(sqrt(dist))
+
+        return r * dist * 1000
+    }
+
+    private fun meterToKillo(meter: Double): Double {
+        return meter / 1000
+    }
+
+
+    // 마커 클릭 이벤트 리스너
+    class MarkerEventListener(var context: Context): MapView.POIItemEventListener {
+
+        lateinit var mainActivity: MainActivity
+
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+            // 마커 클릭 시
+//            Log.d("markerClick", "ok")
+
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+            // 말풍선 클릭 시 (Deprecated)
+            // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            buttonType: MapPOIItem.CalloutBalloonButtonType?
+        ) {
+        }
+
+        override fun onDraggablePOIItemMoved(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            mapPoint: MapPoint?
+        ) {
+            // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
+        }
     }
 }

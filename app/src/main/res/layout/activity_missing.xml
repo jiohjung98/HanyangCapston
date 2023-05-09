@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <net.daum.mf.map.api.MapView
-            android:id="@+id/miss_kakaoMapView"
+        <RelativeLayout
+            android:id="@+id/kakaoMapView4"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +97,7 @@
             android:padding = "13dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/miss_kakaoMapView"
+            app:layout_constraintBottom_toBottomOf="@id/kakaoMapView4"
             android:layout_marginBottom="30sp" />
 
         <TextView
@@ -113,7 +113,7 @@
             android:padding = "13dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/miss_kakaoMapView"
+            app:layout_constraintBottom_toBottomOf="@id/kakaoMapView4"
             android:layout_marginBottom="30sp" />
 
 <!--        <ImageView-->
