@@ -108,11 +108,11 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         mapView!!.setMapViewEventListener(this)
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
-            R.drawable.labrador_icon,
+            R.drawable.sad_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.setCustomCurrentLocationMarkerImage(
-            R.drawable.labrador_icon,
+            R.drawable.sad_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.currentLocationTrackingMode =

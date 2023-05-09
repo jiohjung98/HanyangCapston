@@ -1,20 +1,24 @@
 package com.example.capston
 
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.LocationListener
-import android.location.LocationManager
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -22,28 +26,18 @@ import com.example.capston.databinding.FragmentNaviWalkBinding
 import com.example.capston.homepackage.WalkDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import com.example.capston.homepackage.NaviHomeFragment
-import com.google.firebase.database.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.loopj.android.http.AsyncHttpClient
-import com.loopj.android.http.JsonHttpResponseHandler
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
-import org.json.JSONObject
-import retrofit2.http.Header
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import com.loopj.android.http.RequestParams
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import net.daum.mf.map.api.*
 import kotlin.math.*
@@ -143,11 +137,11 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
-            R.drawable.dog_icon_64,
+            R.drawable.happy_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.setCustomCurrentLocationMarkerImage(
-            R.drawable.dog_icon_64,
+            R.drawable.happy_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.currentLocationTrackingMode =
@@ -202,8 +196,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        }
 
         binding.walkBtn.setOnClickListener {
-            kakaoMapView3!!.removeAllViews()
-            onClickWalk(view)
+            goToWalk()
         }
 
         binding.registerBtn.setOnClickListener {
@@ -271,12 +264,32 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         _binding = null
     }
 
-    private fun onClickWalk(view: View?) {
-        val walkDlg = WalkDialog(mainActivity)
-        walkDlg.setOnOKClickedListener { content ->
-            binding.walkBtn.text = content
+    fun goToWalk() {
+        val dialog = Dialog(mainActivity)
+        // 다이얼로그 테두리 둥글게 만들기
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+        dialog.setContentView(R.layout.walkdialog)
+
+        val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+        val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+
+        btnOk.setOnClickListener {
+            dialog.dismiss()
+            // 산책 액티비티로 이동(첫화면)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(context, WalkActivity::class.java)
+                context?.startActivity(intent)
+                (context as Activity).finish()
+            }, 10)
+            kakaoMapView3.removeAllViews()
         }
-        walkDlg.show("산책")
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private fun onClickRegister(view: View?) {

@@ -37,12 +37,12 @@ class WalkDialog(private val context : AppCompatActivity) {
         this.walkDlg.window!!.attributes = params
 
 
-        binding.yes.setOnClickListener {
+        binding.yesBtn.setOnClickListener {
             walkDlg.dismiss()
             goWalk()
         }
 
-        binding.no.setOnClickListener {
+        binding.noBtn.setOnClickListener {
             walkDlg.dismiss()
         }
 

@@ -10,30 +10,21 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
 import com.example.capston.*
 import com.example.capston.databinding.CustomBalloonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQuery
-import com.firebase.geofire.GeoQueryDataEventListener
 import com.firebase.geofire.GeoQueryEventListener
 import com.google.firebase.database.DatabaseError
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_walk.*
-import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
-import net.daum.android.map.coord.MapCoord
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
-import org.w3c.dom.Text
 import java.util.*
-import kotlin.concurrent.timer
 import kotlin.math.*
 
 
@@ -153,11 +144,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
-            R.drawable.dog_icon_64,
+            R.drawable.normal_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.setCustomCurrentLocationMarkerImage(
-            R.drawable.dog_icon_64,
+            R.drawable.normal_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.currentLocationTrackingMode =

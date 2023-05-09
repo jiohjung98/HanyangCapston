@@ -51,7 +51,7 @@
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/no"
+            android:id="@+id/no_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="20dp"
@@ -71,13 +71,13 @@
             android:layout_width="0.5dp"
             android:layout_height="0dp"
             android:background="#C3C3C3"
-            app:layout_constraintTop_toTopOf="@id/no"
-            app:layout_constraintBottom_toBottomOf="@id/no"
+            app:layout_constraintTop_toTopOf="@id/no_btn"
+            app:layout_constraintBottom_toBottomOf="@id/no_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/yes"
+            android:id="@+id/yes_btn"
             android:layout_width="0dp"
             android:padding="20dp"
             android:layout_height="wrap_content"

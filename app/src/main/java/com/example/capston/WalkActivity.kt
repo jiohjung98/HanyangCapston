@@ -162,11 +162,11 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         // 현위치 트래킹 모드 ON
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
-            R.drawable.labrador_icon,
+            R.drawable.lovely_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.setCustomCurrentLocationMarkerImage(
-            R.drawable.labrador_icon,
+            R.drawable.lovely_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.currentLocationTrackingMode =
