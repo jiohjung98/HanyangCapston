@@ -15,12 +15,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityPermissionBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class PermissionActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPermissionBinding
 
     private val LOCATION_REQUEST = 1
     private final val FILE_REQUEST = 1010
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityPermissionBinding.inflate(layoutInflater)
@@ -30,6 +33,7 @@ class PermissionActivity : AppCompatActivity() {
         viewBinding.permissionAgreeBtn.setOnClickListener {
             requestPermission()
         }
+        auth = FirebaseAuth.getInstance()
     }
 
 
@@ -54,15 +58,22 @@ class PermissionActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == LOCATION_REQUEST && grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), FILE_REQUEST)
         }
 
+        val user = auth.currentUser
 
         if(isSetPermission()) {
-            startActivity(Intent(this, StartActivity::class.java))
-            finish()
+            if(user == null) {
+                startActivity(Intent(this, StartActivity::class.java))
+                finish()
+            } else{
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
         }
         else{
             Toast.makeText(this,"권한설정에 동의해주세요", Toast.LENGTH_SHORT)

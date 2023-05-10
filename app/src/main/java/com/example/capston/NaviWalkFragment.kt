@@ -669,7 +669,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         // storage 인스턴스 생성
         val storage = Firebase.storage
         // storage 참조
-        val storageRef = storage.getReference("images").child("users")
+        val storageRef = storage.getReference("images").child("users").child(auth.currentUser!!.uid)
         // storage에 저장할 파일명 선언
         val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")

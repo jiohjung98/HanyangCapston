@@ -7,31 +7,26 @@
         <item>재패니즈 스파니엘</item>
         <item>말티즈</item>
         <item>페키니즈</item>
+        <item>비숑프리제</item>
         <item>시츄</item>
         <item>킹찰스 스파니엘</item>
+        <item>닥스훈트(단모)</item>
+        <item>닥스훈트(장모)</item>
         <item>빠삐용</item>
         <item>토이테리어</item>
-        <item>로다지안 리지백</item>
+        <item>로디지안 리지백</item>
         <item>아프간하운드</item>
         <item>바셋하운드</item>
         <item>비글</item>
         <item>블러드하운드</item>
-        <item>블루틱 쿤하운드</item>
-        <item>블랙앤탄 쿤하운드</item>
-        <item>트리잉워커 쿤하운드</item>
         <item>잉글리시 폭스하운드</item>
-        <item>레드본 쿤하운드</item>
         <item>보르조이</item>
         <item>아이리시 울프하운드</item>
         <item>이탈리안 그레이하운드</item>
         <item>휘핏</item>
-        <item>이비전 하운드</item>
         <item>노르웨이언 엘크하운드</item>
-        <item>오터 하운드</item>
-        <item>살루키</item>
-        <item>스코티시 디어하운드</item>
         <item>와이머라너</item>
-        <item>스타포드셔 불테리어</item>
+        <item>스태퍼드셔 불테리어</item>
         <item>아메리칸 스태퍼드셔 테리어</item>
         <item>베들링턴 테리어</item>
         <item>보더 테리어</item>
@@ -40,17 +35,13 @@
         <item>노퍽 테리어</item>
         <item>노리치 테리어</item>
         <item>요크셔 테리어</item>
-        <item>와이어 폭스 테리어</item>
+        <item>폭스 테리어</item>
         <item>레이클랜드 테리어</item>
         <item>실리엄 테리어</item>
-        <item>에어데일 테리어</item>
-        <item>케언 테리어</item>
         <item>오스트레일리안 테리어</item>
-        <item>댄디 딘몬트 테리어</item>
         <item>보스턴 테리어</item>
         <item>미니어처 슈나우저</item>
-        <item>자이언트 슈나우저</item>
-        <item>스탠더드 슈나우저</item>
+        <item>스탠다드 슈나우저</item>
         <item>스코티시 테리어</item>
         <item>티베탄 테리어</item>
         <item>실키 테리어</item>
@@ -66,36 +57,25 @@
         <item>비즐라</item>
         <item>잉글리시 세터</item>
         <item>아이리시 세터</item>
-        <item>고든 세터</item>
         <item>브리타니 스파니엘</item>
-        <item>클럼버 스파니엘</item>
-        <item>잉글리시 스프링어 스패니얼</item>
-        <item>웰시 스프링어 스패니얼</item>
-        <item>코커 스패니얼</item>
-        <item>서섹스 스패니얼</item>
-        <item>아이리시 워터 스패니얼</item>
+        <item>웰시 스프링어 스파니엘</item>
+        <item>코커 스파니엘</item>
+        <item>서섹스 스파니엘</item>
+        <item>아이리시 워터 스파니엘</item>
         <item>쿠바츠</item>
-        <item>스키퍼키</item>
-        <item>그루넨달</item>
-        <item>말리노이즈(벨지언 쉽독)</item>
-        <item>브리아드</item>
-        <item>오스트레일리안 켈피</item>
-        <item>코몬도르</item>
+        <item>그로넨달</item>
+        <item>마리노이즈</item>
         <item>올드 잉글리시 쉽독</item>
         <item>셔틀랜드 쉽독</item>
         <item>콜리</item>
         <item>보더콜리</item>
-        <item>부비에 데 플랑드르</item>
         <item>로트와일러</item>
         <item>저먼 셰퍼드</item>
         <item>도베르만</item>
         <item>미니어처 핀셔</item>
-        <item>그레이터 스위스 마운틴독</item>
         <item>버니즈 마운틴독</item>
-        <item>아펜젤러 세넨훈드</item>
-        <item>엔틀버쳐 마운틴독</item>
         <item>복서</item>
-        <item>불마스티프</item>
+        <item>불 마스티프</item>
         <item>티베탄 마스티프</item>
         <item>프렌치 불독</item>
         <item>그레이트 데인</item>
@@ -106,21 +86,18 @@
         <item>아펜핀셔</item>
         <item>바센지</item>
         <item>퍼그</item>
-        <item>레온베르거</item>
         <item>뉴펀들랜드</item>
         <item>그레이트 피레니즈</item>
         <item>사모예드</item>
         <item>포메라니안</item>
         <item>차우차우</item>
         <item>시바</item>
-        <item>키스혼드</item>
-        <item>브뤼셀 그리펀</item>
+        <item>케이스혼트</item>
         <item>펨브루크 웰시코기</item>
         <item>진돗개</item>
         <item>카디건 웰시코기</item>
         <item>토이 푸들</item>
         <item>미니어처 푸들</item>
         <item>스탠다드 푸들</item>
-        <item>멕시칸 헤어리스</item>
     </string-array>
 </resources>

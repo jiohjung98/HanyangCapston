@@ -502,7 +502,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     }
 
     /*
-     * 파이어베이스 db에 포스트 업로드
+     * 파이어베이스 db에 포스트 업로드 + db geoFire에 등록
      */
     private fun uploadPost() {
         val ref = activity.database.child("post").child("witness").push()

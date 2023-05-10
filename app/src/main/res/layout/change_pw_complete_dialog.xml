@@ -22,15 +22,21 @@
             android:gravity="center"
             android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="26dp"
+                android:background="@drawable/logo1"
+                />
+
             <TextView
+                android:id="@+id/context_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="로그아웃 되었습니다."
-                android:fontFamily="@font/dungeon"
+                android:text=""
                 android:textColor="@color/black"
-                android:textSize="22sp"
-                android:paddingTop="20dp"
+                android:textSize="20sp"
+                android:paddingTop="22dp"
                 />
 
         </LinearLayout>

@@ -12,14 +12,20 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.DeletecompletedialogBinding
 import com.example.capston.databinding.DeletedialogBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.storage.FirebaseStorage
 
 
-
-class DeleteDialog(private val context : AppCompatActivity) {
+class DeleteDialog(private val context : MainActivity) {
     private lateinit var listener : MyDialogOKClickedListener
     private lateinit var binding : DeletedialogBinding
     private lateinit var binding2 : DeletecompletedialogBinding
     private val deleteDlg = Dialog(context)   //부모 액티비티의 context 가 들어감
+
+    private val auth get() = context.auth
+    private val database get() = context.database.child("users")
+    private val storage = FirebaseStorage.getInstance()
 
     fun show(content : String) {
         binding = DeletedialogBinding.inflate(context.layoutInflater)
@@ -65,6 +71,32 @@ class DeleteDialog(private val context : AppCompatActivity) {
     }
 
     fun deleteComplete() {
+
+        // 데이터베이스 users 에서 삭제
+        database.child(auth.currentUser!!.uid).removeValue()
+        // 스토리지 이미지 삭제
+        val ref = storage.getReference("images").child("users").child(auth.currentUser!!.uid)
+        // 폴더 내의 모든 파일과 폴더에 대한 참조 객체 목록 가져오기
+        ref.listAll().addOnSuccessListener { listResult ->
+            // 폴더 내의 모든 파일과 폴더에 대한 참조 객체를 삭제
+            listResult.items.forEach { item ->
+                item.delete().addOnSuccessListener {
+                    // 파일 또는 폴더 삭제 성공
+                }.addOnFailureListener { e ->
+                    // 파일 또는 폴더 삭제 실패
+                }
+            }
+
+            // 폴더 자체를 삭제
+            ref.delete().addOnSuccessListener {
+                // 폴더 삭제 성공
+            }.addOnFailureListener { e ->
+                // 폴더 삭제 실패
+            }
+        }.addOnFailureListener { e ->
+            // 폴더 내의 파일과 폴더 목록 가져오기 실패
+        }
+
         binding2 = DeletecompletedialogBinding.inflate(context.layoutInflater)
 
         deleteDlg.setContentView(binding2.root)
@@ -77,10 +109,13 @@ class DeleteDialog(private val context : AppCompatActivity) {
 
         deleteDlg.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         deleteDlg.show()
+        auth.currentUser?.delete()
 //      액티비티로 이동(첫화면)
         Handler(Looper.getMainLooper()).postDelayed({
+            // 파이어베이스 auth 삭제
             val intent = Intent(context, SplashActivity::class.java)
             context.startActivity(intent)
+            deleteDlg.dismiss()
             (context as Activity).finish()
         }, 3000)
     }
