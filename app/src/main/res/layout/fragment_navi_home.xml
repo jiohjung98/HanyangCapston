@@ -32,13 +32,15 @@
 <!--            app:layout_constraintTop_toTopOf="@+id/location_background"-->
 <!--            app:layout_constraintBottom_toBottomOf="@+id/location_background"/>-->
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/location_btn"
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="45sp"
             android:layout_height="45sp"
             android:layout_marginBottom="10sp"
+            android:elevation="10sp"
+            android:background="@drawable/circle"
             app:layout_constraintEnd_toEndOf="@id/lost_btn"
             app:layout_constraintStart_toStartOf="@+id/lost_btn"
             app:layout_constraintBottom_toTopOf="@+id/lost_btn">
@@ -48,36 +50,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/circle"
                 app:civ_border_overlay="false"
                 app:civ_border_width="1sp"
                 app:civ_border_color="#FF974C"
                 android:src="@drawable/location"
+                app:layout_constraintStart_toStartOf="@+id/location_btn"
+                app:layout_constraintEnd_toEndOf="@+id/location_btn"
+                app:layout_constraintTop_toTopOf="@+id/location_btn"
+                app:layout_constraintBottom_toBottomOf="@+id/location_btn"
                 />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lost_btn"
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:background="@drawable/circle"
             android:layout_width="45sp"
             android:layout_height="45sp"
+            android:elevation="10sp"
             android:layout_marginRight="20sp"
             android:layout_marginBottom="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/lost_btnn"
-                android:layout_width="45sp"
-                android:layout_height="45sp"
-                android:background="@drawable/circle"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
                 app:civ_border_overlay="false"
                 app:civ_border_width="1sp"
                 app:civ_border_color="#FF974C"
-                android:layout_gravity="center"
-                android:src="@drawable/pencel_64" />
-        </LinearLayout>
+                app:layout_constraintStart_toStartOf="@+id/lost_btn"
+                app:layout_constraintEnd_toEndOf="@+id/lost_btn"
+                app:layout_constraintTop_toTopOf="@+id/lost_btn"
+                app:layout_constraintBottom_toBottomOf="@+id/lost_btn"
+                android:src="@drawable/pencel_512" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--        <Button-->
 <!--            android:id="@+id/lost_btn"-->

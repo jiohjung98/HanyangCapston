@@ -19,17 +19,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.capston.databinding.ActivityWalkBinding
-import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_walk.*
-import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.android.synthetic.main.logoutdialog.*
-import kotlinx.android.synthetic.main.logoutdialog.yes_btn
-import kotlinx.android.synthetic.main.walk_end_alert_dialog.*
-import kotlinx.android.synthetic.main.walk_end_dialog.*
 import net.daum.mf.map.api.*
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -282,7 +274,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         marker.mapPoint = mapPoint
         marker.markerType = MapPOIItem.MarkerType.CustomImage
         marker.customImageResourceId =
-            R.drawable.toilet_activity
+            R.drawable.ddong_32
         marker.isCustomImageAutoscale = false
         marker.setCustomImageAnchor(0.5f, 1.0f)
         mapView!!.addPOIItem(marker)
@@ -487,18 +479,18 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-        Log.d("logpress", "맵뷰롱프레스트")
-        p0?.setMapCenterPoint(p1,true)
-        val marker = MapPOIItem()
-        marker.itemName = "배변"
-        marker.isShowCalloutBalloonOnTouch = false
-        marker.mapPoint = p1
-        marker.markerType = MapPOIItem.MarkerType.BluePin
-        marker.customImageResourceId =
-            R.drawable.toilet_activity
-        marker.isCustomImageAutoscale = false
-        marker.setCustomImageAnchor(0.5f, 1.0f)
-        p0!!.addPOIItem(marker)
+//        Log.d("logpress", "맵뷰롱프레스트")
+//        p0?.setMapCenterPoint(p1,true)
+//        val marker = MapPOIItem()
+//        marker.itemName = "배변"
+//        marker.isShowCalloutBalloonOnTouch = false
+//        marker.mapPoint = p1
+//        marker.markerType = MapPOIItem.MarkerType.BluePin
+//        marker.customImageResourceId =
+//            R.drawable.toilet_activity
+//        marker.isCustomImageAutoscale = false
+//        marker.setCustomImageAnchor(0.5f, 1.0f)
+//        p0!!.addPOIItem(marker)
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {

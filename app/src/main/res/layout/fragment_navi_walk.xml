@@ -154,7 +154,7 @@
                 android:layout_width="90sp"
                 android:layout_height="30sp"
                 android:dropDownWidth="100dp"
-                android:background="@drawable/dog_register_frame"
+                android:background="@drawable/dog_register_frame2"
                 android:spinnerMode="dialog"
                 app:layout_constraintTop_toBottomOf="@id/profile"
                 app:layout_constraintStart_toStartOf="@id/profile"

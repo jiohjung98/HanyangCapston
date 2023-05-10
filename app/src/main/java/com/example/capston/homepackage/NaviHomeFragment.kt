@@ -104,6 +104,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             activity?.startActivity(intent)
         }
 
+//        binding.locationBtn.setOnClickListener {
+//            mapView!!.currentLocationTrackingMode =
+//                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+//        }
+
         binding.locationBtn.setOnClickListener {
             mapView!!.currentLocationTrackingMode =
                 MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading

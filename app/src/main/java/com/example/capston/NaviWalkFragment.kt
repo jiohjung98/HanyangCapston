@@ -151,6 +151,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
 
+
+
 //        listen = NaviHomeFragment.MarkerEventListener(mainActivity)
 //
 //        // 뷰 추가 전 기존 뷰 삭제
@@ -326,7 +328,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                 setupMyDogHandler()
             }
         }
-
     }
 
     private fun validDog(snapshot: DataSnapshot) {
