@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/background"
-        app:lottie_rawRes="@raw/loading_lottie"
+        app:lottie_rawRes="@raw/progress_orange"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         />

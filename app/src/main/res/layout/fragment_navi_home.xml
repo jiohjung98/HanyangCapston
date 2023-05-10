@@ -47,12 +47,10 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/location_btnn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="33sp"
+                android:layout_height="33sp"
                 android:layout_gravity="center"
                 app:civ_border_overlay="false"
-                app:civ_border_width="1sp"
-                app:civ_border_color="#FF974C"
                 android:src="@drawable/location"
                 app:layout_constraintStart_toStartOf="@+id/location_btn"
                 app:layout_constraintEnd_toEndOf="@+id/location_btn"
@@ -65,7 +63,7 @@
             android:id="@+id/lost_btn"
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:background="@drawable/circle"
+            android:background="@drawable/circle3"
             android:layout_width="45sp"
             android:layout_height="45sp"
             android:elevation="10sp"
@@ -76,16 +74,33 @@
 
             <ImageView
                 android:id="@+id/lost_btnn"
-                android:layout_width="35sp"
-                android:layout_height="35sp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
                 app:civ_border_overlay="false"
                 app:civ_border_width="1sp"
                 app:civ_border_color="#FF974C"
+                android:background="#FF974C"
                 app:layout_constraintStart_toStartOf="@+id/lost_btn"
                 app:layout_constraintEnd_toEndOf="@+id/lost_btn"
                 app:layout_constraintTop_toTopOf="@+id/lost_btn"
+                app:layout_constraintBottom_toTopOf="@+id/lost_txt"
+                android:layout_marginTop="5sp"
+                android:src="@drawable/pencel2_512" />
+
+            <TextView
+                android:id="@+id/lost_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="등록"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                app:layout_constraintTop_toBottomOf="@+id/lost_btnn"
                 app:layout_constraintBottom_toBottomOf="@+id/lost_btn"
-                android:src="@drawable/pencel_512" />
+                app:layout_constraintStart_toStartOf="@+id/lost_btn"
+                app:layout_constraintEnd_toEndOf="@+id/lost_btn"
+                android:layout_marginBottom="5sp"/>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--        <Button-->

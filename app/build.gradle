@@ -123,10 +123,11 @@ dependencies {
 
     // GeoFire
     implementation("com.firebase:geofire-android:3.1.0")
-//    implementation 'com.github.psteiger:geofire-ktx:0.6.0'
+    // implementation 'com.github.psteiger:geofire-ktx:0.6.0'
 
     //Lottie Animation
-    implementation 'com.airbnb.android:lottie:3.0.7'
+    def lottieVersion = "5.2.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     implementation 'com.loopj.android:android-async-http:1.4.10'
 }
