@@ -194,6 +194,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onStop() {
         super.onStop()
+        kakaoMapView!!.removeAllViews()
 //        binding.kakaoMapViewContainer?.removeAllViews()
     }
 

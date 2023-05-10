@@ -262,6 +262,11 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         _binding = null
     }
 
+    override fun onStop() {
+        super.onStop()
+        kakaoMapView3.removeAllViews()
+    }
+
     fun goToWalk() {
         val dialog = Dialog(mainActivity)
         // 다이얼로그 테두리 둥글게 만들기
@@ -393,7 +398,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                         val v = super.getView(position, convertView, parent)
                         var tv = v as TextView
                         tv.setTextSize(/* size = */ 12f)
-                        tv.gravity = Gravity.CENTER
+//                        tv.gravity = Gravity.CENTER
                         if (position == count) {
                             (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).text = ""
 //                            (v.findViewById<View>(R.id.tvGenderSpinner) as TextView).hint = "선택"
