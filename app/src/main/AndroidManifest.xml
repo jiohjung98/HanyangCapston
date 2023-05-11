@@ -24,21 +24,35 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ExcelActivity"
+            android:name=".Register2Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".LoadingActivity"
-            android:exported="false"
-            android:label="@string/title_activity_loading"
-            android:theme="@style/Theme.Capston.NoActionBar">
+            android:name=".Register1Activity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".ExcelActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- <activity -->
+        <!-- android:name=".LoadingActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_loading" -->
+        <!-- android:theme="@style/Theme.Capston.NoActionBar"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.app.lib_name" -->
+        <!-- android:value="" /> -->
+        <!-- </activity> -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">

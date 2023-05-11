@@ -27,18 +27,18 @@
     </RelativeLayout>
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/google_login">
-
+        android:background="#FF974C">
     </LinearLayout>
 
     <!--타이머 레이아웃-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"
+        android:background="@drawable/bottomnavigation_shape"
         android:gravity="center"
         android:layout_weight="1"
         android:orientation="horizontal">
@@ -238,7 +238,6 @@
                 android:background="@drawable/pause_icon"
                 android:backgroundTint="#626262" />
         </RelativeLayout>
-
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -173,7 +173,6 @@ class RegisterActivity : AppCompatActivity() {
 //           else if (Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1) && (pw1 == pw2) && (email.contains("@")) && (name.isNotEmpty()) && !emailOk) {
 //                Toast.makeText(this, "이미 가입된 이메일입니다.", Toast.LENGTH_SHORT).show()
 //                }
-
             createUser(email, pw1)
         }
 

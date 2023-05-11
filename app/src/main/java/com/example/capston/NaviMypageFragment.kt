@@ -98,15 +98,6 @@ class NaviMypageFragment : Fragment() {
                     .commit()
             }
         }
-
-//        binding.questionBtn.setOnClickListener{
-//            parentFragmentManager.beginTransaction().apply {
-//                replace(R.id.main_frm, questionFragment)
-//                    .addToBackStack(null)
-//                    .commit()
-//            }
-//        }
-
         return binding.root
     }
 
@@ -123,9 +114,6 @@ class NaviMypageFragment : Fragment() {
         }
         getFromDB()
     }
-
-
-
     /*
     현재 반려견 인덱스 불러오기
     */
@@ -246,7 +234,7 @@ class NaviMypageFragment : Fragment() {
     // fragment 액션바 없애주기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.hide()
+//        (activity as AppCompatActivity).supportActionBar?.hide()
 
         // 현재 반려견 인덱스 불러오기
         loadCurrentDog(0)
