@@ -26,19 +26,18 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="35sp"
         android:layout_height="35sp"
-        android:layout_marginBottom="10sp"
-        android:elevation="10sp"
         android:background="@drawable/circle3"
-        app:layout_constraintTop_toBottomOf="@id/back_button"
-        app:layout_constraintStart_toStartOf="@id/back_button"
-        android:layout_marginTop="30sp">
+        app:layout_constraintTop_toTopOf="@+id/num2"
+        app:layout_constraintBottom_toBottomOf="@+id/num2"
+        app:layout_constraintStart_toEndOf="@+id/num2"
+        android:layout_marginStart="10sp">
 
         <TextView
             android:id="@+id/location_btnn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="1"
+            android:text="2"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/num1"
@@ -52,10 +51,9 @@
         android:layout_width="20sp"
         android:layout_height="20sp"
         android:background="@drawable/circle4"
-        app:layout_constraintTop_toTopOf="@+id/num1"
-        app:layout_constraintBottom_toBottomOf="@+id/num1"
-        app:layout_constraintStart_toEndOf="@id/num1"
-        android:layout_marginStart="10sp" />
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="@id/back_button"
+        android:layout_marginTop="30sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/num3"
@@ -64,7 +62,7 @@
         android:background="@drawable/circle4"
         app:layout_constraintTop_toTopOf="@+id/num1"
         app:layout_constraintBottom_toBottomOf="@+id/num1"
-        app:layout_constraintStart_toEndOf="@id/num2"
+        app:layout_constraintStart_toEndOf="@id/num1"
         android:layout_marginStart="10sp" />\
 
     <LinearLayout
@@ -74,7 +72,7 @@
         android:weightSum="3"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/num1"
-        app:layout_constraintStart_toStartOf="@+id/num1"
+        app:layout_constraintStart_toStartOf="@+id/num2"
         android:layout_marginTop="40sp">
 
         <TextView
@@ -82,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="안녕하세요!"
+            android:text="멋진 이름이네요!"
             android:textSize="25sp"
             android:textColor="@color/black"
             android:fontFamily="@font/dungeon"
@@ -95,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="회원님의 이름은"
+            android:text="회원님의 이메일"
             android:textSize="25sp"
             android:textColor="@color/black"
             android:fontFamily="@font/dungeon"
@@ -129,16 +127,48 @@
         android:layout_marginBottom="20sp">
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20sp"
             android:layout_marginEnd="20sp"
             android:layout_weight="1"
             android:background="@drawable/edit_underline"
-            android:hint="이름을 입력해주세요"
+            android:hint="이메일을 입력해주세요"
             android:paddingBottom="10sp"
             android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/email_layout"
+            android:layout_width="360dp"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/inputID"
+            app:layout_constraintTop_toBottomOf="@+id/inputID">
+            <!--            기본 상태는 invisible, 문제 발생 시 visible-->
+
+            <ImageView
+                android:id="@+id/vector_email"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="22dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/vector">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/warning_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="4dp"
+                android:text="정확한 이메일을 입력해주세요"
+                android:textColor="#C64A4A"
+                android:textSize="12dp">
+            </TextView>
+
+        </LinearLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

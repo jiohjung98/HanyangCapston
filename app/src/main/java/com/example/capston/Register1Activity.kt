@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -52,6 +53,11 @@ class Register1Activity : AppCompatActivity() {
                 }
             }
         })
+
+        viewBinding.nextBtn.setOnClickListener {
+            val intent = Intent(this, Register2Activity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
