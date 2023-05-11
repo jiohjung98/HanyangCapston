@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -97,6 +98,14 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var temp : Any? = null
     private var weather : Int? = null
     private var weatherImage : ImageView? = null
+    private var isGetWeather : Boolean = false
+    // 미세먼지관련
+    private var pm25 : Int? = null
+    private var pm10 : Int? = null
+    private var isGetAir : Boolean = false
+
+    // 공유 변수
+    private lateinit var pref : SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -105,6 +114,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         database = mainActivity.database
         auth = mainActivity.auth
         functions = FirebaseFunctions.getInstance()
+        pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -706,12 +716,19 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-        Log.i("onCurrentLocationUpdate","Call")
+//        Log.i("onCurrentLocationUpdate","Call")
 
         this.curLat = p1?.mapPointGeoCoord!!.latitude
         this.curLon = p1.mapPointGeoCoord!!.longitude
 
-        getWeather()
+        if (!getAddress)
+            findAddress(p1)
+
+
+        if(!isGetWeather)
+            getWeather()
+        if(!isGetAir)
+            getAirQuality()
 //
 //        if (!isStart || isPause) {
 //            return
@@ -727,9 +744,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        p0.addPolyline(polyline)
 //
 //        // 변환 주소 가져오기
-//        if (!getAddress) {
-//            findAddress()
-//        }
+
     }
 
 
@@ -781,12 +796,18 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         addressAdmin = address[0]
         addressLocality = address[1]
         addressThoroughfare = address[2]
-        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
         val edit = pref.edit()
         edit.putString("addressAdmin", address[0])
         edit.putString("addressLocality", address[1])
         edit.putString("addressThoroughfare", address[2])
         edit.apply()
+    }
+
+    private fun findAddress(p1: MapPoint) {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", p1, this, requireActivity())
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
@@ -839,6 +860,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
     }
 
+
     private fun getWeather(){
         val data = hashMapOf(
             "lat" to curLat,
@@ -852,9 +874,10 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                 val result = task.data as Map<*, *>
                 temp = result["temp"]
                 weather = result["weather"] as Int
+                isGetWeather = true
+                setWeatherInfo(temp!!,weather as Int)
                 Log.d("기온",temp.toString())
                 Log.d("날씨",weather.toString())
-                setWeatherInfo(temp!!,weather as Int)
             }
             .addOnFailureListener {
                 Log.d("날씨","FAIL")
@@ -864,6 +887,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private fun setWeatherInfo(temp: Any, weatherCode:Int){
         val temperature : Int = (temp as Double).minus(273.15).roundToInt()
         binding.temperatureTv.text = temperature.toString() + "°C"
+        binding.locTxt.text = pref.getString("addressLocality","서울시") + " " + pref.getString("addressThoroughfare","종로구")
+
 
         val imageResource = when (weatherCode) {
             in 300..322 -> R.drawable.weather_drizzle
@@ -875,5 +900,55 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
         weatherImage?.setImageResource(imageResource)
         weatherImage!!.invalidate()
+    }
+
+    private fun getAirQuality(){
+        val data = hashMapOf(
+            "address" to pref.getString("addressThoroughfare","종로구").toString()
+        )
+        Log.d("getAirQuality",data.toString())
+
+        functions
+            .getHttpsCallable("getCurrentAirQuality")
+            .call(data)
+            .addOnSuccessListener { task->
+                val result = task.data as Map<*, *>
+                pm25 = Integer.parseInt(result["pm25Value"].toString())
+                pm10 = Integer.parseInt(result["pm10Value"].toString())
+                isGetAir = true
+                setAirInfo(pm25!!,pm10!!)
+                Log.d("PM2.5",pm25.toString())
+                Log.d("PM10",pm10.toString())
+            }
+            .addOnFailureListener {
+                isGetAir = true
+                Log.d("미세먼지","FAIL")
+            }
+    }
+
+    private fun setAirInfo(pm25: Int, pm10: Int){
+
+        // 미세
+        val pm10Resource = when (pm10) {
+            in 0..30 -> R.drawable.dust_perfect
+            in 31..60 -> R.drawable.dust_good
+            in 61..90 -> R.drawable.dust_bad
+            in 91..150 -> R.drawable.dust_verybad
+            else -> R.drawable.dust_worst
+        }
+
+        // 초미세
+        val pm25Resource = when (pm25) {
+            in 0..15 -> R.drawable.dust_perfect
+            in 16..35 -> R.drawable.dust_good
+            in 36..75 -> R.drawable.dust_bad
+            in 76..150 -> R.drawable.dust_verybad
+            else -> R.drawable.dust_worst
+        }
+
+        binding.img2.setImageResource(pm10Resource)
+        binding.img3.setImageResource(pm25Resource)
+        binding.img2.invalidate()
+        binding.img3.invalidate()
     }
 }
