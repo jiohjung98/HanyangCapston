@@ -381,9 +381,7 @@ class DogRegisterActivity : AppCompatActivity(),BreedItemClick  {
                     breed_recycleR.visibility = View.VISIBLE
                 }else if(!breed_search.isSelected){
                     breed_recycleR.visibility = View.INVISIBLE
-
                 }
-
             }
 
         })

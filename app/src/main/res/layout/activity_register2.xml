@@ -51,7 +51,7 @@
         android:id="@+id/num2"
         android:layout_width="20sp"
         android:layout_height="20sp"
-        android:background="@drawable/circle4"
+        android:background="@drawable/circle5"
         app:layout_constraintTop_toBottomOf="@id/back_button"
         app:layout_constraintStart_toStartOf="@id/back_button"
         android:layout_marginTop="30sp" />
@@ -155,7 +155,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:src="@drawable/vector">
+                android:src="@drawable/warning">
             </ImageView>
 
             <TextView
@@ -175,7 +175,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next_btn"
         android:layout_width="match_parent"
-        android:layout_height="55sp"
+        android:layout_height="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

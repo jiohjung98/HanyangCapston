@@ -19,6 +19,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="건너뛰기"
+        android:textColor="#D5D2D2"
+        android:textSize="12sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/num1"
@@ -71,31 +85,18 @@
         android:id="@+id/textLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:weightSum="3"
+        android:weightSum="2"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/num1"
         app:layout_constraintStart_toStartOf="@+id/num1"
         android:layout_marginTop="40sp">
 
         <TextView
-            android:id="@+id/text1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="안녕하세요!"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
-            app:layout_constraintTop_toTopOf="@+id/textLayout"
-            app:layout_constraintStart_toStartOf="@+id/textLayout"
-            />
-
-        <TextView
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="회원님의 이름은"
+            android:text="반려견의 이름은"
             android:textSize="25sp"
             android:textColor="@color/black"
             android:fontFamily="@font/dungeon"
@@ -129,14 +130,14 @@
         android:layout_marginBottom="20sp">
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/dog_name_edt_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20sp"
             android:layout_marginEnd="20sp"
             android:layout_weight="1"
             android:background="@drawable/edit_underline"
-            android:hint="이름을 입력해주세요"
+            android:hint="반려견 이름을 입력해주세요"
             android:paddingBottom="10sp"
             android:textSize="15sp" />
     </LinearLayout>
