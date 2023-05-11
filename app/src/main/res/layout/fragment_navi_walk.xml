@@ -203,13 +203,13 @@
                 android:id="@+id/img1"
                 android:layout_width="0dp"
                 android:layout_height="25sp"
-                android:src="@drawable/sun"
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/vertical_left_line"
                 app:layout_constraintEnd_toStartOf="@id/img2"
                 android:layout_marginTop="10sp"
                 app:layout_constraintHorizontal_weight="1"/>
+
 
             <ImageView
                 app:layout_constraintHorizontal_weight="1"
