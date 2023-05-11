@@ -58,6 +58,11 @@ class Register1Activity : AppCompatActivity() {
             val intent = Intent(this, Register2Activity::class.java)
             startActivity(intent)
         }
+
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, StartActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
