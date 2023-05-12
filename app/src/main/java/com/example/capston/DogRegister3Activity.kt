@@ -20,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.capston.databinding.ActivityDogRegister3Binding
-import com.example.capston.databinding.ActivityDogRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -137,15 +136,16 @@ class DogRegister3Activity : AppCompatActivity() {
 
         viewBinding.dogAgeSpinner.adapter = ageAdapter
 
+
+
         dog_age_spinner.setSelection(ageAdapter.count)
-        dog_age_spinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+        dog_age_spinner.dropDownVerticalOffset = dipToPixels(90f).toInt()
+
     }
 
     private fun setupAgeHandler() {
         viewBinding.dogAgeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-//                breed_recycleR.visibility= View.INVISIBLE
-//                breed_search.clearFocus()
                 when (position) {
                     0 -> {
                         validSpinner3 = true

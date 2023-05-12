@@ -134,7 +134,7 @@
         android:background="@drawable/dog_register_frame"
         android:popupBackground="@drawable/spinner_frame"
         android:spinnerMode="dropdown"
-        android:dropDownWidth="328dp"
+        android:dropDownWidth="wrap_content"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dog_age"
