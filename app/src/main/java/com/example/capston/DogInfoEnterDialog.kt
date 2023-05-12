@@ -15,6 +15,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import android.widget.Spinner
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,7 @@ import com.example.capston.databinding.LostDogInfoBinding
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -131,6 +133,12 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             }
             false
         })
+
+        binding.layout.setOnClickListener {
+            BreedSearch.clearFocus()
+            binding.nameInput.clearFocus()
+            binding.contentInput.clearFocus()
+        }
 
         // 이름 텍스트 리스너
         binding.nameInput.addTextChangedListener(object : TextWatcher {
@@ -335,7 +343,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.genderSpinner.adapter = genderAdapter
 
         binding.genderSpinner.setSelection(genderAdapter.count)
-        binding.genderSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+        binding.genderSpinner.dropDownVerticalOffset = dipToPixels(38f).toInt()
     }
 
 
@@ -389,7 +397,8 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.bornSpinner.adapter = ageAdapter
 
         binding.bornSpinner.setSelection(ageAdapter.count)
-        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(80f).toInt()
+
     }
 
     private fun setupAgeHandler() {
@@ -531,7 +540,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                 Toast.makeText(activity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
             }
     }
-
     /*
      * 파이어베이스 db에 포스트 업로드
      */
@@ -542,7 +550,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             val key = ref.key
         }
     }
-
     /*
      * 확인버튼 검사
      */

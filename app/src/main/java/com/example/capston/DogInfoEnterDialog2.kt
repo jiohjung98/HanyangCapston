@@ -112,6 +112,11 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         params.y = 500
         dlg.window!!.attributes = params
 
+        binding.layout.setOnClickListener {
+            BreedSearch.clearFocus()
+            binding.contentInput.clearFocus()
+        }
+
 
         // 날짜 시간 리스너
         binding.timeInput.setOnClickListener {
@@ -304,7 +309,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.genderSpinner.adapter = genderAdapter
 
         binding.genderSpinner.setSelection(genderAdapter.count)
-        binding.genderSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
+        binding.genderSpinner.dropDownVerticalOffset = dipToPixels(38f).toInt()
     }
 
 
