@@ -5,19 +5,26 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    app:behavior_peekHeight="100dp"
+    app:behavior_peekHeight="60sp"
     android:background="@drawable/background_bottom_sheet"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    
+    <View
+        android:layout_width="110sp"
+        android:layout_height="3sp"
+        android:background="@drawable/bottom_sheet_top"
+        android:layout_gravity="center" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/black"
-        android:text="여러 정보보기"
+        android:text="여러 정보 보기"
         android:textStyle="bold"
         android:layout_margin="10dp"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
