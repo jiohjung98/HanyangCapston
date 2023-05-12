@@ -17,16 +17,12 @@ class DogRegisterEndActivity : AppCompatActivity() {
         viewBinding = ActivityDogRegisterEndBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, DogRegister3Activity::class.java)
-            startActivity(intent)
-        }
 
         if(intent.hasExtra("dogname")) {
             receive_name_txt.text = intent.getStringExtra("dogname")
         }
 
-        viewBinding.goHomepageBtn.setOnClickListener {
+        viewBinding.nextBtn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

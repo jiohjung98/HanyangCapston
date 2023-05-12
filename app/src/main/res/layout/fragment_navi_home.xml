@@ -85,14 +85,15 @@
                 app:layout_constraintTop_toTopOf="@+id/lost_btn"
                 app:layout_constraintBottom_toTopOf="@+id/lost_txt"
                 android:layout_marginTop="5sp"
-                android:src="@drawable/pencel2_512" />
+                android:src="@drawable/pencel_white_512" />
 
             <TextView
                 android:id="@+id/lost_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="등록"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:textSize="9sp"
                 app:layout_constraintTop_toBottomOf="@+id/lost_btnn"
                 app:layout_constraintBottom_toBottomOf="@+id/lost_btn"
