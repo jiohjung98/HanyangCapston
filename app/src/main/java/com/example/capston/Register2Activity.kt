@@ -77,11 +77,6 @@ class Register2Activity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
-        binding.backButton.setOnClickListener {
-            val intent = Intent(this, Register1Activity::class.java)
-            startActivity(intent)
-        }
     }
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거

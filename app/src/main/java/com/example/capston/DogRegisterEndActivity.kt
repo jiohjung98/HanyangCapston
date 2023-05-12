@@ -18,7 +18,7 @@ class DogRegisterEndActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, DogRegisterActivity::class.java)
+            val intent = Intent(this, DogRegister3Activity::class.java)
             startActivity(intent)
         }
 

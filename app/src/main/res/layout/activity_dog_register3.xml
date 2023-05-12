@@ -1,9 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DogRegister3Activity">
+    tools:context=".Register3Activity">
 
+    <TextView
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로가기"
+        android:textColor="#D5D2D2"
+        android:textSize="12sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="건너뛰기"
+        android:textColor="#D5D2D2"
+        android:textSize="12sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/num1"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:elevation="10sp"
+        android:background="@drawable/circle3"
+        app:layout_constraintTop_toTopOf="@+id/num2"
+        app:layout_constraintBottom_toBottomOf="@+id/num2"
+        app:layout_constraintStart_toEndOf="@+id/num3"
+        android:layout_marginStart="10sp">
+
+        <TextView
+            android:id="@+id/location_btnn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="3"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/num1"
+            app:layout_constraintEnd_toEndOf="@+id/num1"
+            app:layout_constraintTop_toTopOf="@+id/num1"
+            app:layout_constraintBottom_toBottomOf="@+id/num1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/num2"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:background="@drawable/circle5"
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="@id/back_button"
+        android:layout_marginTop="30sp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/num3"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:background="@drawable/circle5"
+        app:layout_constraintTop_toTopOf="@+id/num1"
+        app:layout_constraintBottom_toBottomOf="@+id/num1"
+        app:layout_constraintStart_toEndOf="@id/num2"
+        android:layout_marginStart="10sp" />\
+
+    <LinearLayout
+        android:id="@+id/textLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/num1"
+        app:layout_constraintStart_toStartOf="@+id/num2"
+        android:layout_marginTop="40sp">
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="거의 다 왔어요!"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            android:layout_marginTop="10sp"
+            app:layout_constraintTop_toBottomOf="@+id/text1"
+            app:layout_constraintStart_toStartOf="@+id/text1" />
+
+        <TextView
+            android:id="@+id/text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="조금만 더 알려주세요"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/dungeon"
+            android:layout_marginTop="10sp"
+            app:layout_constraintTop_toBottomOf="@+id/text2"
+            app:layout_constraintStart_toStartOf="@+id/text1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dog_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="출생연도"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/textLayout"
+        app:layout_constraintStart_toStartOf="@id/textLayout"
+        android:layout_marginTop="30sp" />
+
+    <Spinner
+        android:id="@+id/dog_age_spinner"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:background="@drawable/dog_register_frame"
+        android:popupBackground="@drawable/spinner_frame"
+        android:spinnerMode="dropdown"
+        android:dropDownWidth="328dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/dog_age"
+        app:layout_constraintTop_toBottomOf="@+id/dog_age"
+        android:layout_marginEnd="30sp" />
+
+    <TextView
+        android:id="@+id/dog_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로필 사진을 추가해주세요."
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/dog_age_spinner"
+        app:layout_constraintStart_toStartOf="@id/textLayout"
+        android:layout_marginTop="30sp" />
+
+    <ImageView
+        android:id="@+id/result_img"
+        android:layout_width="0dp"
+        android:layout_height="200sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="20sp"
+        android:background="@drawable/img_background"
+        app:layout_constraintTop_toBottomOf="@id/dog_photo"
+        app:layout_constraintStart_toStartOf="@id/dog_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="30sp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageArea"
+        android:layout_width="100dp"
+        android:layout_height="110dp"
+        android:layout_margin="20dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/paws"
+        app:civ_circle_background_color="#E0E0E0"
+        app:civ_border_width="1dp"
+        app:civ_border_color="#000000"
+        app:layout_constraintTop_toTopOf="@id/result_img"
+        app:layout_constraintStart_toStartOf="@id/result_img"
+        app:layout_constraintEnd_toEndOf="@id/result_img"/>
+
+    <TextView
+        android:id="@+id/click_upload_text"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_width="250dp"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:text="Click to upload"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="@id/imageArea"
+        app:layout_constraintRight_toRightOf="@id/imageArea"
+        app:layout_constraintBottom_toBottomOf="@id/imageArea"
+        app:layout_constraintTop_toTopOf="@id/imageArea" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/image_upload_btn"
+        style="@style/ColoredButton"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:background="@drawable/agree_nextbtn_color"
+        android:enabled="false"
+        android:text="이미지 등록"
+        app:layout_constraintTop_toBottomOf="@id/imageArea"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/result_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.16" />
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/next_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="false"
+        android:enabled="false"
+        android:background="@drawable/next_btn_color"
+        android:text="다음으로"
+        android:textColor="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

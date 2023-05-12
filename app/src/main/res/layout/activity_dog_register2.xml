@@ -196,6 +196,7 @@
         android:layout_marginTop="8dp"
         app:iconifiedByDefault="false"
         app:queryHint="견종을 선택해주세요."
+        android:queryBackground="@null"
         app:searchIcon="@null"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="30sp"

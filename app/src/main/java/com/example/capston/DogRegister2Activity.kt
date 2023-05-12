@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
@@ -63,6 +64,24 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
             onBackPressed()
         }
 
+        viewBinding.nextBtn.setOnClickListener {
+            val intent = Intent(this, DogRegister3Activity::class.java)
+//            intent.putExtra("dogname", dog_name_edt_text.text.toString())
+
+//            // 이름값 할당
+//            pet_info.pet_name = viewBinding.dogNameEdtText.text.toString()
+////            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
+//            addDogToDB(pet_info)
+            startActivity(intent)
+            finish()
+        }
+
+        viewBinding.backButton.setOnClickListener {
+            val intent = Intent(this, DogRegister1Activity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         //배경 클릭시 포커스해제
         viewBinding.background.setOnClickListener {
             breed_recycleR.visibility= View.INVISIBLE
@@ -72,12 +91,13 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
         // 성별 버튼
         viewBinding.genderBoy.setOnClickListener{
             validButton1 = true
-            checkValid(validSpinner1, validButton1, validButton2)
+            Log.d("버튼1", "$validButton1")
+            checkValid1(validSpinner1, this.validButton1)
         }
 
         viewBinding.genderGirl.setOnClickListener{
             validButton2 = true
-            checkValid(validSpinner1, validButton1, validButton2)
+            checkValid2(validSpinner1, validButton2)
         }
 
 
@@ -208,13 +228,21 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
         return super.dispatchTouchEvent(event)
     }
 
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean){
-        Log.d("Valid", (v1 && v2 && v3).toString())
+    private fun checkValid1(v1:Boolean, v2:Boolean){
+        Log.d("Valid", (v1 && v2).toString())
         if(v1 && v2){
             next_btn.isEnabled = true
             next_btn.isClickable = true
         }
-        else if (v1 && v3){
+        else {
+            next_btn.isEnabled = false
+            next_btn.isClickable = false
+        }
+    }
+
+    private fun checkValid2(v1:Boolean, v2:Boolean){
+        Log.d("Valid", (v1 && v2).toString())
+        if(v1 && v2){
             next_btn.isEnabled = true
             next_btn.isClickable = true
         }
