@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_gravity="center"
-        android:layout_width="match_parent"
+        android:layout_width="300sp"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_frame"
         android:elevation="20dp"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="@+id/layout"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:text="정보 입력" />
@@ -44,14 +44,16 @@
         <EditText
             android:id="@+id/name_input"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="35sp"
             android:hint="반려견 이름을 입력해주세요."
-            android:textSize="16sp"
-            android:background="@drawable/info_edittext_rounded_corner_rectangle"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="5dp"
             android:inputType="text"
+            android:textSize="14sp"
+            android:background="@drawable/info_edittext_rounded_corner_rectangle"
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginTop="5sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_title" />
 
         <TextView
@@ -68,36 +70,38 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/breed_input"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_width="0sp"
+            android:layout_height="35sp"
             android:background="@drawable/dogbreed_search"
             android:maxLength="10"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColorHint="@color/google_login"
+            app:theme="@style/MySearchViewStyle"
             android:textColor="#000000"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="5dp"
             app:iconifiedByDefault="false"
             app:queryHint="견종을 선택해주세요."
             app:searchIcon="@null"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:translationZ="91dp"
             android:outlineProvider="none"
-            app:layout_constraintTop_toBottomOf="@+id/breed_title"/>
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/breed_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/breed_recycle"
-            android:layout_width="380dp"
-            android:layout_height="210dp"
+            android:layout_width="0sp"
+            android:layout_height="120sp"
             android:background="@drawable/dogbreed_searchbox"
             android:outlineProvider="none"
             android:paddingBottom="1dp"
             android:scrollbarFadeDuration="0"
             android:translationZ="90dp"
             android:visibility="invisible"
-            app:layout_constraintLeft_toLeftOf="@id/breed_input"
-            app:layout_constraintTop_toTopOf="@id/breed_input" />
+            app:layout_constraintTop_toTopOf="@id/breed_input"
+            app:layout_constraintStart_toStartOf="@id/breed_input"
+            app:layout_constraintEnd_toEndOf="@id/breed_input" />
 
         <TextView
             android:id="@+id/gender_text"

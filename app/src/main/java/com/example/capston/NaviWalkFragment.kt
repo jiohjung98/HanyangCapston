@@ -679,7 +679,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                 // 파일 업로드에 성공했기 때문에 스토리지 url을 다시 받아와 DB에 저장
                 mountainsRef.downloadUrl
                     .addOnSuccessListener { uri ->
-                        pet_info.image_url = uri.toString()
+                        pet_info!!.image_url = uri.toString()
                     }.addOnFailureListener {
                         Toast.makeText(mainActivity, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
                     }

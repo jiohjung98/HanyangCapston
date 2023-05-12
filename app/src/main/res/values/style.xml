@@ -14,4 +14,9 @@
             #000000
         </item>
     </style>
+
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColorHint">#808080</item>
+    </style>
 </resources>
