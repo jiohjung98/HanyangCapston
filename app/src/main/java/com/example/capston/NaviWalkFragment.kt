@@ -411,7 +411,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
                         return super.getCount() - 1
                     }
                 }
-
             statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             statusAdapter.addAll(DogArray.toMutableList())
