@@ -81,6 +81,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'com.google.firebase:firebase-functions-ktx'
     implementation files('libs\\jxl-2.6.12.jar')
 
     testImplementation 'junit:junit:4.13.2'

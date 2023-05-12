@@ -320,9 +320,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         p0.addPolyline(polyline)
 
         // 변환 주소 가져오기
-        if (!getAddress) {
-            findAddress()
-        }
+//        if (!getAddress) {
+//            findAddress()
+//        }
     }
 
     private fun setMarker(p0: MapView?){
@@ -383,17 +383,17 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
     override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
-        getAddress = true
-        val address = p1!!.split(" ")
-        addressAdmin = address[0]
-        addressLocality = address[1]
-        addressThoroughfare = address[2]
-        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val edit = pref.edit()
-        edit.putString("addressAdmin", address[0])
-        edit.putString("addressLocality", address[1])
-        edit.putString("addressThoroughfare", address[2])
-        edit.apply()
+//        getAddress = true
+//        val address = p1!!.split(" ")
+//        addressAdmin = address[0]
+//        addressLocality = address[1]
+//        addressThoroughfare = address[2]
+//        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val edit = pref.edit()
+//        edit.putString("addressAdmin", address[0])
+//        edit.putString("addressLocality", address[1])
+//        edit.putString("addressThoroughfare", address[2])
+//        edit.apply()
     }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
