@@ -97,8 +97,12 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 날씨 관련
     private var temp : Any? = null
     private var weather : Int? = null
-    private var weatherImage : ImageView? = null
+    private lateinit var weatherImage : ImageView
+    private lateinit var weatherLocaction : TextView
+    private lateinit var temperature : TextView
     private var isGetWeather : Boolean = false
+
+
     // 미세먼지관련
     private var pm25 : Int? = null
     private var pm10 : Int? = null
@@ -128,6 +132,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 //         Inflate the layout for this fragment
         _binding = FragmentNaviWalkBinding.inflate(inflater, container, false)
         weatherImage = binding.img1
+        temperature = binding.temperatureTv
+        weatherLocaction = binding.locTxt
         return binding.root
     }
 
@@ -724,10 +730,11 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
             findAddress(p1)
 
 
+
         if(!isGetWeather)
-            getWeather()
+            setWeatherInfo()
         if(!isGetAir)
-            getAirQuality()
+            setAirInfo()
 //
 //        if (!isStart || isPause) {
 //            return
@@ -860,33 +867,12 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
 
-    private fun getWeather(){
-        val data = hashMapOf(
-            "lat" to curLat,
-            "lon" to curLon
-        )
-        Log.d("getWeather",data.toString())
-        functions
-            .getHttpsCallable("getCurrentWeather")
-            .call(data)
-            .addOnSuccessListener { task->
-                val result = task.data as Map<*, *>
-                temp = result["temp"]
-                weather = result["weather"] as Int
-                isGetWeather = true
-                setWeatherInfo(temp!!,weather as Int)
-                Log.d("기온",temp.toString())
-                Log.d("날씨",weather.toString())
-            }
-            .addOnFailureListener {
-                Log.d("날씨","FAIL")
-            }
-    }
-
-    private fun setWeatherInfo(temp: Any, weatherCode:Int){
-        val temperature : Int = (temp as Double).minus(273.15).roundToInt()
-        binding.temperatureTv.text = temperature.toString() + "°C"
-        binding.locTxt.text = pref.getString("addressLocality","서울시") + " " + pref.getString("addressThoroughfare","종로구")
+    private fun setWeatherInfo(){
+        val weatherInfo = mainActivity.getWeatherInfo()
+        val temp : Int = ((weatherInfo.first) as Double).minus(273.15).roundToInt()
+        val weatherCode = weatherInfo.second
+        temperature.text = temp.toString() + "°C"
+        weatherLocaction.text = pref.getString("addressLocality","서울시") + " " + pref.getString("addressThoroughfare","종로구")
 
 
         val imageResource = when (weatherCode) {
@@ -899,55 +885,55 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
         weatherImage?.setImageResource(imageResource)
         weatherImage!!.invalidate()
+
+        this.isGetWeather = true
     }
 
-    private fun getAirQuality(){
-        val data = hashMapOf(
-            "address" to pref.getString("addressThoroughfare","종로구").toString()
-        )
-        Log.d("getAirQuality",data.toString())
 
-        functions
-            .getHttpsCallable("getCurrentAirQuality")
-            .call(data)
-            .addOnSuccessListener { task->
-                val result = task.data as Map<*, *>
-                pm25 = Integer.parseInt(result["pm25Value"].toString())
-                pm10 = Integer.parseInt(result["pm10Value"].toString())
-                isGetAir = true
-                setAirInfo(pm25!!,pm10!!)
-                Log.d("PM2.5",pm25.toString())
-                Log.d("PM10",pm10.toString())
-            }
-            .addOnFailureListener {
-                isGetAir = true
-                Log.d("미세먼지","FAIL")
-            }
-    }
 
-    private fun setAirInfo(pm25: Int, pm10: Int){
+    private fun setAirInfo(){
+
+        val airInfo = mainActivity.getAirInfo()
+
 
         // 미세
-        val pm10Resource = when (pm10) {
-            in 0..30 -> R.drawable.dust_perfect
-            in 31..60 -> R.drawable.dust_good
-            in 61..90 -> R.drawable.dust_bad
-            in 91..150 -> R.drawable.dust_verybad
-            else -> R.drawable.dust_worst
+        val pm10Resource = when (airInfo.first) {
+            in 0..30 -> Pair(R.drawable.dust_perfect,"좋음")// 좋음
+            in 31..60 -> Pair(R.drawable.dust_good,"보통") // 보통
+            in 61..90 -> Pair(R.drawable.dust_bad,"나쁨") // 나쁨
+            in 91..150 -> Pair(R.drawable.dust_verybad,"매우나쁨") // 매우나쁨
+            else -> Pair(R.drawable.dust_worst,"최악") // 최악
         }
 
         // 초미세
-        val pm25Resource = when (pm25) {
-            in 0..15 -> R.drawable.dust_perfect
-            in 16..35 -> R.drawable.dust_good
-            in 36..75 -> R.drawable.dust_bad
-            in 76..150 -> R.drawable.dust_verybad
-            else -> R.drawable.dust_worst
+        val pm25Resource = when (airInfo.second) {
+            in 0..15 -> Pair(R.drawable.dust_perfect,"좋음") // 좋음
+            in 16..35 -> Pair(R.drawable.dust_good,"보통") // 보통
+            in 36..75 ->  Pair(R.drawable.dust_bad,"나쁨") // 나쁨
+            in 76..150 -> Pair(R.drawable.dust_verybad,"매우나쁨")// 매우나쁨
+            else -> Pair(R.drawable.dust_worst,"최악") // 최악
         }
 
-        binding.img2.setImageResource(pm10Resource)
-        binding.img3.setImageResource(pm25Resource)
-        binding.img2.invalidate()
-        binding.img3.invalidate()
+        binding.img2.apply {
+            setImageResource(pm10Resource.first)
+            invalidate()
+        }
+
+        binding.img3.apply {
+            setImageResource(pm25Resource.first)
+            invalidate()
+        }
+
+        binding.dust1Txt.apply {
+            setText(pm10Resource.second)
+            invalidate()
+        }
+
+        binding.dust2Txt.apply {
+            setText(pm25Resource.second)
+            invalidate()
+        }
+
+        this.isGetAir = true
     }
 }

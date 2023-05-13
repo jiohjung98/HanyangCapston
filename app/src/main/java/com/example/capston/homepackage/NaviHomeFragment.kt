@@ -60,7 +60,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var kakaoMapViewContainer: FrameLayout? = null
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
-    var mapPoint: MapPoint? = null
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
@@ -89,16 +88,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
-
-    private val currentLocationEventListener = object : MapView.CurrentLocationEventListener {
-        override fun onCurrentLocationUpdate(mapView: MapView, mapPoint: MapPoint, v: Float) {
-            // 현재 위치 갱신 시 호출되는 콜백 함수
-            currentLocation = mapPoint
-        }
-        override fun onCurrentLocationDeviceHeadingUpdate(mapView: MapView, v: Float) {}
-        override fun onCurrentLocationUpdateFailed(mapView: MapView) {}
-        override fun onCurrentLocationUpdateCancelled(mapView: MapView) {}
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -273,10 +262,25 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        binding.kakaoMapViewContainer?.removeAllViews()
     }
 
-    fun findAddress() {
+    fun findAddress(p1:MapPoint) {
         val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, requireActivity())
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", p1, this, requireActivity())
         mapReverseGeoCoder.startFindingAddress()
+    }
+
+    // findAddress 에서 실행시킴
+    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
+        getAddress = true
+        val address = p1!!.split(" ")
+        addressAdmin = address[0]
+        addressLocality = address[1]
+        addressThoroughfare = address[2]
+        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val edit = pref.edit()
+        edit.putString("addressAdmin", address[0]) // 경기도
+        edit.putString("addressLocality", address[1]) // 안산시
+        edit.putString("addressThoroughfare", address[2])  // 상록구
+        edit.apply()
     }
 
     // 위치 권한 설정 확인 함수
@@ -306,23 +310,29 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 
-        if (!isStart || isPause) {
-            return
-        }
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
-
-        mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
-
-        // 변환 주소 가져오기
-//        if (!getAddress) {
-//            findAddress()
+//        if (!isStart || isPause) {
+//            return
 //        }
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+
+        mainActivity.setCurrentLocation(p1!!.mapPointGeoCoord.latitude, p1.mapPointGeoCoord.longitude)
+
+//        route.add(arrayListOf(lat, lon))
+//
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
+
+//         변환 주소 가져오기
+        if (!getAddress) {
+            findAddress(p1)
+        }
+
+        if (!(mainActivity.isGetWeather))
+            mainActivity.getWeather()
+        if (!(mainActivity.isGetAir))
+            mainActivity.getAirQuality()
     }
 
     private fun setMarker(p0: MapView?){
@@ -382,19 +392,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
 
 
-    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
-//        getAddress = true
-//        val address = p1!!.split(" ")
-//        addressAdmin = address[0]
-//        addressLocality = address[1]
-//        addressThoroughfare = address[2]
-//        val pref = this.requireActivity().getPreferences(Context.MODE_PRIVATE)
-//        val edit = pref.edit()
-//        edit.putString("addressAdmin", address[0])
-//        edit.putString("addressLocality", address[1])
-//        edit.putString("addressThoroughfare", address[2])
-//        edit.apply()
-    }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
     private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {

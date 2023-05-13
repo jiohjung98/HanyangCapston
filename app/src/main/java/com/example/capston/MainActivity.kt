@@ -1,5 +1,6 @@
 package com.example.capston
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
@@ -21,6 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.common.util.Utility
@@ -42,13 +45,28 @@ class MainActivity : AppCompatActivity() {
 
     private var lastSelectedItemId = 0
 
+    // 현재위치 - 초기값 서울시청
+    private var curLat : Double = 37.5667297
+    private var curLon : Double = 126.9782551
+
+    // 날씨 관련
+    private var temp : Any? = null
+    private var weatherCode : Int? = null
+    internal var isGetWeather : Boolean = false
+
+    // 미세먼지관련 - 주소는 공유변수로 존재
+    private var pm25 : Int? = null
+    private var pm10 : Int? = null
+    internal var isGetAir : Boolean = false
+
     // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음
-    // 현재 사용 : 마이페이지 유저정보, DogInfoEnterDialog
     internal val database: DatabaseReference = Firebase.database.reference
     internal val auth = FirebaseAuth.getInstance()
+    internal var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
     
-    // 로컬 저장값
+    // 로컬 저장값들
     internal var sharedPreferences: SharedPreferences? = null
+    private lateinit var pref : SharedPreferences
 
     internal val uid = auth.currentUser!!.uid
 
@@ -61,7 +79,8 @@ class MainActivity : AppCompatActivity() {
 
         // 로컬에 저장된 현재 반려견 인덱스
         sharedPreferences = getSharedPreferences("CUR_PET", MODE_PRIVATE);
-
+        // 현재위치 공유변수
+        pref = getPreferences(Context.MODE_PRIVATE)
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
@@ -179,4 +198,78 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.main_frm, fragment!!)
         fragmentTransaction.commit()
     }
+
+
+    fun getWeather(){
+        val data = hashMapOf(
+            "lat" to curLat,
+            "lon" to curLon
+        )
+        Log.d("getWeather",data.toString())
+        functions
+            .getHttpsCallable("getCurrentWeather")
+            .call(data)
+            .addOnSuccessListener { task->
+                val result = task.data as Map<*, *>
+                this.temp = result["temp"]
+                this.weatherCode = result["weather"] as Int
+                this.isGetWeather = true
+                setWeatherInfo(this.temp!!, this.weatherCode as Int)
+                Log.d("기온",this.temp.toString())
+                Log.d("날씨",this.weatherCode.toString())
+            }
+            .addOnFailureListener {
+                Log.d("날씨","FAIL")
+            }
+    }
+
+    fun getAirQuality(){
+        val data = hashMapOf(
+            "address" to pref.getString("addressThoroughfare","종로구").toString()
+        )
+        Log.d("getAirQuality",data.toString())
+
+        functions
+            .getHttpsCallable("getCurrentAirQuality")
+            .call(data)
+            .addOnSuccessListener { task->
+                val result = task.data as Map<*, *>
+                this.pm25 = Integer.parseInt(result["pm25Value"].toString())
+                this.pm10 = Integer.parseInt(result["pm10Value"].toString())
+                this.isGetAir = true
+                setAirInfo(this.pm25!!,this.pm10!!)
+                Log.d("PM2.5",this.pm25.toString())
+                Log.d("PM10",this.pm10.toString())
+            }
+            .addOnFailureListener {
+                this.isGetAir = true
+                Log.d("미세먼지","FAIL")
+            }
+    }
+
+
+
+    /* ---------------- GET & SET METHODS -----------------------*/
+
+    fun setCurrentLocation(lat:Double, lon:Double){
+        this.curLat = lat
+        this.curLon = lon
+    }
+
+    private fun setWeatherInfo(temp:Any, weather: Int){
+        this.temp = temp
+        this.weatherCode = weather
+    }
+    fun getWeatherInfo() : Pair<*,*>{
+        return Pair(temp,weatherCode)
+    }
+
+    private fun setAirInfo(pm25: Int, pm10: Int){
+        this.pm10 = pm10
+        this.pm25 = pm25
+    }
+    fun getAirInfo() : Pair<*,*>{
+        return Pair(this.pm10,this.pm25)
+    }
+
 }
