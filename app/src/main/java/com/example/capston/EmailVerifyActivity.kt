@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.capston.databinding.ActivityEmailverificationBinding
+import com.example.capston.register.UserAgreeActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class EmailVerifyActivity : AppCompatActivity() {

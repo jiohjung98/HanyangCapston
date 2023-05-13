@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.register
 
 import android.content.Context
 import android.content.Intent
@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.example.capston.StartActivity
 import com.example.capston.databinding.ActivityRegister1Binding
 
 class Register1Activity : AppCompatActivity() {

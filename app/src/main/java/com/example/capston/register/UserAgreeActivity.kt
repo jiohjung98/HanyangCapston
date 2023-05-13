@@ -1,4 +1,4 @@
-package com.example.capston;
+package com.example.capston.register;
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
+import com.example.capston.BacktoStartDialog
+import com.example.capston.R
+import com.example.capston.UserData
 import com.example.capston.databinding.ActivityAgreeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -18,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_info.*
 
 
 class UserAgreeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityAgreeBinding
+    private lateinit var binding: com.example.capston.databinding.ActivityAgreeBinding
     var isPageOpen : Boolean = false
     lateinit var DownAnim : Animation
     lateinit var UptAnim : Animation
@@ -40,7 +43,7 @@ class UserAgreeActivity : AppCompatActivity() {
 
         //
         UptAnim = AnimationUtils.loadAnimation(this, R.anim.agree_translate_down)
-        DownAnim = AnimationUtils.loadAnimation(this,R.anim.agree_translate_up)
+        DownAnim = AnimationUtils.loadAnimation(this, R.anim.agree_translate_up)
         UptAnim.setAnimationListener(SlidingPageAnimationListener())
         DownAnim.setAnimationListener(SlidingPageAnimationListener())
         //

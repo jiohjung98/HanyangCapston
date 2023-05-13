@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityLoginBinding
+import com.example.capston.register.Register1Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -54,7 +55,7 @@ class LoginActivity: AppCompatActivity() {
         }
 
         binding.infoBtn.setOnClickListener {
-            val intent = Intent(this, InfoActivity::class.java)
+            val intent = Intent(this, Register1Activity::class.java)
             startActivity(intent)
         }
 

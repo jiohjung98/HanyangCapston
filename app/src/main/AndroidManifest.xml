@@ -47,7 +47,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register3Activity"
+            android:name=".register.Register3Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -55,7 +55,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register2Activity"
+            android:name=".register.Register2Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             >
@@ -64,7 +64,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register1Activity"
+            android:name=".register.Register1Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -154,7 +154,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".RegisterCompleteActivity"
+            android:name=".register.RegisterCompleteActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -199,7 +199,7 @@
             android:name=".SignUpComplete"
             android:exported="true" />
         <activity
-            android:name=".UserAgreeActivity"
+            android:name=".register.UserAgreeActivity"
             android:exported="true" />
         <activity
             android:name=".MissingActivity"

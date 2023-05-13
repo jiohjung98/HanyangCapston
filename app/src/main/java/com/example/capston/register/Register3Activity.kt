@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.register
 
 import android.content.Context
 import android.content.Intent
@@ -12,12 +12,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import com.example.capston.EmailVerifyActivity
 import com.example.capston.databinding.ActivityRegister3Binding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_info.*
 import java.util.regex.Pattern
 

@@ -1,9 +1,9 @@
-package com.example.capston
+package com.example.capston.register
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.capston.databinding.ActivityLoginBinding
+import com.example.capston.DogRegisterActivity
 import com.example.capston.databinding.ActivityRegisterCompleteBinding
 
 class RegisterCompleteActivity : AppCompatActivity() {
