@@ -23,8 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.example.capston.DogRegister.DogRegister1Activity
 import com.example.capston.databinding.FragmentNaviWalkBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -318,7 +317,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     private fun onClickRegister(view: View?) {
         (context as MainActivity).supportFragmentManager.beginTransaction().remove(this).commit()
-        (context as MainActivity).startActivity(Intent(mainActivity,DogRegisterActivity::class.java))
+        (context as MainActivity).startActivity(Intent(mainActivity, DogRegister1Activity::class.java))
         (context as MainActivity).finish()
     }
 

@@ -28,6 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.common.util.Utility
 import de.hdodenhof.circleimageview.CircleImageView
+import jxl.write.BoldStyle
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.android.synthetic.main.fragment_navi_walk.*
@@ -52,12 +53,12 @@ class MainActivity : AppCompatActivity() {
     // 날씨 관련
     private var temp : Any? = null
     private var weatherCode : Int? = null
-    internal var isGetWeather : Boolean = false
+    private var isGetWeather : Boolean = false
 
     // 미세먼지관련 - 주소는 공유변수로 존재
     private var pm25 : Int? = null
     private var pm10 : Int? = null
-    internal var isGetAir : Boolean = false
+    private var isGetAir : Boolean = false
 
     // MainActivity 하위 여러 프래그먼트에서 여러번 사용한다면 여기다 선언하는게 좋을것같음
     internal val database: DatabaseReference = Firebase.database.reference
@@ -272,4 +273,10 @@ class MainActivity : AppCompatActivity() {
         return Pair(this.pm10,this.pm25)
     }
 
+    fun getisGetWeather(): Boolean{
+        return isGetWeather
+    }
+    fun getisGetAir(): Boolean{
+        return isGetAir
+    }
 }

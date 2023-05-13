@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityStartBinding
-import com.example.capston.register.Register1Activity
+import com.example.capston.Register.Register1Activity
 
 class StartActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityStartBinding

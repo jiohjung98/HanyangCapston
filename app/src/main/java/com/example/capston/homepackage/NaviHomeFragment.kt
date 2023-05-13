@@ -329,9 +329,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             findAddress(p1)
         }
 
-        if (!(mainActivity.isGetWeather))
+        if (mainActivity.getisGetWeather() == false)
             mainActivity.getWeather()
-        if (!(mainActivity.isGetAir))
+
+        if (mainActivity.getisGetAir() == false)
             mainActivity.getAirQuality()
     }
 

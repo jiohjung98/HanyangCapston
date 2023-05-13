@@ -9,20 +9,14 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.ActivityLoginBinding
-import com.example.capston.register.Register1Activity
+import com.example.capston.Register.Register1Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.AuthErrorCause
-import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity: AppCompatActivity() {

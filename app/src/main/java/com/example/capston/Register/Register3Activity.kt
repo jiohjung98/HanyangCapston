@@ -1,4 +1,4 @@
-package com.example.capston.register
+package com.example.capston.Register
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import com.example.capston.EmailVerifyActivity
 import com.example.capston.databinding.ActivityRegister3Binding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_info.*

@@ -1,9 +1,9 @@
-package com.example.capston.register
+package com.example.capston.Register
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.capston.DogRegisterActivity
+import com.example.capston.DogRegister.DogRegister1Activity
 import com.example.capston.databinding.ActivityRegisterCompleteBinding
 
 class RegisterCompleteActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class RegisterCompleteActivity : AppCompatActivity() {
 
         viewBinding.agreeBtn.isEnabled = true
         viewBinding.agreeBtn.setOnClickListener {
-            val intent = Intent(this, DogRegisterActivity::class.java)
+            val intent = Intent(this, DogRegister1Activity::class.java)
             startActivity(intent)
 //            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }

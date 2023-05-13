@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.Register
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,8 +7,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.capston.BacktoStartDialog
+import com.example.capston.R
 import com.example.capston.databinding.ActivityEmailverificationBinding
-import com.example.capston.register.UserAgreeActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class EmailVerifyActivity : AppCompatActivity() {

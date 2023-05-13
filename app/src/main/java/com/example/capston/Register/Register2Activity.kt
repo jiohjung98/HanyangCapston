@@ -1,4 +1,4 @@
-package com.example.capston.register
+package com.example.capston.Register
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.example.capston.databinding.ActivityRegister2Binding
-import kotlinx.android.synthetic.main.activity_info.*
 
 class Register2Activity : AppCompatActivity() {
 

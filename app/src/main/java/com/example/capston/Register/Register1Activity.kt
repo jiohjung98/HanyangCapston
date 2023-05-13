@@ -1,4 +1,4 @@
-package com.example.capston.register
+package com.example.capston.Register
 
 import android.content.Context
 import android.content.Intent
