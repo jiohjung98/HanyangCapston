@@ -266,7 +266,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         mainActivity.recreate()
     }
 
-
     // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
@@ -926,7 +925,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     private fun setAirInfo(pm25: Int, pm10: Int){
-
         // 미세
         val pm10Resource = when (pm10) {
             in 0..30 -> R.drawable.dust_perfect
