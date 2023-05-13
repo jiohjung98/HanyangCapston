@@ -21,24 +21,18 @@ class Register2Activity : AppCompatActivity() {
 
     lateinit var viewBinding: ActivityRegister2Binding
     private val binding get() = viewBinding!!
-    var DB: DBHelper? = null
-    private lateinit var auth: FirebaseAuth
 
     var ValidEmail: Boolean= false
-    var emailOk: Boolean = false
 
-    private lateinit var name : String
+    private lateinit var userName : String
     private lateinit var email : String
-    private lateinit var pw1 : String
-    private lateinit var pw2 : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityRegister2Binding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
-        DB = DBHelper(this)
 
-        auth = FirebaseAuth.getInstance()
+        userName = intent.getStringExtra("UserName")!!
 
         viewBinding.editTextTextEmailAddress.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -49,22 +43,22 @@ class Register2Activity : AppCompatActivity() {
 
 
             override fun afterTextChanged(p0: Editable?) {
-                if(viewBinding.editTextTextEmailAddress.length() > 0){
+                if(viewBinding.editTextTextEmailAddress.text.length > 0) {
                     ValidEmail = true
-                    if (ValidEmail)
-                        viewBinding.nextBtn.isClickable = true
-                        viewBinding.nextBtn.isEnabled = true
-                    }
+                    viewBinding.nextBtn.isClickable = true
+                    viewBinding.nextBtn.isEnabled = true
+                }
                 else{
-                ValidEmail = false
-                viewBinding.nextBtn.isClickable = false
-                viewBinding.nextBtn.isEnabled = false
-            }
+                    ValidEmail = false
+                    viewBinding.nextBtn.isClickable = false
+                    viewBinding.nextBtn.isEnabled = false
+                }
             }
         })
 
+        // 다음버튼
         viewBinding.nextBtn!!.setOnClickListener {
-            email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일
+            email = binding.editTextTextEmailAddress.text.toString().trim() // 이메일 변수 세팅
 
             if(email.isEmpty()){
                 viewBinding.emailLayout.visibility = View.VISIBLE
@@ -73,10 +67,21 @@ class Register2Activity : AppCompatActivity() {
                 viewBinding.emailLayout.visibility = View.VISIBLE
             }
             else {
-                val intent = Intent(this, EmailVerifyActivity::class.java)
+                val intent = Intent(this, Register3Activity::class.java)
+                intent.putExtra("UserName",userName) // 이름 전달
+                intent.putExtra("Email",email) // 이메일 전달
                 startActivity(intent)
             }
         }
+
+        binding.backButton.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, Register1Activity::class.java))
+        finish()
     }
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거

@@ -56,7 +56,7 @@ class SplashActivity : AppCompatActivity() {
             Log.d("USER", "${user.email}")
             Handler(Looper.getMainLooper()).postDelayed(
                 {
-                isInDB(this,user)
+                checkInDB(this,user)
             }, 2000)
         }
 
@@ -70,7 +70,7 @@ class SplashActivity : AppCompatActivity() {
     /*
      DB에 유저정보 있는지 확인
      */
-    private fun isInDB(context: Context, user: FirebaseUser) {
+    private fun checkInDB(context: Context, user: FirebaseUser) {
         user.reload()
         val uid = database.child("users").child(user.uid)
         uid.addValueEventListener(object: ValueEventListener {
@@ -89,7 +89,7 @@ class SplashActivity : AppCompatActivity() {
                         startActivity(Intent(applicationContext, PermissionActivity::class.java))
                     finish()
                 }
-                // 정상 분기
+                // 정상 분기 , auth DB 모두 있음
                 else{
                     if(isSetPermission())
                         startActivity(Intent(applicationContext, MainActivity::class.java))

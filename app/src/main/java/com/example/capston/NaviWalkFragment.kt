@@ -377,6 +377,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         binding.walkBreedSlash.visibility = View.INVISIBLE
         binding.addingBtn.visibility = View.INVISIBLE
         binding.addingBtn.isEnabled = false
+        binding.camera.visibility = View.INVISIBLE
         petname.text = "등록된 반려견이 없습니다"
     }
 

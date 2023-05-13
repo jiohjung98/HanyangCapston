@@ -15,12 +15,7 @@ class RegisterCompleteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
 //
-        viewBinding.receiveNameTxt.text = intent.getStringExtra("username")
-        val message = intent.getStringExtra("username")
-        intent.getStringExtra("전달했던 데이터의 이름표")
-
-        viewBinding.receiveNameTxt.text = message // TextView에 message 표현
-
+        viewBinding.receiveNameTxt.text = intent.getStringExtra("UserName").toString()
 
         viewBinding.agreeBtn.isEnabled = true
         viewBinding.agreeBtn.setOnClickListener {

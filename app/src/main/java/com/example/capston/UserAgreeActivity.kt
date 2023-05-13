@@ -9,6 +9,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
 import com.example.capston.databinding.ActivityAgreeBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_info.*
 
@@ -20,11 +24,20 @@ class UserAgreeActivity : AppCompatActivity() {
     lateinit var UptAnim : Animation
 
     private var name : String? = null
+    private var email : String? = null
+    private var pw : String? = null
+
+    private val database: DatabaseReference = Firebase.database.reference
+    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAgreeBinding.inflate(layoutInflater)
-        setContentView(binding.root);
+        setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
+        auth.currentUser!!.reload()
+
         //
         UptAnim = AnimationUtils.loadAnimation(this, R.anim.agree_translate_down)
         DownAnim = AnimationUtils.loadAnimation(this,R.anim.agree_translate_up)
@@ -37,7 +50,9 @@ class UserAgreeActivity : AppCompatActivity() {
         binding.agree3.setOnClickListener { onCheckChanged(binding.agree3) }
 
 
-        name = intent.getStringExtra("name")
+        name = intent.getStringExtra("UserName")
+        email = intent.getStringExtra("Email")
+        pw = intent.getStringExtra("PW")
 
         binding.contentbtn1.setOnClickListener {
             if (isPageOpen) {
@@ -73,16 +88,26 @@ class UserAgreeActivity : AppCompatActivity() {
                 binding.content.startAnimation(UptAnim)
             }
             else{
-                val intent = Intent(this,SignUpComplete::class.java)
-                intent.putExtra("name",name)
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+                addNewUserToDB(auth.currentUser!!.uid, name, email)
             }
         }
 
         // 좌측 위 뒤로가기 버튼 누르면 실행되는것
         binding.backButton.setOnClickListener {
             onBackPressed()
+        }
+    }
+
+    // 유저 db 등록
+    private fun addNewUserToDB(userId: String, name: String?, email: String?) {
+        // 현재 반려견 없음 = 0번 인덱스
+        val user_data = UserData(name,email,null,0)
+        database.child("users").child(userId).setValue(user_data).addOnSuccessListener {
+            val intent = Intent(this, RegisterCompleteActivity::class.java)
+            intent.putExtra("UserName",name)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+            finish()
         }
     }
 
