@@ -52,8 +52,13 @@ class EmailVerifyActivity : AppCompatActivity() {
         }
 
         viewBinding.nextBtn.setOnClickListener {
-            val intent = Intent(this, UserAgreeActivity::class.java)
+            val intent = Intent(this, Register3Activity::class.java)
             intent.putExtra("name", name)
+            startActivity(intent)
+        }
+
+        viewBinding.backButton.setOnClickListener {
+            val intent = Intent(this, Register2Activity::class.java)
             startActivity(intent)
         }
     }

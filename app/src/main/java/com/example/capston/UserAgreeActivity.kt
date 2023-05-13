@@ -73,7 +73,7 @@ class UserAgreeActivity : AppCompatActivity() {
                 binding.content.startAnimation(UptAnim)
             }
             else{
-                val intent = Intent(this,SignUpComplete::class.java)
+                val intent = Intent(this,Register1Activity::class.java)
                 intent.putExtra("name",name)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)

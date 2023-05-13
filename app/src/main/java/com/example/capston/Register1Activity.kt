@@ -60,7 +60,7 @@ class Register1Activity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, StartActivity::class.java)
+            val intent = Intent(this, UserAgreeActivity::class.java)
             startActivity(intent)
         }
     }

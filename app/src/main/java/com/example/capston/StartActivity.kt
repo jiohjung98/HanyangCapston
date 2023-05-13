@@ -27,7 +27,7 @@ class StartActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         viewBinding.startBtn.setOnClickListener {
-            val intent = Intent(this, Register1Activity::class.java)
+            val intent = Intent(this, UserAgreeActivity::class.java)
             startActivity(intent)
         }
 

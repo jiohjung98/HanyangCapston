@@ -6,6 +6,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로가기"
+        android:textColor="#D5D2D2"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/complete"
         android:layout_width="320dp"
         android:layout_height="77dp"

@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="뒤로가기"
+        android:textStyle="bold"
         android:textColor="#D5D2D2"
         android:textSize="12sp"
         android:layout_marginTop="20sp"

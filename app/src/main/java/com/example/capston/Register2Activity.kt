@@ -51,7 +51,6 @@ class Register2Activity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {
                 if(viewBinding.editTextTextEmailAddress.length() > 0){
                     ValidEmail = true
-                    if (ValidEmail)
                         viewBinding.nextBtn.isClickable = true
                         viewBinding.nextBtn.isEnabled = true
                     }
@@ -76,6 +75,11 @@ class Register2Activity : AppCompatActivity() {
                 val intent = Intent(this, EmailVerifyActivity::class.java)
                 startActivity(intent)
             }
+        }
+
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, Register1Activity::class.java)
+            startActivity(intent)
         }
     }
 
