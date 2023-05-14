@@ -44,6 +44,7 @@ class EmailVerifyActivity : AppCompatActivity() {
         viewBinding.emailResend.isEnabled = true
         viewBinding.checkEmail.isEnabled = true
 
+
         // 이메일 전송 클릭 시 -> 이메일보내고 인증확인,안왔는지,재전송 버튼 활성화
         viewBinding.emailBtn.setOnClickListener {
 //            sendEmailVerification()

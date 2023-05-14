@@ -4,6 +4,19 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <TextView
+        android:id="@+id/skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="건너뛰기"
+        android:textColor="#D5D2D2"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,74 +24,75 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <RelativeLayout
-            android:id="@+id/hello"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/name_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/complete"
-            >
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" >
 
-            <ImageView
-                android:id="@+id/logo"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@mipmap/ic_launcher" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal"
+                android:weightSum="2" >
 
             <TextView
                 android:id="@+id/receive_name_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/logo"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                android:text="" />
+                android:layout_weight="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="ddd"
+                android:fontFamily="@font/dungeon"
+                android:textColor="@color/black"
+                android:textSize="18sp"/>
 
             <TextView
-                android:id="@+id/text4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/receive_name_txt"
-                android:layout_marginTop="15dp"
-                android:text="님!" />
+                android:layout_weight="1"
+                android:text="님!"
+                android:fontFamily="@font/dungeon"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/text3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/logo"
-                android:layout_marginTop="35dp"
-                android:layout_marginLeft="10dp"
-                android:text="반가워요" />
-        </RelativeLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/complete"
-            android:layout_width="320dp"
-            android:layout_height="77dp"
-            android:layout_marginTop="37dp"
-            android:background="@drawable/signupcomplete_box"
-            app:layout_constraintTop_toBottomOf="@+id/hello"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dungeon"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="환영합니다!"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center"
-            android:text="회원가입이 완료되었습니다"/>
+            app:layout_constraintTop_toBottomOf="@+id/name_layout"
+            android:layout_marginTop="10sp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/agree_btn"
-        android:layout_width="320dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="50dp"
-        android:background="@drawable/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:enabled="false"
-        android:textColor="@color/white"
-        android:text="반려견 등록하러가기" />
+        android:background="@drawable/next_btn_color"
+        android:text="반려견 등록하러 가기"
+        android:textColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

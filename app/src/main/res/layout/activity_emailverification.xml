@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="20sp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:text="인증 확인" />
 
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.capston.DogRegister.DogRegister1Activity
+import com.example.capston.SkipDialog
 import com.example.capston.databinding.ActivityRegisterCompleteBinding
 
 class RegisterCompleteActivity : AppCompatActivity() {
@@ -23,5 +24,17 @@ class RegisterCompleteActivity : AppCompatActivity() {
             startActivity(intent)
 //            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
+
+        viewBinding.skipBtn.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    // 뒤로가기 -> 건너뛰기
+    override fun onBackPressed() {
+        val skipDialog = SkipDialog(this)
+        skipDialog.setOnOKClickedListener { content ->
+        }
+        skipDialog.show("초기화면")
     }
 }
