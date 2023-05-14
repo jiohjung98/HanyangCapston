@@ -9,9 +9,6 @@
 
 <!-- 메인으로 보여질 화면 -->
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -101,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/all_agree"
                 android:layout_marginStart="35dp"
                 android:layout_width="wrap_content"
@@ -109,7 +106,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="약관 전체동의"
-                android:buttonTint="@color/main"
+                android:buttonTint="@color/checkbox_color"
                 android:textStyle="bold"
                 android:textColor="@color/black" />
 <!--            <TextView-->
@@ -136,14 +133,14 @@
             android:layout_marginStart="35dp"
             android:layout_marginTop="16dp">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/agree1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
+                android:layout_marginLeft="0dp"
+                android:buttonTint="@color/checkbox_color"
                 android:text="이용약관 동의(필수)"
-                android:buttonTint="@color/main"
                 android:textColor="@color/black" />
 
             <TextView
@@ -164,14 +161,14 @@
             android:layout_height="match_parent"
             android:layout_marginStart="35dp">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/agree2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="개인정보 수집 및 이용동의(필수)"
-                android:buttonTint="@color/main"
+                android:buttonTint="@color/checkbox_color"
                 android:textColor="@color/black" />
 
             <TextView
@@ -192,12 +189,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/agree3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:buttonTint="@color/main"
+                android:buttonTint="@color/checkbox_color"
                 android:text="E-mail 및 SMS 광고성 정보 수신동의(선택)"
                 android:textColor="@color/black" />
 
