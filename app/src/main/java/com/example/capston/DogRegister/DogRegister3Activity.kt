@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.DogRegister
 
 import android.Manifest
 import android.content.Context
@@ -19,12 +19,15 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.example.capston.PetInfo
+import com.example.capston.R
+import com.example.capston.SkipDialog
 import com.example.capston.databinding.ActivityDogRegister3Binding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_dog_register2.*
 import java.text.SimpleDateFormat
@@ -37,9 +40,10 @@ class DogRegister3Activity : AppCompatActivity() {
     var validSpinner3: Boolean= false
     var validImage: Boolean= false
 
-    lateinit var uri: Uri
+    private lateinit var uri: Uri
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var storage : FirebaseStorage
 
     private var sharedPreferences: SharedPreferences? = null
 
@@ -53,6 +57,12 @@ class DogRegister3Activity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         auth = FirebaseAuth.getInstance()
+        storage = FirebaseStorage.getInstance()
+
+        // 이전 액티비티에서 받은걸 pet_info 에 설정
+        pet_info.pet_name = intent.getStringExtra("DogName")
+        pet_info.breed = intent.getStringExtra("Breed")
+        pet_info.gender = intent.getIntExtra("Gender",0)
 
         // 우측 위 건너뛰기 버튼 누르면 메인으로 넘어가기 = 뒤로가기와 동일
         viewBinding.skipBtn.setOnClickListener {
@@ -60,16 +70,7 @@ class DogRegister3Activity : AppCompatActivity() {
         }
 
         viewBinding.nextBtn.setOnClickListener {
-            val intent = Intent(this, DogRegisterEndActivity::class.java)
-//            intent.putExtra("dogname", dog_name_edt_text.text.toString())
-
-//            // 이름값 할당
-//            pet_info.pet_name = viewBinding.dogNameEdtText.text.toString()
-//            Log.d("개이름 ", viewBinding.dogNameEdtText.text.toString())
-            addDogToDB(pet_info)
-
-            startActivity(intent)
-            finish()
+            uploadImageToStorage()
         }
 
         viewBinding.backButton.setOnClickListener {
@@ -107,6 +108,11 @@ class DogRegister3Activity : AppCompatActivity() {
                 database.child("pet_cnt").setValue(next_pet_num)
                 // db에 새 반려견 등록
                 database.child("pet_list").child(next_pet_num.toString()).setValue(pet_info)
+                    .addOnSuccessListener {
+                        val intent = Intent(this, DogRegisterEndActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                }
             }
             else{
                 Log.d("DB LOAD FAIL","현재 반려견 인덱스 불러오기 실패")
@@ -135,8 +141,6 @@ class DogRegister3Activity : AppCompatActivity() {
         ageAdapter.add("출생연도를 선택해주세요.")
 
         viewBinding.dogAgeSpinner.adapter = ageAdapter
-
-
 
         dog_age_spinner.setSelection(ageAdapter.count)
         dog_age_spinner.dropDownVerticalOffset = dipToPixels(90f).toInt()
@@ -207,6 +211,7 @@ class DogRegister3Activity : AppCompatActivity() {
                     // 권한이 존재하는 경우
                     // TODO 이미지를 가져옴
                     getImageFromAlbum()
+
                     click_upload_text.setVisibility(View.INVISIBLE);
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
@@ -234,16 +239,18 @@ class DogRegister3Activity : AppCompatActivity() {
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     // 전달 받은 이미지 uri를 넣어준다.
-                    uri = result.data?.data!!
+                    this.uri = result.data?.data!!
                     // 이미지를 ImageView에 표시한다.
-                    viewBinding.imageArea.setImageURI(uri)
+                    viewBinding.imageArea.setImageURI(this.uri)
 
                     // 갤러리에서 이미지 가져오고 등록하기 버튼 활성화
-                    image_upload_btn.isEnabled = true
-                    image_upload_btn.isClickable = true
+//                    image_upload_btn.isEnabled = true
+//                    image_upload_btn.isClickable = true
 
-                    // Upload
-                    initUploadImage(uri)
+                    // 다음버튼 활성화
+//                    initUploadImage(uri)
+                    validImage = true
+                    checkValid(validSpinner3, validImage)
                 }
             }
         }
@@ -251,25 +258,22 @@ class DogRegister3Activity : AppCompatActivity() {
     /*
      * 업로드 버튼 클릭 이벤트 설정
      */
-    private fun initUploadImage(uri : Uri){
-        viewBinding.imageUploadBtn.setOnClickListener{
-            // 서버로 업로드
-            uploadImageToStorage(uri)
-        }
-    }
+//    private fun initUploadImage(uri : Uri){
+//        viewBinding.imageUploadBtn.setOnClickListener{
+//            // 서버로 업로드
+//            uploadImageToStorage()
+//        }
+//    }
 
     /*
      * 서버 스토리지로 이미지 업로드
      */
-    private fun uploadImageToStorage(uri: Uri) {
-        // storage 인스턴스 생성
-        val storage = Firebase.storage
+    private fun uploadImageToStorage() {
         // storage 참조
         val storageRef = storage.getReference("images").child("users").child(auth.currentUser!!.uid)
         // storage에 저장할 파일명 선언
         val fileName = auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")
-
 
         val uploadTask = mountainsRef.putFile(uri).addOnCompleteListener {
             if (it.isSuccessful) {
@@ -277,6 +281,8 @@ class DogRegister3Activity : AppCompatActivity() {
                 mountainsRef.downloadUrl
                     .addOnSuccessListener { uri ->
                         pet_info.image_url = uri.toString()
+                        // DB 등록
+                        addDogToDB(pet_info)
                     }.addOnFailureListener {
                         Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
                     }
@@ -286,21 +292,18 @@ class DogRegister3Activity : AppCompatActivity() {
         }
 
         // 파일 업로드 성공
-        uploadTask.addOnSuccessListener { taskSnapshot ->
-            Toast.makeText(this, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
-            // 성공했으므로 업로드 버튼 비활성화
-            image_upload_btn.isEnabled = false
-            // 갤러리 불러오기 비활성화
-            imageArea.isEnabled = false
-            imageArea.isClickable = false
-
-            // validImage 변경 후 다음으로 버튼 활성화 검사
-            validImage = true
-            checkValid(validSpinner3, validImage)
-        }   // 파일 업로드 실패
-            .addOnFailureListener {
-                Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show();
-            }
+//        uploadTask.addOnSuccessListener { taskSnapshot ->
+//            Toast.makeText(this, "사진 업로드 성공", Toast.LENGTH_SHORT).show();
+//            // 성공했으므로 업로드 버튼 비활성화
+//            image_upload_btn.isEnabled = false
+//            // 갤러리 불러오기 비활성화
+//            imageArea.isEnabled = false
+//            imageArea.isClickable = false
+//
+//            // validImage 변경 후 다음으로 버튼 활성화 검사
+//            validImage = true
+//            checkValid(validSpinner3, validImage)
+//        }   // 파일 업로드 실패
     }
 
     /*

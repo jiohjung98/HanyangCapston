@@ -1,19 +1,10 @@
 package com.example.capston
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.res.ColorStateList
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
-import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityStartBinding
+import com.example.capston.Register.Register1Activity
 
 class StartActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityStartBinding
@@ -27,7 +18,7 @@ class StartActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         viewBinding.startBtn.setOnClickListener {
-            val intent = Intent(this, UserAgreeActivity::class.java)
+            val intent = Intent(this, Register1Activity::class.java)
             startActivity(intent)
         }
 

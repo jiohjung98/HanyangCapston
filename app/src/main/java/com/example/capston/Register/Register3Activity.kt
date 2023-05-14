@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.Register
 
 import android.content.Context
 import android.content.Intent
@@ -11,26 +11,24 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import com.example.capston.databinding.ActivityRegister3Binding
-import com.example.capston.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_info.*
 import java.util.regex.Pattern
 
 class Register3Activity : AppCompatActivity() {
 
-    // 에딧텍스트에 값 4개 다 들어가야 버튼 활성화되는 코드
-    var validEditText1: Boolean = false
-    var validEditText2: Boolean = false
-    var validEditText3: Boolean = false
-    var validEditText4: Boolean = false
+    // PW 2개 확인
+    var validPW1: Boolean = false
+    var validPW2: Boolean = false
 
     lateinit var viewBinding: ActivityRegister3Binding
     private val binding get() = viewBinding!!
-    var DB: DBHelper? = null
 
+    // FIREBASE
     private lateinit var auth: FirebaseAuth
+
 
     private lateinit var name : String
     private lateinit var email : String
@@ -41,9 +39,11 @@ class Register3Activity : AppCompatActivity() {
         viewBinding = ActivityRegister3Binding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
-        DB = DBHelper(this)
 
         auth = FirebaseAuth.getInstance()
+
+        name = intent.getStringExtra("UserName")!!
+        email = intent.getStringExtra("Email")!!
 
         binding.editTextTextPassword1.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -54,13 +54,13 @@ class Register3Activity : AppCompatActivity() {
 
             override fun afterTextChanged(p0: Editable?) {
                 if(editTextTextPassword1.length() > 0){
-                    validEditText3 = true
-                    if (validEditText3 && validEditText4){
+                    validPW1 = true
+                    if (validPW1 && validPW2){
                         next_btn.isClickable = true
                         next_btn.isEnabled = true
                     }
                 } else{
-                    validEditText3 = false
+                    validPW1 = false
                     next_btn.isClickable = false
                     next_btn.isEnabled = false
                 }
@@ -77,13 +77,13 @@ class Register3Activity : AppCompatActivity() {
 
             override fun afterTextChanged(p0: Editable?) {
                 if(editTextTextPassword2.length() > 0){
-                    validEditText4 = true
-                    if (validEditText3 && validEditText4){
+                    validPW2 = true
+                    if (validPW1 && validPW2){
                         next_btn.isClickable = true
                         next_btn.isEnabled = true
                     }
                 } else{
-                    validEditText4 = false
+                    validPW2 = false
                     next_btn.isClickable = false
                     next_btn.isEnabled = false
                 }
@@ -91,14 +91,13 @@ class Register3Activity : AppCompatActivity() {
         })
 
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, Register2Activity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
 
         viewBinding.nextBtn!!.setOnClickListener {
             // 이름, 이메일 받아오는 것 해주세요
             pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
-            pw2 = binding.editTextTextPassword2.text.toString() // 비밀번호 확인
+            pw2 = binding.editTextTextPassword2.text.toString().trim() // 비밀번호 확인
 
             if(pw1.isEmpty()){
                 viewBinding.pw1Layout.visibility = View.VISIBLE
@@ -115,33 +114,36 @@ class Register3Activity : AppCompatActivity() {
             }
 
             if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$", pw1) && (pw1 == pw2)) {
-                val intent = Intent(this, RegisterCompleteActivity::class.java)
-//                intent.putExtra("username", viewBinding.inputName.text.toString())
-                startActivity(intent)
+                createUser(name, email, pw1)
             }
-//            createUser(name, email, pw1)
+
         }
     }
-//
-//    private fun createUser(name: String, email: String, password: String) {
-//        auth.createUserWithEmailAndPassword(email, password)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    val user = auth.currentUser
-////                    addNewUserToDB(task.result.user!!.uid,name,email)
-//                    updateUI(user)
-//                } else {
-//                    updateUI(null)
-//                }
-//            }
-//            .addOnFailureListener {
-//            }
-//    }
 
-    internal fun updateUI(user: FirebaseUser?) {
-        user?.let {
-//            binding.txtResult.text = "Email: ${user.email}\nUid: ${user.uid}"
-        }
+    // 유저 auth 등록
+    private fun createUser(name: String, email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+//                    val user = auth.currentUser!!.apply{
+//                        reload()
+//                    }
+//                    addNewUserToDB(user.uid,name,email) // DB 등록
+                    val intent = Intent(this, EmailVerifyActivity::class.java)
+                    intent.putExtra("UserName",name)
+                    intent.putExtra("Email",email)
+                    intent.putExtra("PW",pw1)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this,"유저 생성 실패",Toast.LENGTH_SHORT)
+                }
+            }
+    }
+
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, Register2Activity::class.java))
+        finish()
     }
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
@@ -168,4 +170,6 @@ class Register3Activity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+
 }

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DogRegister2Activity">
+    tools:context=".DogRegister.DogRegister2Activity">
 
     <TextView
         android:id="@+id/back_button"

@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.Register
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.capston.BacktoStartDialog
+import com.example.capston.R
 import com.example.capston.databinding.ActivityEmailverificationBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,7 +19,9 @@ class EmailVerifyActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityEmailverificationBinding
 
-    private var name : String? = null
+    private lateinit var name : String
+    private lateinit var email : String
+    private lateinit var pw : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,18 +30,28 @@ class EmailVerifyActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        name = intent.getStringExtra("name")
+        sendEmailVerification()
+
+        name = intent.getStringExtra("UserName")!!
+        email = intent.getStringExtra("Email")!!
+        pw = intent.getStringExtra("PW")!!
 
         viewBinding.nextBtn.isEnabled = false
 
+        viewBinding.emailError.visibility = View.VISIBLE
+        viewBinding.emailResend.visibility = View.VISIBLE
+        viewBinding.checkEmail.visibility = View.VISIBLE
+        viewBinding.emailResend.isEnabled = true
+        viewBinding.checkEmail.isEnabled = true
+
         // 이메일 전송 클릭 시 -> 이메일보내고 인증확인,안왔는지,재전송 버튼 활성화
         viewBinding.emailBtn.setOnClickListener {
-            sendEmailVerification()
-            viewBinding.emailError.visibility = View.VISIBLE
-            viewBinding.emailResend.visibility = View.VISIBLE
-            viewBinding.checkEmail.visibility = View.VISIBLE
-            viewBinding.emailResend.isEnabled = true
-            viewBinding.checkEmail.isEnabled = true
+//            sendEmailVerification()
+//            viewBinding.emailError.visibility = View.VISIBLE
+//            viewBinding.emailResend.visibility = View.VISIBLE
+//            viewBinding.checkEmail.visibility = View.VISIBLE
+//            viewBinding.emailResend.isEnabled = true
+//            viewBinding.checkEmail.isEnabled = true
         }
 
         // 인증확인 클릭 시
@@ -52,8 +66,10 @@ class EmailVerifyActivity : AppCompatActivity() {
         }
 
         viewBinding.nextBtn.setOnClickListener {
-            val intent = Intent(this, Register3Activity::class.java)
-            intent.putExtra("name", name)
+            val intent = Intent(this, UserAgreeActivity::class.java)
+            intent.putExtra("UserName", name)
+            intent.putExtra("Email", email)
+            intent.putExtra("PW",pw)
             startActivity(intent)
         }
 
@@ -63,7 +79,7 @@ class EmailVerifyActivity : AppCompatActivity() {
         }
     }
 
-    // 뒤로가기 -> 시작화면
+    // 뒤로가기 -> 시작화면, 이미 auth등록한뒤라 backdialog에서 auth 삭제 작업함
     override fun onBackPressed() {
         val backtoStartDialog = BacktoStartDialog(this)
         backtoStartDialog.setOnOKClickedListener { content ->
@@ -85,11 +101,11 @@ class EmailVerifyActivity : AppCompatActivity() {
             }
     }
 
-    private fun checkEmailVerification() {
-        if(!(FirebaseAuth.getInstance().currentUser!!.isEmailVerified)){
-            Toast.makeText(this, "메일함을 확인해주세요.", Toast.LENGTH_LONG).show()
-        }
-    }
+//    private fun checkEmailVerification() {
+//        if(!(FirebaseAuth.getInstance().currentUser!!.isEmailVerified)){
+//            Toast.makeText(this, "메일함을 확인해주세요.", Toast.LENGTH_LONG).show()
+//        }
+//    }
 
     private fun onClickCheckEmail(){
         auth.currentUser!!.reload().addOnSuccessListener { task->

@@ -24,14 +24,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".DogRegister3Activity"
+            android:name=".DogRegister.DogRegister3Activity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".DogRegister2Activity"
+            android:name=".DogRegister.DogRegister2Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <meta-data
@@ -39,7 +39,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DogRegister1Activity"
+            android:name=".DogRegister.DogRegister1Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -47,7 +47,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register3Activity"
+            android:name=".Register.Register3Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -55,7 +55,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register2Activity"
+            android:name=".Register.Register2Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             >
@@ -64,7 +64,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register1Activity"
+            android:name=".Register.Register1Activity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -154,6 +154,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".Register.RegisterCompleteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".StartActivity"
             android:exported="true">
             <meta-data
@@ -161,7 +168,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DogRegisterEndActivity"
+            android:name=".DogRegister.DogRegisterEndActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
@@ -192,7 +199,7 @@
             android:name=".SignUpComplete"
             android:exported="true" />
         <activity
-            android:name=".UserAgreeActivity"
+            android:name=".Register.UserAgreeActivity"
             android:exported="true" />
         <activity
             android:name=".MissingActivity"
@@ -207,7 +214,7 @@
             android:name=".LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".EmailVerifyActivity"
+            android:name=".Register.EmailVerifyActivity"
             android:exported="true" />
         <activity
             android:name=".PostingActivity"

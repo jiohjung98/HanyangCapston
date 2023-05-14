@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.Register
 
 import android.content.Context
 import android.content.Intent
@@ -7,29 +7,22 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.example.capston.StartActivity
 import com.example.capston.databinding.ActivityRegister1Binding
-import com.example.capston.databinding.ActivityRegisterBinding
-import com.google.firebase.auth.FirebaseAuth
 
 class Register1Activity : AppCompatActivity() {
 
-    lateinit var viewBinding: ActivityRegister1Binding
+    private lateinit var viewBinding: ActivityRegister1Binding
     private val binding get() = viewBinding!!
-    var DB: DBHelper? = null
 
-    private lateinit var auth: FirebaseAuth
-
-    var validName: Boolean = false
+    private var validName: Boolean = false
+    private lateinit var userName : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityRegister1Binding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
-        DB = DBHelper(this)
-
-        auth = FirebaseAuth.getInstance()
 
         viewBinding.name.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -45,6 +38,8 @@ class Register1Activity : AppCompatActivity() {
                     if (validName){
                         viewBinding.nextBtn.isClickable = true
                         viewBinding.nextBtn.isEnabled = true
+                        // 이름 변수 세팅
+                        userName = binding.name.text.toString().trim()
                     }
                 } else{
                     validName = false
@@ -56,6 +51,8 @@ class Register1Activity : AppCompatActivity() {
 
         viewBinding.nextBtn.setOnClickListener {
             val intent = Intent(this, Register2Activity::class.java)
+            // 레지스터2에 이름전달
+            intent.putExtra("UserName",userName)
             startActivity(intent)
         }
 
