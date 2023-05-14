@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#f6f5f2"
+    android:background="@color/main"
     android:layout_height="match_parent">
 
         <View
@@ -19,13 +19,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text2" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/back_button"
-        android:layout_width="8.5dp"
-        android:layout_height="16.5dp"
-        android:background="@drawable/backbtn"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로가기"
+        android:textColor="#D5D2D2"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,10 +47,10 @@
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/google_login"
+            android:textColor="@color/white"
             android:layout_marginTop="80dp"
             android:text="비밀번호를 잊으셨나요?"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
+            app:layout_constraintStart_toStartOf="@+id/back_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -56,10 +59,10 @@
             android:layout_height="wrap_content"
             android:text="비밀번호 찾기"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18dp"
             android:layout_marginTop="2dp"
-            app:layout_constraintStart_toEndOf="@id/back_button"
+            app:layout_constraintStart_toStartOf="@id/back_button"
             app:layout_constraintTop_toBottomOf="@+id/text1" />
 
 
@@ -72,8 +75,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginTop="200dp"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
+            app:layout_constraintStart_toStartOf="@+id/back_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
@@ -82,7 +84,6 @@
             android:layout_width="340dp"
             android:layout_height="43dp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
-            android:paddingStart="15dp"
             android:hint="이름을 입력해주세요."
             android:textSize="16dp"
             android:textCursorDrawable="@null"
@@ -90,9 +91,7 @@
             android:layout_marginTop="8dp"
             android:maxLines="1"
             android:inputType="text"
-            android:layout_marginLeft="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/name_tv"
             app:layout_constraintTop_toBottomOf="@+id/name_tv" />
 
         <TextView
@@ -114,16 +113,13 @@
             android:layout_width="340dp"
             android:layout_height="43dp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"
-            android:paddingStart="15dp"
             android:hint="이메일을 입력해주세요."
             android:textSize="16dp"
             android:textCursorDrawable="@null"
             android:layout_marginTop="8dp"
             android:maxLines="1"
             android:inputType="text"
-            android:layout_marginLeft="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/email_tv"
             app:layout_constraintTop_toBottomOf="@+id/email_tv" />
 
     <LinearLayout
@@ -141,7 +137,7 @@
             android:layout_marginTop="6dp"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:src="@drawable/vector">
+            android:src="@drawable/warning">
         </ImageView>
 
         <TextView
@@ -156,19 +152,17 @@
 
     </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next_page_btn"
-            style="@style/ColoredButton"
-            android:layout_width="340dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="80dp"
-            android:enabled="false"
-            android:background="@drawable/agree_nextbtn_color"
-            android:text="비밀번호 찾기"
-            android:layout_marginBottom="52dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+    <android.widget.Button
+        android:id="@+id/next_page_btn"
+        android:layout_width="match_parent"
+        android:layout_height="55sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="false"
+        android:enabled="false"
+        android:background="@drawable/next_btn_color"
+        android:text="다음으로"
+        android:textColor="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/go_next_btn"
-        android:layout_marginBottom="40dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/lottieView" />
 
     <TextView
         android:id="@+id/dog_register_text1"
@@ -55,17 +55,14 @@
         app:layout_constraintStart_toStartOf="@id/background"
         app:layout_constraintTop_toBottomOf="@+id/dog_register_text1" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <android.widget.Button
         android:id="@+id/go_next_btn"
-        android:layout_width="340dp"
-        android:layout_height="45dp"
-        android:background="@drawable/agree_nextbtn_color"
-        android:gravity="center"
-        android:enabled="true"
-        android:text="메인으로 이동"
-        android:textColor="@color/white"
-        android:layout_marginBottom="57dp"
+        android:layout_width="match_parent"
+        android:layout_height="55sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@drawable/next_btn_color"
+        android:text="메인으로 이동"
+        android:textColor="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,7 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8F4EA">
+        android:background="@color/white">
 
         <View
             android:id="@+id/layout"
@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/layout"
-            android:background="#DADADA" />
+            android:background="@color/main" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/back_button"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="@+id/text1"
             app:layout_constraintBottom_toBottomOf="@+id/text1"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="30dp"/>
 
         <TextView
             android:id="@+id/text1"

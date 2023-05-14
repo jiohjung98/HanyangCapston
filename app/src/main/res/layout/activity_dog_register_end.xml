@@ -46,6 +46,15 @@
 <!--        app:layout_constraintStart_toEndOf="@id/logo"-->
 <!--        app:layout_constraintTop_toBottomOf="@id/receive_name_txt"/>-->
 
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:background="@drawable/logogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/dog_register_text1"
@@ -57,9 +66,8 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        android:layout_marginTop="10sp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next_btn"

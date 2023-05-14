@@ -22,8 +22,8 @@
             android:layout_width="48sp"
             android:layout_height="15sp"
             android:text="목격 정보"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:textSize="11sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -100,7 +100,7 @@
                     android:layout_height="15sp"
                     android:layout_marginLeft="3sp"
                     android:text="상세내용을 보려면 클릭해주세요"
-                    android:textColor="@color/skyblue"
+                    android:textColor="@color/main"
                     android:textSize="12sp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

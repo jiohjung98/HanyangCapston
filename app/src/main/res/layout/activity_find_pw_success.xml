@@ -6,75 +6,51 @@
     android:layout_height="match_parent"
     tools:context=".FindPwSuccessActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/back_button"
-        android:layout_width="8.5dp"
-        android:layout_height="16.5dp"
-        android:background="@drawable/backbtn"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로가기"
+        android:textColor="#D5D2D2"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/logo"
-        android:layout_width="189dp"
-        android:layout_height="119dp"
-        android:layout_marginTop="180dp"
-        android:background="@drawable/logo2"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:background="@drawable/logogo"
         android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/background"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <View
-        android:id="@+id/background"
-        android:layout_width="340dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="148dp"
-        app:layout_constraintBottom_toTopOf="@+id/go_login_btn"
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:fontFamily="@font/dungeon"
+        android:textSize="18sp"
+        android:text="  해당 이메일로 비밀번호\n재설정 링크를 보냈습니다."
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        android:layout_marginTop="10sp" />
 
-    <TextView
-        android:id="@+id/text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="해당 이메일로 비밀번호"
-        android:textColor="@color/black"
-        android:fontFamily="@font/dungeon"
-        android:textSize="18sp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintEnd_toEndOf="@+id/background"
-        app:layout_constraintStart_toStartOf="@+id/background"
-        app:layout_constraintTop_toTopOf="@+id/background" />
-
-    <TextView
-        android:id="@+id/text5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="재설정 링크를 보냈습니다."
-        android:textColor="@color/black"
-        android:fontFamily="@font/dungeon"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/text1"
-        app:layout_constraintStart_toStartOf="@+id/background"
-        app:layout_constraintEnd_toEndOf="@id/background" />
-
-
-
-    <androidx.appcompat.widget.AppCompatButton
+    <android.widget.Button
         android:id="@+id/go_login_btn"
-        android:layout_width="340dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="56dp"
-        android:background="@drawable/start_button"
-        android:gravity="center"
-        android:text="로그인 화면으로 이동"
-        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="55sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        android:background="@drawable/next_btn_color"
+        android:text="로그인하기"
+        android:textColor="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

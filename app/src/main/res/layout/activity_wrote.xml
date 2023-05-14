@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#FFF0E5"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <View
@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/layout"
-        android:background="#DADADA" />
+        android:background="@color/main" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_button"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="@+id/text1"
         app:layout_constraintBottom_toBottomOf="@+id/text1"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="20dp"/>
+        android:layout_marginStart="32dp"/>
 
     <TextView
         android:id="@+id/text1"
@@ -65,9 +65,9 @@
         android:id="@+id/qna1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Q: 멍찾아는 어떤 서비스인가요?\nA: 멍찾아는 반려견을 실종했을 때 찾아주는 어플입니다."
+        android:text="Q: PawPaw 어떤 서비스인가요?\nA: 멍찾아는 반려견을 실종했을 때 찾아주는 어플입니다."
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="@id/back_button"
         app:layout_constraintTop_toBottomOf="@+id/line" />
 
     <View
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:text="Q: 질문은 어디로 하면 되나요?\nA: 이메일로 문의주시면 빠르게 답변드리고 있습니다."
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="@id/back_button"
         app:layout_constraintTop_toBottomOf="@+id/line2" />
 
     <View
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:text="Q: 어떻게 실종견을 찾아주는건가요?\nA: 작성한 게시글 상단 아이콘을 눌러 취소하면 됩니다."
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="@id/back_button"
         app:layout_constraintTop_toBottomOf="@+id/line3" />
 
     <View

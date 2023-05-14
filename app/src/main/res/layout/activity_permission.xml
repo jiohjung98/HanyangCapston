@@ -69,19 +69,16 @@
             app:layout_constraintTop_toBottomOf="@+id/location_text"
             android:layout_marginTop="20sp"/>
 
-
-    <android.widget.Button
-        android:id="@+id/permission_agree_btn"
-        style="@style/ColoredButton"
-        android:layout_width="320sp"
-        android:layout_height="45sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="57sp"
-        android:background="@drawable/agree_nextbtn_color"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:enabled="true"
-        android:text="동의하기" />
+        <android.widget.Button
+            android:id="@+id/permission_agree_btn"
+            android:layout_width="match_parent"
+            android:layout_height="55sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:enabled="true"
+            android:background="@drawable/next_btn_color"
+            android:text="동의하기"
+            android:textColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
