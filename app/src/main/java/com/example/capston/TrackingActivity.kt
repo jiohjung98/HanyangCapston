@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +19,20 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityLoginBinding
 import com.example.capston.databinding.ActivityTrackingBinding
+import com.example.capston.databinding.CustomBalloonLayoutBinding
+import com.example.capston.homepackage.NaviHomeFragment
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQuery
+import com.firebase.geofire.GeoQueryEventListener
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import net.daum.mf.map.api.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import kotlin.math.*
 
@@ -44,12 +56,26 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
 
+    // GeoFire
+    private var geoFire : GeoFire? = null
+    private var geoQuery : GeoQuery? = null
+    private var geoQueryListener : GeoQueryEventListener? = null
+    private lateinit var database : DatabaseReference
+
     private lateinit var binding: ActivityTrackingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        /* database 변수를 Firebase 데이터베이스의 레퍼런스로 초기화하고, 그 후에 geoFire 객체를 생성하도록 변경.
+        이제 database 변수가 초기화되어 오류가 발생하지 않을 것. */
+
+        database = FirebaseDatabase.getInstance().reference
+        geoFire = GeoFire(database.child("geofire"))
+
+        database = database.child("post").child("witness")
 
         binding.backButton.setOnClickListener {
             goToMain()
@@ -83,6 +109,52 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
         mapView!!.setCalloutBalloonAdapter(MissingActivity.CustomBalloonAdapter(layoutInflater))
+
+        geoQueryListener = object : GeoQueryEventListener {
+            // 아래 구현 - 쿼리로 키가 검색되면 실행됨
+            override fun onKeyEntered(key: String, location: GeoLocation) {
+                // DB의 마커정보들 불러오기 ->
+                database.child(key).get().addOnSuccessListener { task ->
+                    val markerData = task.getValue(UserPost::class.java)!!
+
+//                    var balloonBinding= setBalloon(markerData)
+
+                    val marker = MapPOIItem().apply {
+                        markerType = MapPOIItem.MarkerType.CustomImage
+                        customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
+                        isCustomImageAutoscale = true
+                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                        itemName = key
+                        mapPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
+                        isShowCalloutBalloonOnTouch = true
+                        tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+                        userObject = markerData
+                    }
+
+//                    Log.d("customCalloutBalloon",balloonView.toString())
+
+                    mapView!!.addPOIItem(marker)
+//                    kakaoMapView.findPOIItemByTag(key.hashCode()).customCalloutBalloon = balloonBinding.root
+                }
+            }
+
+            override fun onKeyExited(key: String) {
+                // 현재 범위 이탈시 맵에서 삭제
+                Log.d("마커삭제 전",mapView?.poiItems?.size.toString())
+                mapView?.removePOIItem(mapView!!.findPOIItemByTag(key.hashCode()))
+                Log.d("마커삭제 후",mapView?.poiItems?.size.toString())
+            }
+            override fun onKeyMoved(key: String, location: GeoLocation) {
+                // 위치 데이터가 이동했을 때의 코드 작성
+            }
+            override fun onGeoQueryReady() {
+                // 초기 데이터 검색이 완료되었을 때 호출됩니다.
+
+            }
+            override fun onGeoQueryError(error: DatabaseError) {
+                // 위치 데이터 검색 중 에러가 발생했을 때 호출됩니다.
+            }
+        }
     }
 
     fun findAddress() {
@@ -158,6 +230,56 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
+    private fun setMarker(p0: MapView?){
+
+        val bounds = p0?.mapPointBounds!!
+        val center = p0.mapCenterPoint
+
+        val leftX = bounds.bottomLeft.mapPointGeoCoord.longitude // 좌측 경도
+        val leftY = bounds.bottomLeft.mapPointGeoCoord.latitude // 좌측 위도
+
+        val rightX = bounds.topRight.mapPointGeoCoord.longitude // 우측 경도
+        val rightY = bounds.topRight.mapPointGeoCoord.latitude // 우측 위도
+
+        val radius = haversine(leftY,leftX,rightY,rightX)/2.0  // 좌하단~우상단 대각선 거리의 절반
+
+//        Log.i("좌하단","${leftX} + ${leftY}")
+//        Log.i("우상단","${rightX} + ${rightY}")
+
+        setGeoQuery(p0,center,radius)
+    }
+
+    private fun setGeoQuery(mapView: MapView?, center: MapPoint, radius : Double){
+
+        mapView?.removeAllPOIItems()
+
+        // center(화면중심)에서 radius(km단위)에 속하는 위치데이터들 검색함
+        geoQuery = geoFire?.queryAtLocation(GeoLocation(center.mapPointGeoCoord.latitude,center.mapPointGeoCoord.longitude),meterToKillo(radius))
+//        geoQuery?.removeAllListeners()
+
+//        Log.d("CENTER",center.mapPointGeoCoord.latitude.toString() +" "+center.mapPointGeoCoord.longitude.toString())
+//        Log.d("RADIUS",meterToKillo(radius).toString())
+
+
+        geoQuery?.addGeoQueryEventListener(geoQueryListener)
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+//        setMarker(p0)
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+            p0!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+        }
+
+        if (tapTimer != null) {
+            tapTimer!!.cancel()
+        }
+        setMarker(p0)
+    }
+
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
     }
 
@@ -174,20 +296,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
-    }
-
-    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
-            p0!!.currentLocationTrackingMode =
-                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
-        }
-
-        if (tapTimer != null) {
-            tapTimer!!.cancel()
-        }
     }
 
     override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
@@ -277,22 +385,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            return mCalloutBalloon
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-//            address.text = "getPressedCalloutBalloon"
-            return mCalloutBalloon
-        }
-    }
-
     fun goToMain() {
         val dialog = Dialog(this)
         // 다이얼로그 테두리 둥글게 만들기
@@ -315,5 +407,42 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
+
+        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+
+        // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            val data : UserPost = poiItem?.userObject as UserPost
+
+            setBalloon(data)
+
+            return viewBinding.root
+        }
+
+        private fun setBalloon(data : UserPost) {
+            viewBinding.timeText.text = (data.date + " " + data.time)
+            viewBinding.nameText.text = "알 수 없음"
+            viewBinding.breedText.text = data.pet_info?.breed
+
+//            if(fragment.isAdded()) {
+//                GlideApp.with(fragment)
+//                    .load(Uri.parse(data.pet_info?.image_url.toString()))
+//                    .into(viewBinding.enterImage)
+//            }
+
+            val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
+            url.doInput = true
+            url.connect()
+            val bitmap = BitmapFactory.decodeStream(url.inputStream)
+
+            viewBinding.enterImage.setImageBitmap(bitmap)
+        }
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            return viewBinding.root
+        }
     }
 }

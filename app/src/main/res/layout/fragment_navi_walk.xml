@@ -58,7 +58,7 @@
                 android:id="@+id/walk_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50sp"
+                android:layout_marginStart="30sp"
                 android:layout_marginTop="20sp"
                 android:fontFamily="@font/dungeon"
                 android:text=""
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:fontFamily="@font/dungeon"
-                android:text="/"
+                android:text="/ "
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/walk_age"
@@ -128,7 +128,8 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/walk_age"
                 app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
-                app:layout_constraintTop_toTopOf="@id/walk_age" />
+                app:layout_constraintTop_toTopOf="@id/walk_age"
+                app:layout_constraintEnd_toEndOf="@+id/adding_btn"/>
 
             <TextView
                 android:id="@+id/pet_select_text"
