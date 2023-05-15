@@ -31,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import net.daum.mf.map.api.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
@@ -64,10 +66,19 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     private lateinit var binding: ActivityTrackingBinding
 
+    // create Retrofit
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://run.mocky.io/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        listen = MarkerEventListener(this)
 
         /* database 변수를 Firebase 데이터베이스의 레퍼런스로 초기화하고, 그 후에 geoFire 객체를 생성하도록 변경.
         이제 database 변수가 초기화되어 오류가 발생하지 않을 것. */
@@ -108,7 +119,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        mapView!!.setCalloutBalloonAdapter(MissingActivity.CustomBalloonAdapter(layoutInflater))
+        mapView!!.setCalloutBalloonAdapter(TrackingActivity.CustomBalloonAdapter(layoutInflater))
 
         geoQueryListener = object : GeoQueryEventListener {
             // 아래 구현 - 쿼리로 키가 검색되면 실행됨
@@ -175,7 +186,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         if (mapView != null) {
             mapView!!.onResume()
         }
-//        this._binding = null
     }
 
     override fun onPause() {
@@ -359,32 +369,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     }
 
 
-    // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: MissingActivity, val lostDialog: DogInfoEnterDialog, val spotDialog : DogInfoEnterDialog2): MapView.POIItemEventListener {
-        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
-
-        }
-        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
-            // 말풍선 클릭 시 (Deprecated)
-            // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
-        }
-
-        override fun onCalloutBalloonOfPOIItemTouched(
-            mapView: MapView?,
-            poiItem: MapPOIItem?,
-            buttonType: MapPOIItem.CalloutBalloonButtonType?
-        ) {
-        }
-
-        override fun onDraggablePOIItemMoved(
-            mapView: MapView?,
-            poiItem: MapPOIItem?,
-            mapPoint: MapPoint?
-        ) {
-            // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
-        }
-    }
-
     fun goToMain() {
         val dialog = Dialog(this)
         // 다이얼로그 테두리 둥글게 만들기
@@ -409,7 +393,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         dialog.show()
     }
 
-    class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
+    class CustomBalloonAdapter(val inflater: LayoutInflater): CalloutBalloonAdapter {
 
         private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
 
@@ -445,4 +429,32 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             return viewBinding.root
         }
     }
+
+
+    // 마커 클릭 이벤트 리스너
+    class MarkerEventListener(var context: TrackingActivity): MapView.POIItemEventListener {
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+
+        }
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+            // 말풍선 클릭 시 (Deprecated)
+            // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            buttonType: MapPOIItem.CalloutBalloonButtonType?
+        ) {
+        }
+
+        override fun onDraggablePOIItemMoved(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            mapPoint: MapPoint?
+        ) {
+            // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
+        }
+    }
+
 }
