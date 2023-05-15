@@ -23,11 +23,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_missing.*
-import kotlinx.android.synthetic.main.activity_walk.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
-import kotlin.concurrent.timer
 import kotlin.math.*
 
 
@@ -372,7 +370,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
 
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             return mCalloutBalloon

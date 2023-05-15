@@ -20,7 +20,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityLoginBinding
 import com.example.capston.databinding.ActivityTrackingBinding
-import com.example.capston.databinding.CustomBalloonLayoutBinding
+import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
@@ -394,12 +394,12 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
 //        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
 
-        private var viewBinding: CustomBalloonLayoutBinding? = null
+        private var viewBinding: SpotBalloonLayoutBinding? = null
 
         // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             if (viewBinding == null) {
-                viewBinding = CustomBalloonLayoutBinding.inflate(inflater, parent, false)
+                viewBinding = SpotBalloonLayoutBinding.inflate(inflater, parent, false)
             }
 
             val data : UserPost = poiItem?.userObject as UserPost
@@ -410,9 +410,9 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
 
         private fun setBalloon(data : UserPost) {
-            viewBinding!!.timeText.text = (data.date + " " + data.time)
-            viewBinding!!.nameText.text = "알 수 없음"
-            viewBinding!!.breedText.text = data.pet_info?.breed
+            viewBinding!!.timeText.text = "발견 시간: " + (data.date + " " + data.time)
+            viewBinding!!.phoneText.text = "목격자 연락처:"
+            viewBinding!!.breedText.text = "견종: " + data.pet_info?.breed
 
 //            if(fragment.isAdded()) {
 //                GlideApp.with(fragment)
