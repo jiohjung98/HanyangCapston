@@ -16,6 +16,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/Dialog_title"
             android:layout_width="wrap_content"
@@ -188,12 +189,40 @@
             app:layout_constraintTop_toBottomOf="@+id/time_title" />
 
         <TextView
+            android:id="@+id/phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전화번호"
+            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintTop_toBottomOf="@+id/time_input"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12sp" />
+
+        <EditText
+            android:id="@+id/phone_input"
+            android:layout_width="match_parent"
+            android:layout_height="35sp"
+            android:hint="회원님의 연락처를 입력해주세요."
+            android:inputType="text"
+            android:textSize="14sp"
+            android:textColorHint="#808080"
+            android:background="@drawable/info_edittext_rounded_corner_rectangle"
+            app:layout_constraintTop_toBottomOf="@+id/phone_title"
+            android:layout_marginStart="20sp"
+            android:layout_marginEnd="20sp"
+            android:layout_marginTop="5sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
             android:id="@+id/content_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="상세 정보"
             app:layout_constraintStart_toStartOf="@+id/Dialog_title"
-            app:layout_constraintTop_toBottomOf="@+id/time_input"
+            app:layout_constraintTop_toBottomOf="@+id/phone_input"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -203,7 +232,7 @@
         <EditText
             android:id="@+id/content_input"
             android:layout_width="0sp"
-            android:layout_height="80sp"
+            android:layout_height="60sp"
             android:hint="상세정보를 입력해주세요."
             android:textSize="14sp"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/main"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <View
@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/layout"
-        android:background="#DADADA" />
+        android:background="@color/main" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_button"
@@ -41,7 +41,7 @@
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:text="자주 묻는 질문"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"

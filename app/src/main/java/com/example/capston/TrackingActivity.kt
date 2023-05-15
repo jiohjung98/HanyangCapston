@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityLoginBinding
@@ -66,12 +67,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     private lateinit var binding: ActivityTrackingBinding
 
-    // create Retrofit
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://run.mocky.io/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +77,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         /* database 변수를 Firebase 데이터베이스의 레퍼런스로 초기화하고, 그 후에 geoFire 객체를 생성하도록 변경.
         이제 database 변수가 초기화되어 오류가 발생하지 않을 것. */
-
         database = FirebaseDatabase.getInstance().reference
         geoFire = GeoFire(database.child("geofire"))
 
@@ -119,7 +113,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        mapView!!.setCalloutBalloonAdapter(TrackingActivity.CustomBalloonAdapter(layoutInflater))
+//        mapView!!.setCalloutBalloonAdapter(TrackingActivity.CustomBalloonAdapter(layoutInflater))
+
+        val balloonAdapter = CustomBalloonAdapter(layoutInflater, findViewById(R.id.balloonContainer))
+        mapView!!.setCalloutBalloonAdapter(balloonAdapter)
 
         geoQueryListener = object : GeoQueryEventListener {
             // 아래 구현 - 쿼리로 키가 검색되면 실행됨
@@ -393,23 +390,29 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         dialog.show()
     }
 
-    class CustomBalloonAdapter(val inflater: LayoutInflater): CalloutBalloonAdapter {
+    class CustomBalloonAdapter(val inflater: LayoutInflater, private val parent: ViewGroup): CalloutBalloonAdapter {
 
-        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+//        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+
+        private var viewBinding: CustomBalloonLayoutBinding? = null
 
         // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            if (viewBinding == null) {
+                viewBinding = CustomBalloonLayoutBinding.inflate(inflater, parent, false)
+            }
+
             val data : UserPost = poiItem?.userObject as UserPost
 
             setBalloon(data)
 
-            return viewBinding.root
+            return viewBinding!!.root
         }
 
         private fun setBalloon(data : UserPost) {
-            viewBinding.timeText.text = (data.date + " " + data.time)
-            viewBinding.nameText.text = "알 수 없음"
-            viewBinding.breedText.text = data.pet_info?.breed
+            viewBinding!!.timeText.text = (data.date + " " + data.time)
+            viewBinding!!.nameText.text = "알 수 없음"
+            viewBinding!!.breedText.text = data.pet_info?.breed
 
 //            if(fragment.isAdded()) {
 //                GlideApp.with(fragment)
@@ -422,11 +425,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             url.connect()
             val bitmap = BitmapFactory.decodeStream(url.inputStream)
 
-            viewBinding.enterImage.setImageBitmap(bitmap)
+            viewBinding!!.enterImage?.setImageBitmap(bitmap)
         }
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-            return viewBinding.root
+//            // 말풍선 클릭 시
+//            return viewBinding!!.root
+
+            // Return the pressed callout balloon view
+            return viewBinding?.root ?: getCalloutBalloon(poiItem)
         }
     }
 

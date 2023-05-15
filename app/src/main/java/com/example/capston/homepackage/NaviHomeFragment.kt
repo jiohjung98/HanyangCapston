@@ -418,7 +418,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //                    .load(Uri.parse(data.pet_info?.image_url.toString()))
 //                    .into(viewBinding.enterImage)
 //            }
-
             val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
             url.doInput = true
             url.connect()
