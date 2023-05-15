@@ -63,7 +63,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/chage_pw_btn"
+        android:id="@+id/change_pw_btn"
         android:layout_width="match_parent"
         android:layout_height="45sp"
         app:layout_constraintBottom_toBottomOf="parent"

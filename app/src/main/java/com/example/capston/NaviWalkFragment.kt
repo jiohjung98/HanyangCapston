@@ -868,7 +868,10 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     private fun setWeatherInfo(){
         val weatherInfo = mainActivity.getWeatherInfo()
-        val temp : Int = ((weatherInfo.first) as Double).minus(273.15).roundToInt()
+//        val temp : Int = ((weatherInfo.first) as Double).minus(273.15).roundToInt()
+        // null 값 방지
+        val temp: Int = (weatherInfo.first as? Double)?.minus(273.15)?.roundToInt() ?: 0
+
         val weatherCode = weatherInfo.second
         temperature.text = temp.toString() + "°C"
         weatherLocaction.text = pref.getString("addressLocality","서울시") + " " + pref.getString("addressThoroughfare","종로구")

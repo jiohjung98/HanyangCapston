@@ -115,11 +115,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             activity?.startActivity(intent)
         }
 
-//        binding.locationBtn.setOnClickListener {
-//            mapView!!.currentLocationTrackingMode =
-//                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-//        }
-
         binding.locationBtn.setOnClickListener {
             mapView!!.currentLocationTrackingMode =
                 MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
@@ -141,15 +136,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         listen = MarkerEventListener(mainActivity, this)
 
-//        // 뷰 추가 전 기존 뷰 삭제
-//        kakaoMapViewContainer?.removeAllViews()
-//
-//
-//
-//        val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
-//
-//        kakaoMapViewContainer?.addView(kakaoMapView)
-
         mapView = MapView(mainActivity)
         val mapViewContainer = kakaoMapView as ViewGroup
         mapViewContainer.addView(mapView)
@@ -158,7 +144,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         isSetLocationPermission()
         mapView!!.setMapViewEventListener(this)
-
 
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(

@@ -33,9 +33,9 @@
             <ImageView
                 android:id="@+id/logo_mini"
                 android:layout_width="30dp"
-                android:layout_height="22dp"
+                android:layout_height="25dp"
                 android:layout_marginStart="24dp"
-                android:src="@drawable/logo12" />
+                android:src="@drawable/logogo" />
 
             <TextView
                 android:id="@+id/toolBarTitle"
