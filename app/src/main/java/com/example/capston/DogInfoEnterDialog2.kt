@@ -288,7 +288,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
     // 성별 데이터
     private fun setupGenderData() {
-        val genderData = activity.resources.getStringArray(R.array.spinner_gender)
+        val genderData = activity.resources.getStringArray(R.array.spinner_gender_spot)
         val genderAdapter = object : ArrayAdapter<String>(activity,R.layout.gender_spinner) {
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
