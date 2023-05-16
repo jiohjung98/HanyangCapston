@@ -178,12 +178,6 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             setCoordinate(poiItem?.mapPoint)
             // 이미지 storage 업로드
             uploadImageToStorage(uri)
-
-            _dlg?.dismiss()
-
-            activity.kakaoMapViewContainer?.removeAllViews()
-            activity.startActivity(Intent(activity, MissingAfterActivity::class.java))
-            activity.finish()
         }
 
         //cancel 버튼 동작
@@ -340,57 +334,6 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         }
     }
 
-//    private fun setupAgeData() {
-//        val ageData = activity.resources.getStringArray(R.array.spinner_age)
-//        val ageAdapter = object : ArrayAdapter<String>(activity, R.layout.breed_spinner) {
-//
-//            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-//                val v = super.getView(position, convertView, parent)
-//                if (position == count) {
-//                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
-//                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
-//                }
-//                return v
-//            }
-//            override fun getCount(): Int {
-//                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
-//                return super.getCount() - 1
-//            }
-//        }
-//        ageAdapter.addAll(ageData.toMutableList())
-//        ageAdapter.add("출생연도를 선택해주세요.")
-//
-//        binding.bornSpinner.adapter = ageAdapter
-//
-//        binding.bornSpinner.setSelection(ageAdapter.count)
-//        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(50f).toInt()
-//    }
-//
-//    private fun setupAgeHandler() {
-//        binding.bornSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-//                breed_recycleR.visibility= View.INVISIBLE
-//                BreedSearch.clearFocus()
-//                when (position) {
-//                    0 -> {
-//                        validBorn = true
-//                    }
-//                    else -> {
-//                        validBorn = true
-//                        Log.d("스피너3", "$validBorn")
-//                    }
-//                }
-//                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
-//                // 출생년도 저장
-//                pet_info.born = binding.bornSpinner.selectedItem.toString()
-////                Log.d("BORN YEAR", "${pet_info.born}")
-//            }
-//            override fun onNothingSelected(p0: AdapterView<*>?) {
-//                validBorn = false
-//            }
-//        }
-//    }
-
     private fun dipToPixels(dipValue: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -519,7 +462,18 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             geoFire.setLocation(key, loc)
             val geoHash = GeoHash(loc)
 //            Log.d("GEO HASH", geoHash.toString())
+            goNext(pet_info.image_url!!)
         }
+    }
+
+    private fun goNext(uri: String){
+        _dlg?.dismiss()
+        activity.kakaoMapViewContainer?.removeAllViews()
+        val intent = Intent(activity, MissingAfterActivity::class.java)
+        intent.putExtra("url",uri)
+        intent.putExtra("EnteredBreed", pet_info.breed)
+        activity.startActivity(intent)
+        activity.finish()
     }
 
     /*

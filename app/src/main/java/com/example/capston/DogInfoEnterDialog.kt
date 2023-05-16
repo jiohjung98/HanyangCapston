@@ -24,6 +24,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.LostDogInfoBinding
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.core.GeoHash
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -63,6 +66,8 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
     private lateinit var pet_info : PetInfo
     private lateinit var post : UserPost
+
+    private val geoFire = GeoFire(activity.database.child("geofire"))
 
     fun initialize(){
         _dlg?.dismiss()
@@ -212,12 +217,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             setCoordinate(poiItem?.mapPoint)
             // 이미지 storage 업로드
             uploadImageToStorage(uri)
-
-            _dlg?.dismiss()
-
-            activity.kakaoMapViewContainer?.removeAllViews()
-            activity.startActivity(Intent(activity, MissingAfterActivity::class.java))
-            activity.finish()
         }
 
         //cancel 버튼 동작
@@ -509,7 +508,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      */
     private fun uploadImageToStorage(uri: Uri) {
         // storage 참조
-        val storageRef = activity.storage.getReference("images").child("lost")
+        val storageRef = activity.storage.getReference("images").child("lost").child(activity.auth.currentUser!!.uid)
         // storage에 저장할 파일명 선언
         val fileName = activity.auth.currentUser!!.uid + "_" + SimpleDateFormat("yyyyMMddHHmm").format(Date())
         val mountainsRef = storageRef.child("${fileName}.jpg")
@@ -544,12 +543,33 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      * 파이어베이스 db에 포스트 업로드
      */
     private fun uploadPost() {
-        val ref = activity.database.child("post").child("lost").child(activity.uid).push()
+        val uri = pet_info.image_url!!
+        val ref = activity.database.child("post").child("lost").child(activity.auth.currentUser!!.uid).push()
         ref.setValue(post).addOnSuccessListener {
-            // post 고유키 저장 - 나중에 쓸데가 있을지도
+            // post 고유키
             val key = ref.key
+            val loc = GeoLocation(post.latitude!!,post.longitude!!)
+            // geofire 아래 post의 key로 쿼리용 위치정보 저장
+            geoFire.setLocation(key, loc)
+            val geoHash = GeoHash(loc)
+            Log.d("UPLOAD POST", "SUCCESS")
+            goNext()
         }
     }
+
+    /*
+     다음 페이지로
+     넘어가면서 인공지능서버에 요청 보내기
+     */
+    private fun goNext(){
+        _dlg?.dismiss()
+        activity.kakaoMapViewContainer?.removeAllViews()
+        activity.startActivity(Intent(activity, MissingAfterActivity::class.java))
+        activity.finish()
+    }
+
+
+
     /*
      * 확인버튼 검사
      */
