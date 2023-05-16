@@ -55,7 +55,6 @@ class DogRegister1Activity : AppCompatActivity() {
             // 개이름전달
             intent.putExtra("DogName", dog_name_edt_text.text.toString().trim())
             startActivity(intent)
-            finish()
         }
     }
 

@@ -7,34 +7,35 @@ import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.*
 import com.example.capston.databinding.ActivityDogRegister2Binding
+import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_dog_register.breed_search
 import kotlinx.android.synthetic.main.activity_dog_register2.*
 import java.util.ArrayList
 
-class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
+class DogRegister2Activity : AppCompatActivity() {
 
     private final val REQUEST_FIRST = 1010
 
     var validSpinner: Boolean= false
     var validGender: Boolean = false
 
-    lateinit var breed_recycleR: RecyclerView
-    lateinit var breedAdapter: BreedAdapter
-    lateinit var breed: ArrayList<BreedDTO>
-    lateinit var BreedSearch: SearchView
-
     private lateinit var dogName : String
     private var dogGender : Int? = null
-    private lateinit var dogBreed : String
+    private lateinit var dogAge : String
 
     private lateinit var viewBinding: ActivityDogRegister2Binding
 
@@ -42,8 +43,8 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityDogRegister2Binding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        BreedSearch = viewBinding.breedSearch
-        breed_recycleR = viewBinding.rvPhoneBook
+//        BreedSearch = viewBinding.breedSearch
+//        breed_recycleR = viewBinding.rvPhoneBook
 
         dogName = intent.getStringExtra("DogName")!!
 
@@ -56,22 +57,19 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
             val intent = Intent(this, DogRegister3Activity::class.java)
             intent.putExtra("DogName", dogName)
             intent.putExtra("Gender",dogGender)
-            intent.putExtra("Breed", dogBreed)
+            intent.putExtra("Born", dogAge)
             startActivity(intent)
-            finish()
         }
 
         viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, DogRegister1Activity::class.java)
-            startActivity(intent)
-            finish()
+            super.onBackPressed()
         }
 
-        //배경 클릭시 포커스해제
-        viewBinding.background.setOnClickListener {
-            breed_recycleR.visibility= View.INVISIBLE
-            BreedSearch.clearFocus()
-        }
+//        //배경 클릭시 포커스해제
+//        viewBinding.background.setOnClickListener {
+//            breed_recycleR.visibility= View.INVISIBLE
+//            BreedSearch.clearFocus()
+//        }
 
         // 성별 남 버튼
         viewBinding.genderBoy.setOnClickListener{
@@ -86,76 +84,78 @@ class DogRegister2Activity : AppCompatActivity(), BreedItemClick {
             dogGender = 1
         }
 
-        BreedSearch.setOnQueryTextListener(searchViewTextListener)
-        breed = tempPersons()
-        setAdapter()
-        setupBreedData()
+        setupAgeData()
+        setupAgeHandler()
+
+//        BreedSearch.setOnQueryTextListener(searchViewTextListener)
+//        breed = tempPersons()
+//        setAdapter()
+//        setupBreedData()
 
     }
 
-    private fun setAdapter(){
-        //리사이클러뷰에 리사이클러뷰 어댑터 부착
-        breed_recycleR.layoutManager = LinearLayoutManager(this)
-        breedAdapter = BreedAdapter(this,breed, this)
-        breed_recycleR.adapter = breedAdapter
-    }
-
-    private fun tempPersons(): ArrayList<BreedDTO> {
-        val breedArray: Array<String> = resources.getStringArray(R.array.spinner_breed)
-        var tempPersons = ArrayList<BreedDTO>()
-        tempPersons.add(BreedDTO(""))
-        for(i in breedArray.indices){
-            tempPersons.add(BreedDTO((breedArray[i])))
-        }
-        return tempPersons
-    }
 
 
-    //서치뷰 관련 인터렉션
-    private fun setupBreedData() {
-        BreedSearch.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener {
-            override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                BreedSearch.isSelected =  hasFocus
-                BreedSearch.isIconified = !hasFocus
-                if(breed_search.isSelected) {
-                    breed_recycleR.visibility = View.VISIBLE
-                }else if(!breed_search.isSelected){
-                    breed_recycleR.visibility = View.INVISIBLE
+    private fun setupAgeData() {
+        val ageData = resources.getStringArray(R.array.spinner_age)
+        val ageAdapter = object : ArrayAdapter<String>(this, R.layout.breed_spinner) {
+
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getView(position, convertView, parent)
+                if (position == count) {
+                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
+                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
                 }
+                return v
             }
-
-        })
-    }
-
-    var searchViewTextListener: SearchView.OnQueryTextListener =
-        object : SearchView.OnQueryTextListener {
-            //검색버튼 입력시 호출, 검색버튼이 없으므로 사용하지 않음
-            override fun onQueryTextSubmit(s: String): Boolean {
-                return false
-            }
-
-            //텍스트 입력/수정시에 호출
-            override fun onQueryTextChange(s: String): Boolean {
-                breedAdapter.filter.filter(s)
-                Log.d("gd", "SearchVies Text is changed : $s")
-                return false
+            override fun getCount(): Int {
+                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
+                return super.getCount() - 1
             }
         }
+        ageAdapter.addAll(ageData.toMutableList())
+        ageAdapter.add("출생연도를 선택해주세요.")
 
-    override fun onClick(value: String?) {
-        if (!breedAdapter.choose_breed.isEmpty()) {
-            BreedSearch.queryHint = breedAdapter.choose_breed
-            val editText =
-                findViewById<SearchView>(androidx.appcompat.R.id.search_src_text) as EditText
-            editText.setHintTextColor(Color.BLACK)
-            BreedSearch.clearFocus()// 포커스 초기화
-            // 견종 저장
-            dogBreed = breedAdapter.choose_breed
-            breed_recycleR.visibility=View.INVISIBLE
-            validSpinner = true
-            checkValid(validGender,validSpinner)
+        viewBinding.dogAgeSpinner.adapter = ageAdapter
+
+        viewBinding.dogAgeSpinner.setSelection(ageAdapter.count)
+        viewBinding.dogAgeSpinner.dropDownVerticalOffset = dipToPixels(90f).toInt()
+
+    }
+
+    private fun setupAgeHandler() {
+        viewBinding.dogAgeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                when (position) {
+                    0 -> {
+                        validSpinner = true
+                    }
+                    else -> {
+                        validSpinner = true
+                        Log.d("스피너3", "$validSpinner")
+                    }
+                }
+                checkValid(validSpinner, validGender)
+                // 출생년도 저장
+                dogAge = viewBinding.dogAgeSpinner.selectedItem.toString()
+//                Log.d("BORN YEAR", "${pet_info.born}")
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                validSpinner = false
+            }
         }
     }
+
+    private fun dipToPixels(dipValue: Float): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dipValue,
+            resources.displayMetrics
+        )
+    }
+
+
+
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {

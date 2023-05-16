@@ -21,6 +21,10 @@ class BreedAdapter(var onItemClick: BreedItemClick, var persons: ArrayList<Breed
     var itemFilter = ItemFilter()
     var choose_breed = String()
 
+    fun setBreed(breed : String){
+        this.choose_breed = breed
+    }
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tv_name_phone_book_list_item: TextView

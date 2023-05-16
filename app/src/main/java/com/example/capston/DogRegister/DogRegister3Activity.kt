@@ -5,46 +5,59 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import com.example.capston.PetInfo
-import com.example.capston.R
-import com.example.capston.SkipDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.capston.*
 import com.example.capston.databinding.ActivityDogRegister3Binding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_dog_register2.*
 import java.text.SimpleDateFormat
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 import java.util.*
 
-class DogRegister3Activity : AppCompatActivity() {
+class DogRegister3Activity : AppCompatActivity(), BreedItemClick  {
 
     private final val REQUEST_FIRST = 1010
 
-    var validSpinner3: Boolean= false
+    // checkValid
+    var validSpinner: Boolean= false
     var validImage: Boolean= false
+
+    // Breed
+    lateinit var breed_recycleR: RecyclerView
+    lateinit var breedAdapter: BreedAdapter
+    lateinit var breed: ArrayList<BreedDTO>
+    lateinit var BreedSearch: SearchView
 
     private lateinit var uri: Uri
 
+    // Firebase
     private lateinit var auth: FirebaseAuth
     private lateinit var storage : FirebaseStorage
+    private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
 
+    // 공유변수
     private var sharedPreferences: SharedPreferences? = null
 
     private var pet_info = PetInfo()
@@ -55,13 +68,15 @@ class DogRegister3Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityDogRegister3Binding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        BreedSearch = viewBinding.breedSearch
+        breed_recycleR = viewBinding.rvPhoneBook
 
         auth = FirebaseAuth.getInstance()
         storage = FirebaseStorage.getInstance()
 
         // 이전 액티비티에서 받은걸 pet_info 에 설정
         pet_info.pet_name = intent.getStringExtra("DogName")
-        pet_info.breed = intent.getStringExtra("Breed")
+        pet_info.born = intent.getStringExtra("Born")
         pet_info.gender = intent.getIntExtra("Gender",0)
 
         // 우측 위 건너뛰기 버튼 누르면 메인으로 넘어가기 = 뒤로가기와 동일
@@ -69,18 +84,24 @@ class DogRegister3Activity : AppCompatActivity() {
             onBackPressed()
         }
 
+        viewBinding.background.setOnClickListener {
+            breed_recycleR.visibility= View.INVISIBLE
+            BreedSearch.clearFocus()
+        }
+
         viewBinding.nextBtn.setOnClickListener {
             uploadImageToStorage()
         }
 
         viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, DogRegister2Activity::class.java)
-            startActivity(intent)
-            finish()
+            super.onBackPressed()
         }
 
-        setupAgeData()
-        setupAgeHandler()
+        BreedSearch.setOnQueryTextListener(searchViewTextListener)
+        breed = tempPersons()
+        setAdapter()
+        setupBreedData()
+
         initAddImage()
     }
 
@@ -120,62 +141,53 @@ class DogRegister3Activity : AppCompatActivity() {
         }
     }
 
-    private fun setupAgeData() {
-        val ageData = resources.getStringArray(R.array.spinner_age)
-        val ageAdapter = object : ArrayAdapter<String>(this, R.layout.breed_spinner) {
+    private fun setAdapter(){
+        //리사이클러뷰에 리사이클러뷰 어댑터 부착
+        breed_recycleR.layoutManager = LinearLayoutManager(this)
+        breedAdapter = BreedAdapter(this,breed, this)
+        breed_recycleR.adapter = breedAdapter
+    }
 
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent)
-                if (position == count) {
-                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.text = ""
-                    (v.findViewById<View>(R.id.tvBreedSpinner) as? TextView)?.hint = getItem(count)
+    private fun tempPersons(): ArrayList<BreedDTO> {
+        val breedArray: Array<String> = resources.getStringArray(R.array.spinner_breed)
+        var tempPersons = ArrayList<BreedDTO>()
+        for(i in breedArray.indices){
+            tempPersons.add(BreedDTO((breedArray[i])))
+        }
+        return tempPersons
+    }
+
+    //서치뷰 관련 인터렉션
+    private fun setupBreedData() {
+        BreedSearch.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                BreedSearch.isSelected =  hasFocus
+                BreedSearch.isIconified = !hasFocus
+                if(breed_search.isSelected) {
+                    breed_recycleR.visibility = View.VISIBLE
+                }else if(!breed_search.isSelected){
+                    breed_recycleR.visibility = View.INVISIBLE
                 }
-                return v
             }
-            override fun getCount(): Int {
-                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
-                return super.getCount() - 1
+
+        })
+    }
+
+    var searchViewTextListener: SearchView.OnQueryTextListener =
+        object : SearchView.OnQueryTextListener {
+            //검색버튼 입력시 호출, 검색버튼이 없으므로 사용하지 않음
+            override fun onQueryTextSubmit(s: String): Boolean {
+                return false
+            }
+
+            //텍스트 입력/수정시에 호출
+            override fun onQueryTextChange(s: String): Boolean {
+                breedAdapter.filter.filter(s)
+                Log.d("gd", "SearchVies Text is changed : $s")
+                return false
             }
         }
-        ageAdapter.addAll(ageData.toMutableList())
-        ageAdapter.add("출생연도를 선택해주세요.")
 
-        viewBinding.dogAgeSpinner.adapter = ageAdapter
-
-        dog_age_spinner.setSelection(ageAdapter.count)
-        dog_age_spinner.dropDownVerticalOffset = dipToPixels(90f).toInt()
-
-    }
-
-    private fun setupAgeHandler() {
-        viewBinding.dogAgeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                when (position) {
-                    0 -> {
-                        validSpinner3 = true
-                    }
-                    else -> {
-                        validSpinner3 = true
-                        Log.d("스피너3", "$validSpinner3")
-                    }
-                }
-                checkValid(validSpinner3, validImage)
-                // 출생년도 저장
-                pet_info.born = dog_age_spinner.selectedItem.toString()
-//                Log.d("BORN YEAR", "${pet_info.born}")
-            }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                validSpinner3 = false
-            }
-        }
-    }
-    private fun dipToPixels(dipValue: Float): Float {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dipValue,
-            resources.displayMetrics
-        )
-    }
 
     /*
      * 갤러리 접근 권한 획득 후 작업
@@ -250,20 +262,68 @@ class DogRegister3Activity : AppCompatActivity() {
                     // 다음버튼 활성화
 //                    initUploadImage(uri)
                     validImage = true
-                    checkValid(validSpinner3, validImage)
+                    checkValid(validSpinner, validImage)
+                    predictBreed(encodeImageToBase64(this.uri))
                 }
             }
         }
 
-    /*
-     * 업로드 버튼 클릭 이벤트 설정
-     */
-//    private fun initUploadImage(uri : Uri){
-//        viewBinding.imageUploadBtn.setOnClickListener{
-//            // 서버로 업로드
-//            uploadImageToStorage()
-//        }
-//    }
+    // 이미지 데이터를 Base64로 인코딩하는 함수
+    private fun encodeImageToBase64(imageUri: Uri): String {
+        val inputStream = contentResolver.openInputStream(imageUri)
+        val buffer = ByteArray(8192)
+        val output = ByteArrayOutputStream()
+        var bytesRead: Int
+        while (inputStream?.read(buffer).also { bytesRead = it!! } != -1) {
+            output.write(buffer, 0, bytesRead)
+        }
+        val imageBytes = output.toByteArray()
+        Log.d("encodeImageToBase64", Base64.encodeToString(imageBytes, Base64.DEFAULT))
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+    }
+
+
+    override fun onClick(value: String?) {
+        if (!breedAdapter.choose_breed.isEmpty()) {
+            BreedSearch.queryHint = breedAdapter.choose_breed
+            val editText =
+                findViewById<SearchView>(androidx.appcompat.R.id.search_src_text) as EditText
+            editText.setHintTextColor(Color.BLACK)
+            BreedSearch.clearFocus()// 포커스 초기화
+            // 견종 저장
+            pet_info.breed = breedAdapter.choose_breed
+            breed_recycleR.visibility=View.INVISIBLE
+            validSpinner = true
+            checkValid(validSpinner, validImage)
+        }
+    }
+
+    private fun predictBreed(base64uri : String){
+        val data = hashMapOf(
+            "image" to base64uri,
+        )
+
+        Log.d("predictBreed", data.toString())
+
+        functions.getHttpsCallable("sendBase64ToServer")
+            .call(data)
+            .addOnSuccessListener { task->
+                val result = task.data as? Map<*, *>
+                Log.d("인공지능 결과",result?.get("breed").toString())
+                setBreed(result?.get("breed").toString())
+            }
+            .addOnFailureListener {
+                Log.d("인공지능 결과","FAIL")
+            }
+    }
+
+    private fun setBreed(result : String){
+        breedAdapter.setBreed(result)
+        onClick(breedAdapter.choose_breed).also {
+            Log.d("setBreed", pet_info.breed.toString())
+        }
+        viewBinding.afterPredict.visibility = View.VISIBLE
+    }
 
     /*
      * 서버 스토리지로 이미지 업로드

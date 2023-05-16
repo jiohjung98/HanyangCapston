@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/background"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -119,37 +120,72 @@
         android:id="@+id/dog_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="출생연도"
+        android:text="견종"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/textLayout"
+        app:layout_constraintTop_toBottomOf="@id/img_explain"
         app:layout_constraintStart_toStartOf="@id/textLayout"
-        android:layout_marginTop="30sp" />
+        android:layout_marginTop="20sp" />
 
-    <Spinner
-        android:id="@+id/dog_age_spinner"
-        android:layout_width="0sp"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/breed_search"
+        android:layout_width="0dp"
         android:layout_height="43sp"
-        android:background="@drawable/dog_register_frame"
-        android:popupBackground="@drawable/spinner_frame"
-        android:spinnerMode="dropdown"
-        android:dropDownWidth="wrap_content"
-        android:layout_marginTop="10sp"
+        android:background="@drawable/dogbreed_search"
+        android:maxLength="10"
+        android:textSize="16sp"
+        android:textColorHint="#D5D2D2"
+        android:textColor="#FF974C"
+        android:layout_marginTop="8dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="견종을 선택해주세요."
+        android:queryBackground="@null"
+        app:searchIcon="@null"
+        android:layout_marginEnd="30sp"
+        android:outlineProvider="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dog_age"
         app:layout_constraintTop_toBottomOf="@+id/dog_age"
-        android:layout_marginEnd="30sp" />
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_phone_book"
+        android:layout_width="0dp"
+        android:layout_height="210dp"
+        android:background="@drawable/dogbreed_searchbox"
+        android:outlineProvider="none"
+        android:paddingBottom="1dp"
+        android:scrollbarFadeDuration="0"
+        android:translationZ="90dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@id/breed_search"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/breed_search"
+        app:layout_constraintBottom_toTopOf="@id/breed_search" />
+
+    <TextView
+        android:id="@+id/after_predict"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다른 견종이라면 직접 선택해주세요"
+        android:visibility="invisible"
+        android:textColor="@color/skyblue"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/breed_search"
+        app:layout_constraintStart_toStartOf="@id/textLayout"
+        android:layout_marginTop="10sp" />
 
     <TextView
         android:id="@+id/dog_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="프로필 사진을 추가해주세요."
+        android:text="강아지의 사진을 등록해주세요"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/dog_age_spinner"
+        app:layout_constraintTop_toBottomOf="@id/textLayout"
         app:layout_constraintStart_toStartOf="@id/textLayout"
         android:layout_marginTop="30sp" />
 
@@ -164,6 +200,17 @@
         app:layout_constraintStart_toStartOf="@id/dog_photo"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="30sp"/>
+    <TextView
+        android:id="@+id/img_explain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사진으로 견종을 알려드려요"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/result_img"
+        app:layout_constraintStart_toStartOf="@id/textLayout"
+        android:layout_marginTop="10sp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageArea"
