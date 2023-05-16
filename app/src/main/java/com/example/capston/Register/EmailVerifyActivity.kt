@@ -75,8 +75,7 @@ class EmailVerifyActivity : AppCompatActivity() {
         }
 
         viewBinding.backButton.setOnClickListener {
-            val intent = Intent(this, Register2Activity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
     }
 

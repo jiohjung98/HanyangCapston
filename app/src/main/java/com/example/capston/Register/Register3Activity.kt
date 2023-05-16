@@ -142,8 +142,7 @@ class Register3Activity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        startActivity(Intent(this, Register2Activity::class.java))
-        finish()
+        super.onBackPressed()
     }
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거

@@ -71,14 +71,10 @@ class Register2Activity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            onBackPressed()
+            super.onBackPressed()
         }
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, Register1Activity::class.java))
-        finish()
-    }
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
