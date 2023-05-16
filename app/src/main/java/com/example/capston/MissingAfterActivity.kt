@@ -27,9 +27,9 @@ class MissingAfterActivity : AppCompatActivity() {
         enteredBreed = intent.getStringExtra("EnteredBreed")?.trim()
 
         viewBinding.goNextBtn.setOnClickListener {
-//            val intent = Intent(this, TrackingActivity::class.java)
-//            startActivity(intent)
-//            finish()
+            val intent = Intent(this, TrackingActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
 //        Handler().postDelayed(Runnable {

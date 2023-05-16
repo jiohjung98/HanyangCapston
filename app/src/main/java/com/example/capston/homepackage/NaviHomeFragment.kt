@@ -79,7 +79,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     private lateinit var mainActivity: MainActivity
     private val auth get() = mainActivity.auth
-    private lateinit var database : DatabaseReference
+    private var database : DatabaseReference = FirebaseDatabase.getInstance().reference
+    private var witnessDB : DatabaseReference? = database.child("post").child("witness")
+    private var lostDB : DatabaseReference? = database.child("post").child("lost")
 
     // GeoFire
     private var geoFire : GeoFire? = null
@@ -93,7 +95,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         super.onAttach(context)
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
-        database = mainActivity.database
     }
 
 
@@ -129,7 +130,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         mainActivity = context as MainActivity
         geoFire = GeoFire(database.child("geofire"))
 
-        database = database.child("post").child("witness")
+
 
         return binding.root
     }
@@ -183,27 +184,45 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 아래 구현 - 쿼리로 키가 검색되면 실행됨
             override fun onKeyEntered(key: String, location: GeoLocation) {
                 // DB의 마커정보들 불러오기 ->
-                database.child(key).get().addOnSuccessListener { task ->
-                    val markerData = task.getValue(UserPost::class.java)!!
+                witnessDB!!.child(key).get().addOnSuccessListener { task ->
+                    if(task.value != null) {    // 들어온 key가 목격이 아닌 실종정보의 key일수도 있으므로
+                        val markerData = task.getValue(UserPost::class.java)!!
 
-//                    var balloonBinding= setBalloon(markerData)
-
-                    val marker = MapPOIItem().apply {
-                        markerType = MapPOIItem.MarkerType.CustomImage
-                        customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
-                        isCustomImageAutoscale = true
-                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        itemName = key
-                        mapPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
-                        isShowCalloutBalloonOnTouch = true
-                        tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
-                        userObject = markerData
+                        val marker = MapPOIItem().apply {
+                            markerType = MapPOIItem.MarkerType.CustomImage
+                            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
+                            isCustomImageAutoscale = true
+                            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                            itemName = key
+                            mapPoint =
+                                MapPoint.mapPointWithGeoCoord(location.latitude, location.longitude)
+                            isShowCalloutBalloonOnTouch = true
+                            tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+                            userObject = markerData
+                        }
+                        mapView!!.addPOIItem(marker)
+                        //                    kakaoMapView.findPOIItemByTag(key.hashCode()).customCalloutBalloon = balloonBinding.root
                     }
+                }
+                lostDB!!.child(key).get().addOnSuccessListener { task->
+                    if(task.value != null) {    // 들어온 key가 실종이 아닌 목격정보의 key일수도 있으므로
+                        Log.d("lostDB get key", task.toString())
+                        val markerData = task.getValue(UserPost::class.java)!!
 
-//                    Log.d("customCalloutBalloon",balloonView.toString())
-
-                    mapView!!.addPOIItem(marker)
-//                    kakaoMapView.findPOIItemByTag(key.hashCode()).customCalloutBalloon = balloonBinding.root
+                        val marker = MapPOIItem().apply {
+                            markerType = MapPOIItem.MarkerType.CustomImage
+                            customImageResourceId = R.drawable.marker_missing_64         // 커스텀 마커 이미지
+                            isCustomImageAutoscale = true
+                            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                            itemName = key
+                            mapPoint =
+                                MapPoint.mapPointWithGeoCoord(location.latitude, location.longitude)
+                            isShowCalloutBalloonOnTouch = true
+                            tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+                            userObject = markerData
+                        }
+                        mapView!!.addPOIItem(marker)
+                    }
                 }
             }
 
