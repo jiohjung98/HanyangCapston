@@ -544,7 +544,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      */
     private fun uploadPost() {
         val uri = pet_info.image_url!!
-        val ref = activity.database.child("post").child("lost").child(activity.auth.currentUser!!.uid).push()
+        val ref = activity.database.child("post").child("lost").push()
         ref.setValue(post).addOnSuccessListener {
             // post 고유키
             val key = ref.key
