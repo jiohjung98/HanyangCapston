@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.DogRegister.DogRegisterEndActivity
+import com.example.capston.data.PetInfo
 import com.example.capston.databinding.ActivityDogRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

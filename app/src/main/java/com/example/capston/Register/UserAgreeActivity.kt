@@ -10,7 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
 import com.example.capston.BacktoStartDialog
 import com.example.capston.R
-import com.example.capston.UserData
+import com.example.capston.data.UserData
 import com.example.capston.databinding.ActivityAgreeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

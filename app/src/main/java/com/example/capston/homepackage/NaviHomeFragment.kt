@@ -23,6 +23,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.example.capston.*
 import com.example.capston.R
+import com.example.capston.data.UserPost
 import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.CustomBalloonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding

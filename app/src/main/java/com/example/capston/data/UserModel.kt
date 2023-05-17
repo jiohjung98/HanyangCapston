@@ -1,4 +1,4 @@
-package com.example.capston
+package com.example.capston.data
 
 import com.google.gson.annotations.SerializedName
 

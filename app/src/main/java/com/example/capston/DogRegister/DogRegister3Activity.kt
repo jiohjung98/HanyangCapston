@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.activity_dog_register.*
 import kotlinx.android.synthetic.main.activity_dog_register2.*
 import java.text.SimpleDateFormat
 import android.util.Base64
+import com.example.capston.data.PetInfo
 import java.io.ByteArrayOutputStream
 import java.util.*
 

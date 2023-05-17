@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.capston.DogRegister.DogRegister1Activity
+import com.example.capston.data.PetInfo
 import com.example.capston.databinding.FragmentNaviWalkBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.auth.FirebaseAuth

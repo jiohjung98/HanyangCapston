@@ -3,6 +3,7 @@ package com.example.capston
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.capston.data.UserData
 import com.example.capston.databinding.ActivitySignupcompleteBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
