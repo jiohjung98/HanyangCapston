@@ -168,7 +168,7 @@
         android:id="@+id/after_predict"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="다른 견종이라면 직접 선택해주세요"
+        android:text="견종이 다르다면 직접 선택해주세요"
         android:visibility="invisible"
         android:textColor="@color/skyblue"
         android:textStyle="bold"

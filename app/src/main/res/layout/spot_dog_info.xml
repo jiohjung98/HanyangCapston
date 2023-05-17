@@ -62,9 +62,9 @@
             android:textSize="12sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="12sp"
+            android:layout_marginTop="0sp"
             app:layout_constraintStart_toStartOf="@+id/Dialog_title"
-            app:layout_constraintTop_toBottomOf="@+id/Dialog_title" />
+            app:layout_constraintTop_toBottomOf="@+id/lost_image_area" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/breed_input"
@@ -102,17 +102,31 @@
             app:layout_constraintEnd_toEndOf="@id/breed_input"/>
 
         <TextView
+            android:id="@+id/breed_explain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="270sp"
+            android:paddingLeft="5sp"
+            android:visibility="invisible"
+            android:text="견종이 다르다면 직접 선택해주세요"
+            android:textColor="@color/skyblue"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/breed_input"
+            app:layout_constraintTop_toBottomOf="@+id/breed_input" />
+
+        <TextView
             android:id="@+id/gender_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="3sp"
             android:layout_marginRight="270dp"
             android:text="성별"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/breed_input"
-            app:layout_constraintTop_toBottomOf="@+id/breed_input" />
+            app:layout_constraintTop_toBottomOf="@+id/breed_explain" />
 
         <Spinner
             android:id="@+id/gender_spinner"
@@ -194,7 +208,7 @@
             app:civ_border_color="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/content_input"
+            app:layout_constraintTop_toBottomOf="@+id/Dialog_title"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -221,7 +235,7 @@
             android:background="#999999"
             app:layout_constraintEnd_toEndOf="@id/layout"
             app:layout_constraintStart_toStartOf="@id/layout"
-            app:layout_constraintTop_toBottomOf="@+id/click_upload_text" />
+            app:layout_constraintTop_toBottomOf="@+id/content_input" />
 
         <View
             android:id="@+id/view2"

@@ -20,15 +20,12 @@ import com.example.capston.databinding.ActivityMissingBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
-import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_missing.*
-import kotlinx.android.synthetic.main.activity_walk.*
 import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
-import kotlin.concurrent.timer
 import kotlin.math.*
 
 
@@ -142,11 +139,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     }
 
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-        mapReverseGeoCoder.startFindingAddress()
-    }
+
 
     // 메모리 누수 방지
     override fun onDestroy() {
@@ -210,19 +203,19 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         if (!isStart || isPause) {
             return
         }
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
-
-        mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+//
+//        route.add(arrayListOf(lat, lon))
+//
+//        mapPoint = p1
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
 
         // 변환 주소 가져오기
         if (!getAddress) {
-            findAddress()
+            findAddress(p1!!)
         }
     }
 
@@ -300,6 +293,12 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
+    }
+
+    fun findAddress(p1:MapPoint) {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", p1, this, this)
+        mapReverseGeoCoder.startFindingAddress()
     }
 
     override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {

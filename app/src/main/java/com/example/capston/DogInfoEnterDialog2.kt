@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
@@ -22,13 +23,17 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.capston.data.PetInfo
+import com.example.capston.data.UserPost
 import com.example.capston.databinding.SpotDogInfoBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.core.GeoHash
+import com.google.firebase.functions.FirebaseFunctions
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,6 +69,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     private lateinit var post : UserPost
 
     private val geoFire = GeoFire(activity.database.child("geofire"))
+    private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
 
     fun initialize(){
         _dlg?.dismiss()
@@ -88,7 +94,8 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             when (result.resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     _uri = result.data?.data
-                    setImageArea(_uri)
+                    setImageArea(this.uri)
+                    predictBreed(encodeImageToBase64(this.uri))
                 }
             }
         }
@@ -399,7 +406,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
-        checkValid( validBreed, validTime,  validGender, validContent, validImage)
+        checkValid(validBreed, validTime,  validGender, validContent, validImage)
     }
 
     /*
@@ -464,6 +471,47 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 //            Log.d("GEO HASH", geoHash.toString())
             goNext(pet_info.image_url!!)
         }
+    }
+
+    // 이미지 데이터를 Base64로 인코딩하는 함수
+    private fun encodeImageToBase64(imageUri: Uri): String {
+        val inputStream = activity.contentResolver.openInputStream(imageUri)
+        val buffer = ByteArray(8192)
+        val output = ByteArrayOutputStream()
+        var bytesRead: Int
+        while (inputStream?.read(buffer).also { bytesRead = it!! } != -1) {
+            output.write(buffer, 0, bytesRead)
+        }
+        val imageBytes = output.toByteArray()
+        Log.d("encodeImageToBase64", Base64.encodeToString(imageBytes, Base64.DEFAULT))
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+    }
+
+    private fun predictBreed(base64uri : String){
+        val data = hashMapOf(
+            "image" to base64uri,
+        )
+
+        Log.d("predictBreed", data.toString())
+
+        functions.getHttpsCallable("sendBase64ToServer")
+            .call(data)
+            .addOnSuccessListener { task->
+                val result = task.data as? Map<*, *>
+                Log.d("인공지능 결과",result?.get("breed").toString())
+                setBreed(result?.get("breed").toString())
+            }
+            .addOnFailureListener {
+                Log.d("인공지능 결과","FAIL")
+            }
+    }
+
+    private fun setBreed(result : String){
+        breedAdapter.setBreed(result)
+        onClick(breedAdapter.choose_breed).also {
+            Log.d("setBreed", pet_info.breed.toString())
+        }
+        binding.breedExplain.visibility = View.VISIBLE
     }
 
     private fun goNext(uri: String){

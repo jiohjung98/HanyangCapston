@@ -23,6 +23,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.capston.data.PetInfo
+import com.example.capston.data.UserPost
 import com.example.capston.databinding.LostDogInfoBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
