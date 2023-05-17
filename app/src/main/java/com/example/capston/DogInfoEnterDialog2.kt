@@ -180,6 +180,8 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             post.category = 1 // 목격 = 1
             post.pet_info = this.pet_info
             post.content = binding.contentInput.text.toString()
+            post.address1 = activity.getAddressLocality()
+            post.address2 = activity.getAddressThoroughfare()
 
             // post 에 좌표 읽어와 설정
             setCoordinate(poiItem?.mapPoint)
@@ -230,7 +232,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     // 개 품종 불러오기
     fun loadDogList(): ArrayList<BreedDTO> {
         val breedArray: Array<String> = activity.resources.getStringArray(R.array.spinner_breed)
-        var dogList = ArrayList<BreedDTO>()
+        val dogList = ArrayList<BreedDTO>()
         dogList.add(BreedDTO(""))
         for(i in breedArray.indices){
             dogList.add(BreedDTO((breedArray[i])))

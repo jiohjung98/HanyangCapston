@@ -58,10 +58,12 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
+
     private var isStart: Boolean = false
     private var isPause: Boolean = false
     private var tapTimer: Timer? = null
     private val route = ArrayList<ArrayList<Double>>()
+
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
@@ -214,9 +216,9 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 //        p0.addPolyline(polyline)
 
         // 변환 주소 가져오기
-        if (!getAddress) {
-            findAddress(p1!!)
-        }
+//        if (!getAddress) {
+//            findAddress(p1!!)
+//        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -277,6 +279,8 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         p0!!.addPOIItem(marker)
 
         checkMessageVisibility(1)
+
+        findAddress(p1!!)
     }
 
     /*
@@ -307,12 +311,12 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         addressAdmin = address[0]
         addressLocality = address[1]
         addressThoroughfare = address[2]
-        val pref = this.getPreferences(Context.MODE_PRIVATE)
-        val edit = pref.edit()
-        edit.putString("addressAdmin", address[0])
-        edit.putString("addressLocality", address[1])
-        edit.putString("addressThoroughfare", address[2])
-        edit.apply()
+//        val pref = this.getPreferences(Context.MODE_PRIVATE)
+//        val edit = pref.edit()
+//        edit.putString("addressAdmin", address[0])
+//        edit.putString("addressLocality", address[1])
+//        edit.putString("addressThoroughfare", address[2])
+//        edit.apply()
     }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
@@ -408,5 +412,14 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         }
         dialog.show()
     }
+
+    fun getAddressLocality() : String{
+        return addressLocality
+    }
+
+    fun getAddressThoroughfare() : String{
+        return addressThoroughfare
+    }
+
 }
 

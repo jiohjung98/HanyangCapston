@@ -214,6 +214,8 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             post.category = 0
             post.pet_info = this.pet_info
             post.content = binding.contentInput.text.toString()
+            post.address1 = activity.getAddressLocality()
+            post.address2 = activity.getAddressThoroughfare()
 
             // post 에 좌표 읽어와 설정
             setCoordinate(poiItem?.mapPoint)
@@ -545,7 +547,6 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
      * 파이어베이스 db에 포스트 업로드
      */
     private fun uploadPost() {
-        val uri = pet_info.image_url!!
         val ref = activity.database.child("post").child("lost").push()
         ref.setValue(post).addOnSuccessListener {
             // post 고유키

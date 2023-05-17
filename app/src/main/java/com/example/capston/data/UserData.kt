@@ -22,6 +22,8 @@ data class UserPost(
     var content : String? = null,
     var latitude : Double? = null,
     var longitude : Double? = null,
+    var address1 : String? = null,
+    var address2 : String? = null,
     var date : String? = null,
-    var time : String? = null
+    var time : String? = null,
 )

@@ -90,7 +90,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var geoQueryListener : GeoQueryEventListener? = null
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
-    private var currentLocation: MapPoint? = null
+//    private var currentLocation: MapPoint? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
