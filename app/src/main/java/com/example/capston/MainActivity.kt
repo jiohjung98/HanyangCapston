@@ -130,18 +130,18 @@ class MainActivity : AppCompatActivity() {
                         if (kakaoMapView3 != null) {
                             kakaoMapView3.removeAllViews()
                         }
-                        item.setIcon(R.drawable.lost_color)
-                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
-                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
+                        item.setIcon(R.drawable.home_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.walk)
+                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.mypage)
                         NaviHomeFragment()
                     }
                     R.id.navigation_community -> {
                         if (kakaoMapView != null) {
                         kakaoMapView!!.removeAllViews()
                         }
-                        item.setIcon(R.drawable.paw1_color)
-                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
-                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.set)
+                        item.setIcon(R.drawable.walk_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.home)
+                        binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.mypage)
                         NaviWalkFragment()
                     }
                     else -> {
@@ -151,9 +151,9 @@ class MainActivity : AppCompatActivity() {
                         if (kakaoMapView3 != null) {
                             kakaoMapView3.removeAllViews()
                         }
-                        item.setIcon(R.drawable.set_color)
-                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.lost)
-                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.paw1)
+                        item.setIcon(R.drawable.mypage_color)
+                        binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.home)
+                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.walk)
                         NaviMypageFragment()
                     }
                 }
