@@ -167,27 +167,31 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 아래 구현 - 쿼리로 키가 검색되면 실행됨
             override fun onKeyEntered(key: String, location: GeoLocation) {
                 // DB의 마커정보들 불러오기 ->
+
                 database.child(key).get().addOnSuccessListener { task ->
-                    val markerData = task.getValue(UserPost::class.java)!!
-
-//                    var balloonBinding= setBalloon(markerData)
-
-                    val marker = MapPOIItem().apply {
-                        markerType = MapPOIItem.MarkerType.CustomImage
-                        customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
-                        isCustomImageAutoscale = true
-                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        itemName = key
-                        mapPoint = MapPoint.mapPointWithGeoCoord(location.latitude,location.longitude)
-                        isShowCalloutBalloonOnTouch = true
-                        tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
-                        userObject = markerData
+                    if (task.exists()) {
+                        val markerData = task.getValue(UserPost::class.java)!!
+                        // 데이터가 존재할 경우에만 처리
+                        val marker = MapPOIItem().apply {
+                            markerType = MapPOIItem.MarkerType.CustomImage
+                            customImageResourceId = R.drawable.marker_click           // 커스텀 마커 이미지
+                            isCustomImageAutoscale = true
+                            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                            itemName = key
+                            mapPoint =
+                                MapPoint.mapPointWithGeoCoord(location.latitude, location.longitude)
+                            isShowCalloutBalloonOnTouch = true
+                            tag = key.hashCode()  // 삭제 할때 위해 key 대한 해시 정수로 저장
+                            userObject = markerData
+                        }
+                        mapView!!.addPOIItem(marker)
                     }
-
-//                    Log.d("customCalloutBalloon",balloonView.toString())
-
-                    mapView!!.addPOIItem(marker)
-//                    kakaoMapView.findPOIItemByTag(key.hashCode()).customCalloutBalloon = balloonBinding.root
+                    else {
+                        // 데이터가 존재하지 않을 경우 처리
+                    }
+                }.addOnFailureListener { exception ->
+                    // 데이터 조회 중에 오류가 발생한 경우 처리
+                    Log.e("Firebase", "Error retrieving marker data: ${exception.message}")
                 }
             }
 

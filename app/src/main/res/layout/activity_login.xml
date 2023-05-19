@@ -14,9 +14,10 @@
 
     <ImageView
         android:id="@+id/logo_login"
-        android:layout_width="181dp"
-        android:layout_height="114dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="130sp"
+        android:layout_height="110sp"
+        android:layout_marginTop="96dp"
+        android:background="@drawable/real_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
