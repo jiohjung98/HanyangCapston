@@ -549,6 +549,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialog2.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
             dialog2.setContentView(R.layout.walk_end_dialog)
 
+            // 산책 폴리라인 받아오기
             val dialogMapViewContainer = dialog2.findViewById<FrameLayout>(R.id.polylineView)
             val dialogMapView = MapView(this)
             dialogMapViewContainer.addView(dialogMapView)
@@ -563,24 +564,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
             dialogMapView.addPolyline(dialogPolyline)
 
-//            // 다이얼로그 내부 뷰 초기화
-//            val polylineView = dialog.findViewById<ImageView>(R.id.polylineView)
-//
-//            // 경로를 polylineView에 표시하는 작업
-//            val pathOptions = PolylineOverlayOptions().apply {
-//                color(Color.BLUE) // 경로 색상 설정
-//                width(10) // 경로 선 두께 설정
-//            }
-//
-//// 경로 정보를 polylineView에 표시
-//            val polyline = PolylineOverlay()
-//            route.forEach { coordinates ->
-//                val latitude = coordinates[0]
-//                val longitude = coordinates[1]
-//                polyline.addPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude))
-//            }
-//            polylineView.addOverlay(polyline, pathOptions)
-
+            // 다이얼로그 크기 조정
             val params: WindowManager.LayoutParams = dialog2.window!!.attributes
             params?.width = WindowManager.LayoutParams.MATCH_PARENT
             params?.y = 500
@@ -609,6 +593,9 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
 //                액티비티로 이동(첫화면)
             Handler(Looper.getMainLooper()).postDelayed({
+                // 다이얼로그 카카오맵뷰 제거
+                dialogMapViewContainer.removeAllViews()
+
                 val intent = Intent(this, MainActivity::class.java)
                 this.startActivity(intent)
                 (this as Activity).finish()
