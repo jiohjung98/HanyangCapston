@@ -123,8 +123,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        mapView!!.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
-
 
         // 좌측 뒤로가기 버튼
         binding.backBtn.setOnClickListener {
@@ -370,22 +368,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             mapPoint: MapPoint?
         ) {
             // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
-        }
-    }
-
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            return mCalloutBalloon
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-//            address.text = "getPressedCalloutBalloon"
-            return mCalloutBalloon
         }
     }
 

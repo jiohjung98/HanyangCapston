@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
 import com.example.capston.databinding.CustomBalloonLayoutBinding
+import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
@@ -99,7 +100,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-        mapView!!.setCalloutBalloonAdapter(MissingActivity.CustomBalloonAdapter(layoutInflater))
     }
 
 
@@ -126,30 +126,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-    // 위치 권한 설정 확인 함수
-//    private fun isSetLocationPermission() {
-//        if (ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED &&
-//            ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            requestPermission()
-//        }
-//    }
-//
-//    // 위치 권한 설정
-//    private fun requestPermission() {
-//        ActivityCompat.requestPermissions(
-//            this,
-//            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-//            RequestPermissionCode
-//        )
-//        this.recreate()
-//    }
 
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
     }
@@ -290,12 +266,12 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val time = snapshot.child("time").getValue(String::class.java)
 
         // set text
-//        val view = CustomBalloonLayoutBinding.inflate(layoutInflater)
-        val view = layoutInflater.inflate(R.layout.custom_balloon_layout,null)
-        view.name_text.text = "알수없음"
-        view.time_text.text = date+ " " + time
-        view.breed_text.text = snapshot.child("pet_info").child("breed").getValue(String::class.java)
-        Log.d("MAKE MAKER", view.width.toString())
+        val view = CustomBalloonLayoutBinding.inflate(layoutInflater)
+//        val view: View = layoutInflater.inflate(R.layout.custom_balloon_layout, null)
+        view.nameText.text = "알수없음"
+        view.timeText.text = date+ " " + time
+        view.breedText.text = snapshot.child("pet_info").child("breed").getValue(String::class.java)
+        Log.d("MAKE MAKER", view.toString())
 
 
         // set image
@@ -311,15 +287,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                 val bitmap = BitmapFactory.decodeStream(connection.inputStream)
                 // UI 스레드에서 이미지를 설정합니다.
                 withContext(Dispatchers.Main) {
-                    view.enter_image.setImageBitmap(bitmap)
+                    view.enterImage.setImageBitmap(bitmap)
                     // 마커생성
-                    makeMarker(snapshot,view)
+                    makeMarker(snapshot,view.root)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-
     }
     
     
@@ -337,8 +312,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             isCustomImageAutoscale = true
             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
             itemName = snapshot.key
-            mapPoint =
-                MapPoint.mapPointWithGeoCoord(lat, lon)
+            mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
             isShowCalloutBalloonOnTouch = true
             customCalloutBalloon = view
 //            Log.d("MAKE MAKER", customCalloutBalloon.width.toString())
