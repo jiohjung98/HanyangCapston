@@ -12,67 +12,98 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/topView"
+                app:layout_constraintBottom_toBottomOf="@+id/topView"
+                android:layout_marginEnd="10sp"
+                android:checkedButton="@+id/radio_button_missing" >
+
+                <RadioButton
+                    android:id="@+id/radio_button_missing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="실종"
+                    android:theme="@style/CustomRadioButton"
+                    android:layout_marginEnd="10dp"
+                    />
+
+                <RadioButton
+                    android:id="@+id/radio_button_spot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="목격"
+                    android:theme="@style/CustomRadioButton"
+                    android:layout_marginEnd="10dp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/back_btn"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_marginLeft="20sp"
+                app:layout_constraintTop_toTopOf="@+id/topView"
+                app:layout_constraintBottom_toBottomOf="@+id/topView"
+                app:layout_constraintStart_toStartOf="@+id/topView" >
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/back_button"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:background="@drawable/back_btn"
+                    android:layout_gravity="center"
+                    app:layout_constraintTop_toTopOf="@+id/text1"
+                    app:layout_constraintBottom_toBottomOf="@+id/text1"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+<!--                <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                    android:id="@+id/back_btnn"-->
+<!--                    android:layout_width="30sp"-->
+<!--                    android:layout_height="30sp"-->
+<!--                    android:background="@drawable/circle"-->
+<!--                    app:civ_border_overlay="false"-->
+<!--                    app:civ_border_width="1sp"-->
+<!--                    app:civ_border_color="#FF974C"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:src="@drawable/backk" />-->
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topView"
+            app:layout_constraintBottom_toTopOf="@+id/kakaoMapView4"
+            android:background="@color/main" />
+
         <RelativeLayout
             android:id="@+id/kakaoMapView4"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topView"
             app:layout_constraintBottom_toBottomOf="parent"
             android:orientation="horizontal" />
-
-        <RadioGroup
-            android:id="@+id/radio_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/back_btn"
-            app:layout_constraintBottom_toBottomOf="@+id/back_btn"
-            android:layout_marginEnd="10sp"
-            android:checkedButton="@+id/radio_button_missing" >
-
-            <RadioButton
-                android:id="@+id/radio_button_missing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="실종"
-                android:theme="@style/CustomRadioButton"
-                android:layout_marginEnd="10dp"
-                />
-
-            <RadioButton
-                android:id="@+id/radio_button_spot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="목격"
-                android:theme="@style/CustomRadioButton"
-                android:layout_marginEnd="10dp" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/back_btn"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"
-            android:layout_marginTop="15sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" >
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/back_btnn"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
-                android:background="@drawable/circle"
-                app:civ_border_overlay="false"
-                app:civ_border_width="1sp"
-                app:civ_border_color="#FF974C"
-                android:layout_gravity="center"
-                android:src="@drawable/backk" />
-        </LinearLayout>
 
 <!--        <Button-->
 <!--            android:id="@+id/back_btn"-->
