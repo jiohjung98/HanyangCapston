@@ -53,8 +53,8 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="60sp"
-            android:layout_height="60sp"
-            android:background="@drawable/logogo"
+            android:layout_height="50sp"
+            android:background="@drawable/real_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></ImageView>
 

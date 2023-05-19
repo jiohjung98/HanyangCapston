@@ -35,7 +35,7 @@
                 android:layout_width="30dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="24dp"
-                android:src="@drawable/logogo" />
+                android:src="@drawable/real_logo" />
 
             <TextView
                 android:id="@+id/toolBarTitle"

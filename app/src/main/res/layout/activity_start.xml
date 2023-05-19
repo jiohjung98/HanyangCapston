@@ -35,11 +35,11 @@
         <ImageView
             android:id="@+id/logo"
             android:layout_width="150sp"
-            android:layout_height="140sp"
+            android:layout_height="125sp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="50dp"
-            android:background="@drawable/logogo"
+            android:background="@drawable/real_logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />

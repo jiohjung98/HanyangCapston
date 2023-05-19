@@ -28,8 +28,8 @@
         <View
             android:id="@+id/logo"
             android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:background="@drawable/logogo"
+            android:layout_height="60sp"
+            android:background="@drawable/real_logo"
             android:layout_marginBottom="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

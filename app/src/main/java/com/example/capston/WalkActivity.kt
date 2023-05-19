@@ -599,7 +599,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 val intent = Intent(this, MainActivity::class.java)
                 this.startActivity(intent)
                 (this as Activity).finish()
-            }, 3000)
+            }, 4000)
 
             dialog.dismiss()
         }
