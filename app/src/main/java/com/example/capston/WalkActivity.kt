@@ -170,7 +170,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         mapView!!.setCurrentLocationEventListener(this)
         polyline = MapPolyline()
         polyline!!.tag = 1000
-        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+        polyline!!.lineColor = Color.argb(255, 221, 135, 69)
     }
 
     // 일시 정지
@@ -555,7 +555,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialogMapViewContainer.addView(dialogMapView)
 
             val dialogPolyline = MapPolyline()
-            dialogPolyline.lineColor = Color.RED
+            dialogPolyline.lineColor = Color.argb(255, 221, 135, 69)
             dialogPolyline.tag = 1000
 
             // 폴리라인 좌표 가져오기
