@@ -3,6 +3,7 @@ package com.example.capston
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -15,6 +16,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -536,6 +539,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
 
         btnOk.setOnClickListener {
+            // 아래 removeAllViews() 안넣어주면 튕김
+            kakaoMapView2.removeAllViews()
             val dialog2 = Dialog(this)
             // 다이얼로그 테두리 둥글게 만들기
             dialog2?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -543,6 +548,38 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
             dialog2.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
             dialog2.setContentView(R.layout.walk_end_dialog)
+
+            val dialogMapViewContainer = dialog2.findViewById<FrameLayout>(R.id.polylineView)
+            val dialogMapView = MapView(this)
+            dialogMapViewContainer.addView(dialogMapView)
+
+            val dialogPolyline = MapPolyline()
+            dialogPolyline.lineColor = Color.RED
+            dialogPolyline.tag = 1000
+
+            // 폴리라인 좌표 가져오기
+            val polylinePoints = polyline?.mapPoints
+            dialogPolyline.addPoints(polylinePoints)
+
+            dialogMapView.addPolyline(dialogPolyline)
+
+//            // 다이얼로그 내부 뷰 초기화
+//            val polylineView = dialog.findViewById<ImageView>(R.id.polylineView)
+//
+//            // 경로를 polylineView에 표시하는 작업
+//            val pathOptions = PolylineOverlayOptions().apply {
+//                color(Color.BLUE) // 경로 색상 설정
+//                width(10) // 경로 선 두께 설정
+//            }
+//
+//// 경로 정보를 polylineView에 표시
+//            val polyline = PolylineOverlay()
+//            route.forEach { coordinates ->
+//                val latitude = coordinates[0]
+//                val longitude = coordinates[1]
+//                polyline.addPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude))
+//            }
+//            polylineView.addOverlay(polyline, pathOptions)
 
             val params: WindowManager.LayoutParams = dialog2.window!!.attributes
             params?.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -573,8 +610,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 //                액티비티로 이동(첫화면)
             Handler(Looper.getMainLooper()).postDelayed({
                 val intent = Intent(this, MainActivity::class.java)
-                // 아래 removeAllViews() 안넣어주면 튕김
-                kakaoMapView2.removeAllViews()
                 this.startActivity(intent)
                 (this as Activity).finish()
             }, 3000)
@@ -594,4 +629,5 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
         dialog.show()
     }
+
 }
