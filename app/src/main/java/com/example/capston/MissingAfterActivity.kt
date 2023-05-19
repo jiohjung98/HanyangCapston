@@ -18,16 +18,21 @@ class MissingAfterActivity : AppCompatActivity() {
     private var enteredBreed : String? = null
     private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
 
+    private var breed : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMissingAfterBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+        breed = intent.getStringExtra("breed")
 
         imageUrl = intent.getStringExtra("url")
         enteredBreed = intent.getStringExtra("EnteredBreed")?.trim()
 
         viewBinding.goNextBtn.setOnClickListener {
             val intent = Intent(this, TrackingActivity::class.java)
+            intent.putExtra("breed",breed)
             startActivity(intent)
             finish()
         }
@@ -63,11 +68,15 @@ class MissingAfterActivity : AppCompatActivity() {
             }
     }
 
+    // 인공지능 결과와 입력한 견종이 같은지 확인
     private fun checkEqual(result : String){
+        val intent = Intent(this, TrackingActivity::class.java)
+        intent.putExtra("breed",breed)
+        startActivity(intent)
+        finish()
+
         if(enteredBreed.equals(result.trim()) == true){
-            val intent = Intent(this, TrackingActivity::class.java)
-            startActivity(intent)
-            finish()
+
         }
         else{
 

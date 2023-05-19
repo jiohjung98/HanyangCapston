@@ -2,12 +2,10 @@ package com.example.capston
 
 import android.Manifest
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,12 +13,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
-import com.example.capston.databinding.ActivityLoginBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
-import kotlinx.android.synthetic.main.activity_missing.*
+import com.example.capston.databinding.CustomBalloonLayoutBinding
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_tracking.*
+import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.daum.mf.map.api.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import kotlin.math.*
 
@@ -33,12 +39,17 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
 
+    //firebase
+    private var database : DatabaseReference = FirebaseDatabase.getInstance().reference
+
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
     private val RequestPermissionCode = 1
     private var isStart: Boolean = false
     private var isPause: Boolean = false
+
     private var tapTimer: Timer? = null
     private val route = ArrayList<ArrayList<Double>>()
+
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
@@ -46,10 +57,16 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     private lateinit var binding: ActivityTrackingBinding
 
+    private var breed : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        breed = intent.getStringExtra("breed")!!.trim()
+
+        listen = MarkerEventListener(this)
 
         binding.backButton.setOnClickListener {
             goToMain()
@@ -63,7 +80,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         mapView!!.setPOIItemEventListener(listen)
 
-        isSetLocationPermission()
+//        isSetLocationPermission()
         mapView!!.setMapViewEventListener(this)
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
@@ -85,11 +102,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         mapView!!.setCalloutBalloonAdapter(MissingActivity.CustomBalloonAdapter(layoutInflater))
     }
 
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-        mapReverseGeoCoder.startFindingAddress()
-    }
+
 
     // 메모리 누수 방지
     override fun onDestroy() {
@@ -114,47 +127,47 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     }
 
     // 위치 권한 설정 확인 함수
-    private fun isSetLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermission()
-        }
-    }
-
-    // 위치 권한 설정
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            RequestPermissionCode
-        )
-        this.recreate()
-    }
+//    private fun isSetLocationPermission() {
+//        if (ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED &&
+//            ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            requestPermission()
+//        }
+//    }
+//
+//    // 위치 권한 설정
+//    private fun requestPermission() {
+//        ActivityCompat.requestPermissions(
+//            this,
+//            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//            RequestPermissionCode
+//        )
+//        this.recreate()
+//    }
 
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
-
-        mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1!!.mapPointGeoCoord.longitude
+//
+//        route.add(arrayListOf(lat, lon))
+//
+//        mapPoint = p1
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
 
         // 변환 주소 가져오기
         if (!getAddress) {
-            findAddress()
+            findAddress(p1!!)
         }
     }
 
@@ -216,6 +229,12 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 //        p0!!.addPOIItem(marker)
     }
 
+    fun findAddress(p1: MapPoint) {
+        val mapReverseGeoCoder =
+            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", p1, this, this)
+        mapReverseGeoCoder.startFindingAddress()
+    }
+
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
     }
 
@@ -225,12 +244,108 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         addressAdmin = address[0]
         addressLocality = address[1]
         addressThoroughfare = address[2]
-        val pref = this.getPreferences(Context.MODE_PRIVATE)
-        val edit = pref.edit()
-        edit.putString("addressAdmin", address[0])
-        edit.putString("addressLocality", address[1])
-        edit.putString("addressThoroughfare", address[2])
-        edit.apply()
+//        val pref = this.getPreferences(Context.MODE_PRIVATE)
+//        val edit = pref.edit()
+//        edit.putString("addressAdmin", address[0])
+//        edit.putString("addressLocality", address[1])
+//        edit.putString("addressThoroughfare", address[2])
+//        edit.apply()
+        queryMarkers()
+    }
+
+    /*
+     주소 동일한 witness post 가져오기
+     */
+    private fun queryMarkers(){
+        //witness 중 주소(구) 동일한 post 가져오기
+        database.child("post").child("witness").orderByChild("address2")
+            .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object:ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                //snapshot : 퀴리결과모두
+                //childSnapshot : 결과 중 한개
+                for(childSnapshot in snapshot.children){
+                    // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
+                    // 견종이 동일한 데이터
+//                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
+                    if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)){
+                        // 좌표값 전달
+                        Log.d("queryMarker", breed!!)
+                        setBalloon(childSnapshot)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    /*
+     말풍선에 표시할 정보 세팅
+     */
+    private fun setBalloon(snapshot: DataSnapshot){
+
+        val imageUrl = snapshot.child("pet_info").child("image_url").getValue(String::class.java)!!
+        val date = snapshot.child("date").getValue(String::class.java)
+        val time = snapshot.child("time").getValue(String::class.java)
+
+        // set text
+//        val view = CustomBalloonLayoutBinding.inflate(layoutInflater)
+        val view = layoutInflater.inflate(R.layout.custom_balloon_layout,null)
+        view.name_text.text = "알수없음"
+        view.time_text.text = date+ " " + time
+        view.breed_text.text = snapshot.child("pet_info").child("breed").getValue(String::class.java)
+        Log.d("MAKE MAKER", view.width.toString())
+
+
+        // set image
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val url = URL(imageUrl)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                withContext(Dispatchers.IO) {
+                    connection.connect()
+                }
+                // 백그라운드 스레드에서 비트맵을 디코딩합니다.
+                val bitmap = BitmapFactory.decodeStream(connection.inputStream)
+                // UI 스레드에서 이미지를 설정합니다.
+                withContext(Dispatchers.Main) {
+                    view.enter_image.setImageBitmap(bitmap)
+                    // 마커생성
+                    makeMarker(snapshot,view)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    }
+    
+    
+    /*
+     지도에 마커 생성하기
+     생성시 해당 마커의 말풍선도 설정함
+     */
+    private fun makeMarker(snapshot:DataSnapshot, view: View){
+        val lat = snapshot.child("latitude").getValue(Double::class.java)!!
+        val lon = snapshot.child("longitude").getValue(Double::class.java)!!
+
+        val marker = MapPOIItem().apply {
+            markerType = MapPOIItem.MarkerType.CustomImage
+            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
+            isCustomImageAutoscale = true
+            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            itemName = snapshot.key
+            mapPoint =
+                MapPoint.mapPointWithGeoCoord(lat, lon)
+            isShowCalloutBalloonOnTouch = true
+            customCalloutBalloon = view
+//            Log.d("MAKE MAKER", customCalloutBalloon.width.toString())
+
+//            userObject = markerData
+        }
+        mapView!!.addPOIItem(marker)
     }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
@@ -252,7 +367,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
 
     // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(var context: MissingActivity, val lostDialog: DogInfoEnterDialog, val spotDialog : DogInfoEnterDialog2): MapView.POIItemEventListener {
+    class MarkerEventListener(var context: AppCompatActivity): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
 
         }

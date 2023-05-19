@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/balloon_bubble_bg"
     android:id="@+id/ball_view"
-    android:layout_width="300sp"
-    android:layout_height="100sp"
-    android:layout_margin="4px"
-    app:cardCornerRadius="8px">
+    android:layout_width="300dp"
+    android:layout_height="100dp"
+    >
 
     <LinearLayout
+        android:id="@+id/card"
         android:layout_width="300sp"
         android:layout_height="100sp"
         android:layout_gravity="center"
@@ -106,4 +107,4 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</androidx.appcompat.widget.LinearLayoutCompat>

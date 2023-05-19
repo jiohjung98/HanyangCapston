@@ -30,6 +30,7 @@ import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.core.GeoHash
 import com.google.firebase.functions.FirebaseFunctions
+import kotlinx.android.synthetic.main.activity_missing.*
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -518,8 +519,10 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
     private fun goNext(uri: String){
         _dlg?.dismiss()
-        activity.kakaoMapViewContainer?.removeAllViews()
-        val intent = Intent(activity, MissingAfterActivity::class.java)
+        activity.kakaoMapView4.removeAllViews()
+//        val intent = Intent(activity, MissingAfterActivity::class.java)
+        // 임시 이동 - 고치기
+        val intent = Intent(activity, MainActivity::class.java)
         intent.putExtra("url",uri)
         intent.putExtra("EnteredBreed", pet_info.breed)
         activity.startActivity(intent)

@@ -113,6 +113,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         binding.lostBtn.setOnClickListener {
             val intent = Intent(context, MissingActivity::class.java)
+            mapView?.removeAllPOIItems()
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
         }
@@ -130,8 +131,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
         geoFire = GeoFire(database.child("geofire"))
-
-
 
         return binding.root
     }
@@ -410,9 +409,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
         setMarker(p0)
     }
-
-
-
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
     private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
