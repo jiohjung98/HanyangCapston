@@ -49,7 +49,7 @@
                 android:background="@drawable/balloon_bubble_in"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="5dp"
+                android:padding="5sp"
                 android:weightSum="2"
                 app:layout_constraintStart_toStartOf="@id/parent"
                 app:layout_constraintTop_toBottomOf="@id/ball_tv_name1">
@@ -86,7 +86,8 @@
                         android:layout_marginLeft="3sp"
                         android:layout_marginTop="5sp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/time_text"
                         android:layout_width="match_parent"
@@ -94,16 +95,18 @@
                         android:layout_marginLeft="3sp"
                         android:layout_marginTop="5sp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/content_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3sp"
-                        android:layout_marginTop="5sp"
+                        android:layout_marginTop="8sp"
+                        android:textStyle="bold"
                         android:text="상세내용을 보려면 클릭해주세요"
-                        android:textColor="@color/main"
-                        android:textSize="12sp" />
+                        android:textColor="@color/skyblue"
+                        android:textSize="13sp" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
