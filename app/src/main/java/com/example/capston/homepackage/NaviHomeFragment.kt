@@ -94,6 +94,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
     private var initCurLocUpdate: Boolean = false
+    private var firstMoveFinished : Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -558,5 +559,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+        Log.d("onMapViewMoveFinished","CALL")
+        if(!firstMoveFinished){
+            setMarker(p0)
+            firstMoveFinished = true
+        }
     }
 }
