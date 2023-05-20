@@ -62,14 +62,15 @@
             android:text="" />
 
       <ImageView
-          android:id="@+id/thumbnailImageView"
+          android:id="@+id/lost_image_view"
           android:layout_width="70dp"
           android:layout_height="70dp"
           android:background="@drawable/home_mainimage"
-              app:layout_constraintTop_toTopOf="@+id/lost_name"
-              app:layout_constraintBottom_toBottomOf="@id/lost_breed"
-              app:layout_constraintEnd_toEndOf="parent"
-              android:layout_marginEnd="10dp" />
+          app:layout_constraintTop_toTopOf="@+id/lost_name"
+          app:layout_constraintBottom_toBottomOf="@id/lost_breed"
+          app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginEnd="10dp"
+          android:scaleType="centerCrop"/>
 
         <View
             android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.example.capston
 
+import MarkerAdapter
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
@@ -14,10 +15,14 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
+import com.example.capston.databinding.LayoutCommunityRcViewItemBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import kotlinx.coroutines.CoroutineScope
@@ -59,10 +64,47 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     private var breed : String? = null
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var markerList: MutableList<MarkerData>
+    private lateinit var markerAdapter: MarkerAdapter
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val bottomSheetView = findViewById<View>(R.id.bottomSheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
+
+        // 리사이클러뷰 초기화
+        recyclerView = findViewById(R.id.dogList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        markerList = mutableListOf()
+        markerAdapter = MarkerAdapter(markerList)
+        recyclerView.adapter = markerAdapter
+
+        // 바텀시트 상태 변경 콜백 메소드 예시 (onStateChanged 또는 onSlide 등)
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    // 바텀시트가 전체 화면으로 확장된 상태일 때
+
+                    // 바텀시트의 리사이클러뷰 요소 찾기
+                    val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
+
+                    // 마커 데이터 설정
+                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
+                    recyclerView.adapter = MarkerAdapter(markerList)
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // 바텀시트 슬라이드 시 호출됩니다.
+            }
+        })
+
 
         breed = intent.getStringExtra("breed")!!.trim()
 
@@ -242,12 +284,28 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                         // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
                         // 견종이 동일한 데이터
 //                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
-                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)){
+                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)) {
                             // 좌표값 전달
                             Log.d("queryMarker", breed!!)
                             setBalloon(childSnapshot)
+                            // 마커 데이터 생성
+                            val date = childSnapshot.child("date").getValue(String::class.java)
+                            val time = snapshot.child("time").getValue(String::class.java)
+                            val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
+                            val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
+
+
+                            if (date != null && breed != null && imageUrl != null) {
+                                val markerData = MarkerData(
+                                    time = date,
+                                    breed = breed,
+                                    imageUrl = imageUrl
+                                )
+                                markerList.add(markerData)
+                            }
                         }
                     }
+
                 }
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
