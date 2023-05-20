@@ -93,6 +93,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
+    private var initCurLocUpdate: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -331,6 +332,17 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 
+        if(!initCurLocUpdate) {
+            initCurLocUpdate = true
+            mainActivity.getWeather()
+            mainActivity.getAirQuality()
+        } else{
+            if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+                p0!!.currentLocationTrackingMode =
+                    MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+            }
+        }
+
         currentLocation = p1
 
 //        if (!isStart || isPause) {
@@ -351,12 +363,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (!getAddress) {
             findAddress(p1)
         }
-
-        if (mainActivity.getisGetWeather() == false)
-            mainActivity.getWeather()
-
-        if (mainActivity.getisGetAir() == false)
-            mainActivity.getAirQuality()
     }
 
     private fun setMarker(p0: MapView?){
@@ -552,6 +558,5 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
-
     }
 }
