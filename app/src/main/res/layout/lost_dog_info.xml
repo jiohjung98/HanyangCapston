@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="이름"
             app:layout_constraintStart_toStartOf="@+id/Dialog_title"
-            app:layout_constraintTop_toBottomOf="@+id/Dialog_title"
+            app:layout_constraintTop_toBottomOf="@+id/lost_image_area"
             android:textSize="12sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -256,7 +256,7 @@
             app:civ_border_color="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/content_input"
+            app:layout_constraintTop_toBottomOf="@+id/Dialog_title"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -280,7 +280,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#999999"
-            app:layout_constraintTop_toBottomOf="@+id/click_upload_text"
+            app:layout_constraintTop_toBottomOf="@+id/content_input"
             app:layout_constraintStart_toStartOf="@id/layout"
             app:layout_constraintEnd_toEndOf="@id/layout"
             android:layout_marginTop="20dp"/>
