@@ -30,7 +30,7 @@ class MarkerAdapter(private val markerList: List<MarkerData>) : RecyclerView.Ada
         // 이미지 로드
         Glide.with(holder.itemView)
             .load(imageUrl)
-            .placeholder(R.drawable.circle5) // 로딩 중일 때 플레이스홀더 이미지
+            .placeholder(R.drawable.loading) // 로딩 중일 때 플레이스홀더 이미지
             .into(holder.lostImageView)
     }
 
@@ -45,4 +45,4 @@ class MarkerAdapter(private val markerList: List<MarkerData>) : RecyclerView.Ada
         val lostBreedText: TextView = itemView.findViewById(R.id.lost_breed_text)
         val lostImageView: ImageView = itemView.findViewById(R.id.lost_image_view)
     }
-} 
+}

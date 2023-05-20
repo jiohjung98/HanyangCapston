@@ -28,8 +28,6 @@ import net.daum.mf.map.api.MapView
 import java.util.*
 import kotlin.math.*
 
-
-
 /*
  * 메인화면, 첫번째 메뉴, 지도
  */
@@ -139,8 +137,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     }
 
-
-
     // 메모리 누수 방지
     override fun onDestroy() {
         super.onDestroy()
@@ -154,7 +150,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         if (mapView != null) {
             mapView!!.onResume()
         }
-//        this._binding = null
     }
 
     override fun onPause() {
@@ -166,8 +161,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
 
     override fun onBackPressed() {
         goToMain()
-//        val backDialog = BacktoMainDialog(this)
-//        backDialog.show()
     }
 
     // 위치 권한 설정 확인 함수
@@ -203,20 +196,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         if (!isStart || isPause) {
             return
         }
-//        val lat = p1!!.mapPointGeoCoord.latitude
-//        val lon = p1!!.mapPointGeoCoord.longitude
-//
-//        route.add(arrayListOf(lat, lon))
-//
-//        mapPoint = p1
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
-
-        // 변환 주소 가져오기
-//        if (!getAddress) {
-//            findAddress(p1!!)
-//        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -258,26 +237,8 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-
-        // 커스텀 이미지 마커
-        val marker = MapPOIItem().apply {
-            markerType = MapPOIItem.MarkerType.CustomImage
-            customImageResourceId = R.drawable.marker_nonclick           // 커스텀 마커 이미지
-//            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양 (커스텀)
-//            customSelectedImageResourceId = R.drawable.marker_click    // 클릭 시 커스텀 마커 이미지
-            isCustomImageAutoscale = true
-            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-            itemName = "실종견"
-            mapPoint = p1
-            isShowCalloutBalloonOnTouch = false
-            tag = 0
-        }
-
-        p0?.removePOIItems(p0.poiItems)
-        p0!!.addPOIItem(marker)
-
+        createMarker(p0, p1)
         checkMessageVisibility(1)
-
         findAddress(p1!!)
     }
 
@@ -337,6 +298,25 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     // 실종/목격 플래그 반환
     fun getFlag() : Int {
         return this.flag
+    }
+
+    private fun createMarker(p0: MapView?, p1: MapPoint?) {
+        // 커스텀 이미지 마커
+        val marker = MapPOIItem().apply {
+            markerType = MapPOIItem.MarkerType.CustomImage
+            customImageResourceId = R.drawable.marker_nonclick           // 커스텀 마커 이미지
+//            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양 (커스텀)
+//            customSelectedImageResourceId = R.drawable.marker_click    // 클릭 시 커스텀 마커 이미지
+            isCustomImageAutoscale = true
+            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            itemName = "실종견"
+            mapPoint = p1
+            isShowCalloutBalloonOnTouch = false
+            tag = 0
+        }
+
+        p0?.removePOIItems(p0.poiItems)
+        p0!!.addPOIItem(marker)
     }
 
 
