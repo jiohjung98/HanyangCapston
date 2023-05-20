@@ -314,6 +314,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
             isShowCalloutBalloonOnTouch = true
             customCalloutBalloon = view
+            tag = (snapshot.key).hashCode()
 //            Log.d("MAKE MAKER", customCalloutBalloon.width.toString())
 
 //            userObject = markerData
