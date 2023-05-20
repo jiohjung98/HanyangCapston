@@ -379,6 +379,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         mapView!!.addPOIItem(marker)
     }
 
+
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
     private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val r = 6372.8;

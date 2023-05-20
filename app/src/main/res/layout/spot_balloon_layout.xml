@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ball_view"
-    android:layout_width="320sp"
-    android:layout_height="120sp"
+    android:layout_width="300sp"
+    android:layout_height="100sp"
     android:layout_margin="4px"
     app:cardCornerRadius="8px">
 
     <LinearLayout
-        android:layout_width="320sp"
-        android:layout_height="120sp"
+        android:layout_width="300sp"
+        android:layout_height="100sp"
         android:layout_gravity="center"
         android:background="@drawable/balloon_bubble_bg2"
         android:elevation="20dp"
@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             />
 
@@ -55,6 +55,7 @@
                     android:id="@+id/enter_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="4sp"
                     />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -64,8 +65,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10sp"
                 android:layout_marginRight="10sp"
-                android:layout_marginTop="5sp"
-                android:layout_marginBottom="5sp"
+                android:layout_marginTop="3sp"
+                android:layout_marginBottom="3sp"
                 android:background="#999999" />
 
             <androidx.appcompat.widget.LinearLayoutCompat

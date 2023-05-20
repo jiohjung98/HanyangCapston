@@ -6,9 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import com.bumptech.glide.request.target.Target
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -16,15 +13,9 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.example.capston.*
 import com.example.capston.R
 import com.example.capston.data.UserPost
-import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
 import com.firebase.geofire.GeoFire
@@ -37,15 +28,8 @@ import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.ballon_layout.view.*
-import kotlinx.android.synthetic.main.lost_balloon_layout.view.*
-import kotlinx.android.synthetic.main.fragment_navi_home.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.*
-import kotlin.coroutines.resumeWithException
 import kotlin.math.*
 
 
@@ -187,7 +171,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_spot_yellow_64        // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
@@ -208,7 +192,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_missing_64         // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_missing_orange_64         // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
