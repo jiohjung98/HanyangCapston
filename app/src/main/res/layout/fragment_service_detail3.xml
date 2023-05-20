@@ -29,9 +29,9 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_button"
-        android:layout_width="8.5dp"
-        android:layout_height="16.5dp"
-        android:background="@drawable/backbtn"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:background="@drawable/back_btn"
         app:layout_constraintTop_toTopOf="@+id/text1"
         app:layout_constraintBottom_toBottomOf="@+id/text1"
         app:layout_constraintStart_toStartOf="parent"

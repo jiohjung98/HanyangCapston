@@ -43,6 +43,13 @@
                 app:civ_border_color="#FF974C"
                 android:layout_gravity="center"
                 android:src="@drawable/backk" />
+
+            <FrameLayout
+                android:id="@+id/balloonContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

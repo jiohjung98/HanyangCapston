@@ -25,8 +25,8 @@ import com.example.capston.*
 import com.example.capston.R
 import com.example.capston.data.UserPost
 import com.example.capston.databinding.BallonLayoutBinding
-import com.example.capston.databinding.CustomBalloonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
+import com.example.capston.databinding.LostBalloonLayoutBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQuery
@@ -38,7 +38,7 @@ import net.daum.mf.map.api.MapView
 import java.util.*
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.ballon_layout.view.*
-import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
+import kotlinx.android.synthetic.main.lost_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -430,7 +430,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
 
-        private var viewBinding = CustomBalloonLayoutBinding.inflate(inflater)
+        private var viewBinding = LostBalloonLayoutBinding.inflate(inflater)
 
         // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {

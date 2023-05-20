@@ -10,7 +10,7 @@
         android:id="@+id/frame"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="500sp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/dialog_frame"
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="산책을 완료했습니다!"
-            android:textColor="#FF974C"
+            android:textColor="@color/main"
             android:fontFamily="@font/dungeon"
             android:textSize="22sp"
             app:layout_constraintStart_toStartOf="@+id/frame"
@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="산책 시간"
+            android:textStyle="bold"
             android:textColor="@color/google_login"
             app:layout_constraintTop_toBottomOf="@+id/text"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="" />
 
             <TextView
@@ -74,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text=" : "
                 />
 
@@ -82,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="" />
 
             <TextView
@@ -89,6 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text=" : " />
 
             <TextView
@@ -96,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="" />
         </LinearLayout>
 
@@ -105,6 +111,7 @@
             android:layout_height="wrap_content"
             android:text="이동 거리"
             android:textColor="@color/google_login"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/walk_result_dvide"
             app:layout_constraintTop_toBottomOf="@+id/text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +125,7 @@
             app:layout_constraintStart_toEndOf="@+id/walk_result_dvide"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="horizontal"
+            android:textStyle="bold"
             android:layout_marginTop="10sp" >
 
         <TextView
@@ -125,6 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:textStyle="bold"
             android:textColor="@color/black" />
 
         <TextView
@@ -132,6 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="m"
+            android:textStyle="bold"
             android:textColor="@color/black" />
 
         </LinearLayout>
@@ -142,6 +152,7 @@
             android:layout_height="wrap_content"
             android:text="소모 칼로리"
             android:textColor="@color/google_login"
+            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/timeTxt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/walk_result_dvide"
@@ -162,6 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:textStyle="bold"
             android:textColor="@color/black" />
 
         <TextView
@@ -169,6 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="kcal"
+            android:textStyle="bold"
             android:textColor="@color/black" />
         </LinearLayout>
 
@@ -177,6 +190,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="산책 횟수"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/walk_result_dvide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/calorietxt"
@@ -196,6 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
+                android:textStyle="bold"
                 android:textColor="@color/black" />
 
             <TextView
@@ -203,6 +218,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="회"
+                android:textStyle="bold"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -220,19 +236,17 @@
             android:layout_marginEnd="30sp"
             />
 
-        <ImageView
-            android:id="@+id/result_img"
+        <FrameLayout
+            android:id="@+id/polylineView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="20sp"
-            android:layout_marginBottom="20sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginBottom="25sp"
             android:background="@drawable/walk_result_img"
             android:src="@drawable/gray_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/walk_dvide_line"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/walk_dvide_line"
-            app:layout_constraintTop_toBottomOf="@+id/walk_dvide_line"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/walk_dvide_line" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

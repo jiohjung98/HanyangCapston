@@ -5,19 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/balloon_bubble_bg"
     android:id="@+id/ball_view"
-    android:layout_width="300sp"
-    android:layout_height="100sp"
+    android:layout_width="320sp"
+    android:layout_height="120sp"
+    android:layout_margin="4px"
+    app:cardCornerRadius="8px"
     >
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_width="320sp"
+        android:layout_height="120sp"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/card"
-            android:layout_width="300dp"
-            android:layout_height="100dp"
+            android:layout_width="320dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             android:background="@drawable/balloon_bubble_bg"
             android:elevation="20dp"
@@ -26,11 +32,11 @@
 
             <TextView
                 android:id="@+id/ball_tv_name1"
-                android:layout_width="48sp"
-                android:layout_height="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="24sp"
                 android:text="목격 정보"
                 android:textColor="@color/white"
-                android:textSize="11sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

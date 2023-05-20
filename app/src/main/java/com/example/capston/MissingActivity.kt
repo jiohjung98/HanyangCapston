@@ -371,6 +371,22 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         }
     }
 
+    // 커스텀 말풍선 클래스
+    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            return mCalloutBalloon
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+//            address.text = "getPressedCalloutBalloon"
+            return mCalloutBalloon
+        }
+    }
+
     fun goToMain() {
         val dialog = Dialog(this)
         // 다이얼로그 테두리 둥글게 만들기

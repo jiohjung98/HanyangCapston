@@ -58,7 +58,7 @@
                 android:id="@+id/walk_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50sp"
+                android:layout_marginStart="15sp"
                 android:layout_marginTop="20sp"
                 android:fontFamily="@font/dungeon"
                 android:text=""
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:fontFamily="@font/dungeon"
-                android:text="/"
+                android:text="/ "
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/walk_age"
@@ -128,7 +128,8 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/walk_age"
                 app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
-                app:layout_constraintTop_toTopOf="@id/walk_age" />
+                app:layout_constraintTop_toTopOf="@id/walk_age"
+                app:layout_constraintEnd_toEndOf="@+id/adding_btn"/>
 
             <TextView
                 android:id="@+id/pet_select_text"
@@ -156,6 +157,7 @@
                 android:dropDownWidth="100dp"
                 android:background="@drawable/dog_register_frame2"
                 android:spinnerMode="dialog"
+                android:paddingTop="6dp"
                 app:layout_constraintTop_toBottomOf="@id/profile"
                 app:layout_constraintStart_toStartOf="@id/profile"
                 app:layout_constraintEnd_toEndOf="@id/profile"
@@ -178,7 +180,7 @@
                 android:id="@+id/camera"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:background="@drawable/camera"
+                android:background="@drawable/camera_1"
                 app:layout_constraintTop_toTopOf="@+id/adding_btn"
                 app:layout_constraintBottom_toBottomOf="@+id/adding_btn"
                 app:layout_constraintEnd_toStartOf="@+id/adding_btn"

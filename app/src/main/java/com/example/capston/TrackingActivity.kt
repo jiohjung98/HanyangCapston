@@ -16,11 +16,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
-import com.example.capston.databinding.CustomBalloonLayoutBinding
+import com.example.capston.databinding.LostBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_tracking.*
-import kotlinx.android.synthetic.main.custom_balloon_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -236,24 +235,24 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         //witness 중 주소(구) 동일한 post 가져오기
         database.child("post").child("witness").orderByChild("address2")
             .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object:ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                //snapshot : 퀴리결과모두
-                //childSnapshot : 결과 중 한개
-                for(childSnapshot in snapshot.children){
-                    // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
-                    // 견종이 동일한 데이터
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    //snapshot : 퀴리결과모두
+                    //childSnapshot : 결과 중 한개
+                    for(childSnapshot in snapshot.children){
+                        // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
+                        // 견종이 동일한 데이터
 //                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
-                    if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)){
-                        // 좌표값 전달
-                        Log.d("queryMarker", breed!!)
-                        setBalloon(childSnapshot)
+                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)){
+                            // 좌표값 전달
+                            Log.d("queryMarker", breed!!)
+                            setBalloon(childSnapshot)
+                        }
                     }
                 }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 
     /*
@@ -266,7 +265,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val time = snapshot.child("time").getValue(String::class.java)
 
         // set text
-        val view = CustomBalloonLayoutBinding.inflate(layoutInflater)
+        val view = LostBalloonLayoutBinding.inflate(layoutInflater)
 //        val view: View = layoutInflater.inflate(R.layout.custom_balloon_layout, null)
         view.nameText.text = "알수없음"
         view.timeText.text = date+ " " + time
@@ -296,8 +295,8 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             }
         }
     }
-    
-    
+
+
     /*
      지도에 마커 생성하기
      생성시 해당 마커의 말풍선도 설정함
@@ -369,7 +368,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
 
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.custom_balloon_layout, null)
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.lost_balloon_layout, null)
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             return mCalloutBalloon
