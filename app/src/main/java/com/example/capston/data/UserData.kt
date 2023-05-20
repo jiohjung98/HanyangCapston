@@ -26,4 +26,5 @@ data class UserPost(
     var address2 : String? = null,
     var date : String? = null,
     var time : String? = null,
+    var contact : String? = null,
 )
