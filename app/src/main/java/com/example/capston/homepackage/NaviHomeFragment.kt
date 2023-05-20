@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import androidx.viewbinding.ViewBindings
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -27,6 +28,7 @@ import com.example.capston.data.UserPost
 import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
+import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQuery
@@ -430,21 +432,47 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
 
-        private var viewBinding = LostBalloonLayoutBinding.inflate(inflater)
+        private val lostBinding = LostBalloonLayoutBinding.inflate(inflater)
+        private val witBinding = SpotBalloonLayoutBinding.inflate(inflater)
+        private var viewBinding : ViewBinding? = null
 
         // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             val data : UserPost = poiItem?.userObject as UserPost
+            val category = data.category!!
+            setBalloon(data,category)
 
-            setBalloon(data)
-
-            return viewBinding.root
+            return viewBinding!!.root
         }
 
-        private fun setBalloon(data : UserPost) {
-            viewBinding.timeText.text = (data.date + " " + data.time)
-            viewBinding.nameText.text = "알 수 없음"
-            viewBinding.breedText.text = data.pet_info?.breed
+        private fun setBalloon(data : UserPost, category : Int) {
+
+            when(category){
+                0 -> { // lost
+                    lostBinding.timeText.text = (data.date + " " + data.time)
+                    lostBinding.nameText.text = data.pet_info?.pet_name
+                    lostBinding.breedText.text = data.pet_info?.breed
+                    val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
+                    url.doInput = true
+                    url.connect()
+                    val bitmap = BitmapFactory.decodeStream(url.inputStream)
+
+                    lostBinding.enterImage.setImageBitmap(bitmap)
+                    viewBinding = lostBinding
+                }
+                1 -> { // witness
+                    witBinding.timeText.text = (data.date + " " + data.time)
+                    witBinding.breedText.text = data.pet_info?.breed
+                    val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
+                    url.doInput = true
+                    url.connect()
+                    val bitmap = BitmapFactory.decodeStream(url.inputStream)
+
+                    witBinding.enterImage.setImageBitmap(bitmap)
+                    viewBinding = witBinding
+                }
+            }
+
 
 //            if(fragment.isAdded()) {
 //                GlideApp.with(fragment)
@@ -452,18 +480,12 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //                    .into(viewBinding.enterImage)
 //            }
 
-            val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
-            url.doInput = true
-            url.connect()
-            val bitmap = BitmapFactory.decodeStream(url.inputStream)
-
-            viewBinding.enterImage.setImageBitmap(bitmap)
         }
 
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-            return viewBinding.root
+            return viewBinding!!.root
         }
     }
 
