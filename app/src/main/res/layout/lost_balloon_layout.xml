@@ -5,15 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/balloon_bubble_bg"
     android:id="@+id/ball_view"
-    android:layout_width="300sp"
-    android:layout_height="100sp"
+    android:layout_width="320sp"
+    android:layout_height="120sp"
     android:layout_margin="4px"
     app:cardCornerRadius="8px"
     >
 
     <androidx.cardview.widget.CardView
-        android:layout_width="300sp"
-        android:layout_height="100sp"
+        android:layout_width="320sp"
+        android:layout_height="120sp"
         android:layout_gravity="center"
         android:background="@color/white"
         android:elevation="20dp"
@@ -22,8 +22,8 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/card"
-            android:layout_width="300sp"
-            android:layout_height="100sp"
+            android:layout_width="320dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             android:background="@drawable/balloon_bubble_bg"
             android:elevation="20dp"
@@ -35,10 +35,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24sp"
                 android:text="실종 정보"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -49,36 +49,25 @@
                 android:background="@drawable/balloon_bubble_in"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="5dp"
+                android:padding="5sp"
                 android:weightSum="2"
                 app:layout_constraintStart_toStartOf="@id/parent"
                 app:layout_constraintTop_toBottomOf="@id/ball_tv_name1">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/enter_btn"
+                <ImageView
+                    android:id="@+id/enter_image"
                     android:layout_width="70sp"
                     android:layout_height="70sp"
                     android:padding="1sp"
                     android:layout_weight="1"
-                    android:clickable="true"
                     android:gravity="center">
-
-                    <ImageView
-                        android:id="@+id/enter_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="4sp"
-                        />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                </ImageView>
 
                 <View
                     android:layout_width="1sp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
-                    android:layout_marginTop="3sp"
-                    android:layout_marginBottom="3sp"
                     android:background="#999999" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -96,30 +85,34 @@
                         android:layout_height="15sp"
                         android:layout_marginLeft="3dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/breed_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/time_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3dp"
                         android:text=""
-                        android:textSize="12sp" />
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/content_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3sp"
-                        android:layout_marginTop="2sp"
-                        android:text="상세내용을 보려면 클릭해주세요."
-                        android:textColor="@color/main"
-                        android:textSize="11sp" />
+                        android:layout_marginTop="8sp"
+                        android:textStyle="bold"
+                        android:text="상세내용을 보려면 클릭해주세요"
+                        android:textColor="@color/skyblue"
+                        android:textSize="13sp" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>

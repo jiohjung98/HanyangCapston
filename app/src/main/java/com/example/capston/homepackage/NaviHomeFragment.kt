@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import com.bumptech.glide.request.target.Target
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,11 +16,19 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
+import androidx.viewbinding.ViewBindings
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.example.capston.*
 import com.example.capston.R
 import com.example.capston.data.UserPost
+import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
+import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQuery
@@ -28,8 +39,15 @@ import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.ballon_layout.view.*
+import kotlinx.android.synthetic.main.lost_balloon_layout.view.*
+import kotlinx.android.synthetic.main.fragment_navi_home.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
+import kotlin.coroutines.resumeWithException
 import kotlin.math.*
 
 
@@ -75,6 +93,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
+    private var initCurLocUpdate: Boolean = false
+    private var firstMoveFinished : Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -111,6 +131,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             mapView?.setMapCenterPoint(currentLocation,true)
         }
 
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
         geoFire = GeoFire(database.child("geofire"))
 
         return binding.root
@@ -171,7 +193,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_spot_yellow_64        // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
@@ -192,7 +214,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_missing_orange_64         // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_missing_64         // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
@@ -229,6 +251,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        mapView!!.removeAllPOIItems()
         kakaoMapView!!.removeAllViews()
         kakaoMapViewContainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
 //        mapView?.onPause() // 맵뷰를 일시정지
@@ -310,6 +333,17 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 
+        if(!initCurLocUpdate) {
+            initCurLocUpdate = true
+            mainActivity.getWeather()
+            mainActivity.getAirQuality()
+        } else{
+            if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+                p0!!.currentLocationTrackingMode =
+                    MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+            }
+        }
+
         currentLocation = p1
 
 //        if (!isStart || isPause) {
@@ -330,12 +364,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (!getAddress) {
             findAddress(p1)
         }
-
-        if (mainActivity.getisGetWeather() == false)
-            mainActivity.getWeather()
-
-        if (mainActivity.getisGetAir() == false)
-            mainActivity.getAirQuality()
     }
 
     private fun setMarker(p0: MapView?){
@@ -373,6 +401,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+//        setMarker(p0)
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
@@ -412,21 +441,47 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(val inflater: LayoutInflater, val fragment : NaviHomeFragment): CalloutBalloonAdapter {
 
-        private var viewBinding = LostBalloonLayoutBinding.inflate(inflater)
+        private val lostBinding = LostBalloonLayoutBinding.inflate(inflater)
+        private val witBinding = SpotBalloonLayoutBinding.inflate(inflater)
+        private var viewBinding : ViewBinding? = null
 
         // 오버라이드는 코루틴 쓸 수가 없다. - suspend 불가
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             val data : UserPost = poiItem?.userObject as UserPost
+            val category = data.category!!
+            setBalloon(data,category)
 
-            setBalloon(data)
-
-            return viewBinding.root
+            return viewBinding!!.root
         }
 
-        private fun setBalloon(data : UserPost) {
-            viewBinding.timeText.text = (data.date + " " + data.time)
-            viewBinding.nameText.text = "알 수 없음"
-            viewBinding.breedText.text = data.pet_info?.breed
+        private fun setBalloon(data : UserPost, category : Int) {
+
+            when(category){
+                0 -> { // lost
+                    lostBinding.timeText.text = (data.date + " " + data.time)
+                    lostBinding.nameText.text = data.pet_info?.pet_name
+                    lostBinding.breedText.text = data.pet_info?.breed
+                    val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
+                    url.doInput = true
+                    url.connect()
+                    val bitmap = BitmapFactory.decodeStream(url.inputStream)
+
+                    lostBinding.enterImage.setImageBitmap(bitmap)
+                    viewBinding = lostBinding
+                }
+                1 -> { // witness
+                    witBinding.timeText.text = (data.date + " " + data.time)
+                    witBinding.breedText.text = data.pet_info?.breed
+                    val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
+                    url.doInput = true
+                    url.connect()
+                    val bitmap = BitmapFactory.decodeStream(url.inputStream)
+
+                    witBinding.enterImage.setImageBitmap(bitmap)
+                    viewBinding = witBinding
+                }
+            }
+
 
 //            if(fragment.isAdded()) {
 //                GlideApp.with(fragment)
@@ -434,18 +489,12 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //                    .into(viewBinding.enterImage)
 //            }
 
-            val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
-            url.doInput = true
-            url.connect()
-            val bitmap = BitmapFactory.decodeStream(url.inputStream)
-
-            viewBinding.enterImage.setImageBitmap(bitmap)
         }
 
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-            return viewBinding.root
+            return viewBinding!!.root
         }
     }
 
@@ -510,6 +559,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
-
+        Log.d("onMapViewMoveFinished","CALL")
+        if(!firstMoveFinished){
+            setMarker(p0)
+            firstMoveFinished = true
+        }
     }
 }
