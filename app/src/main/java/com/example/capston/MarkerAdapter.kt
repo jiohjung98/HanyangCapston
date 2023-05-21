@@ -32,6 +32,14 @@ class MarkerAdapter(private val markerList: List<MarkerData>) : RecyclerView.Ada
             .load(imageUrl)
             .placeholder(R.drawable.loading) // 로딩 중일 때 플레이스홀더 이미지
             .into(holder.lostImageView)
+
+//        // 아이템 클릭 리스너 설정
+//        holder.itemView.setOnClickListener {
+//            // 클릭한 아이템의 데이터 활용하여 지도 중심 이동 등 원하는 작업 수행
+//            val lat = markerData.latitude
+//            val lon = markerData.longitude
+//            moveMapToMarker(lat, lon)
+//        }
     }
 
 

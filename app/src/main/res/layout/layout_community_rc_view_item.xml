@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/tracking_list"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -88,7 +90,9 @@
           app:layout_constraintBottom_toBottomOf="@id/number"
           app:layout_constraintStart_toStartOf="parent"
           android:layout_marginStart="15sp"
-          android:scaleType="centerCrop"/>
+          android:scaleType="centerCrop"
+          android:clickable="true"
+          android:onClick="onItemClicked"/>
 
         <View
             android:layout_width="match_parent"

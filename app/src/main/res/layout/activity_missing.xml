@@ -71,6 +71,20 @@
                     app:layout_constraintBottom_toBottomOf="@+id/text1"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                <TextView
+                    android:id="@+id/back_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="뒤로가기"
+                    android:textColor="#D5D2D2"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="20sp"
+                    app:layout_constraintTop_toTopOf="@+id/topView"
+                    app:layout_constraintBottom_toBottomOf="@+id/topView"
+                    app:layout_constraintStart_toStartOf="@+id/topView"  />
+
+
 <!--                <de.hdodenhof.circleimageview.CircleImageView-->
 <!--                    android:id="@+id/back_btnn"-->
 <!--                    android:layout_width="30sp"-->
@@ -105,6 +119,34 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:orientation="horizontal" />
 
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/location_btn"-->
+<!--            xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--            android:layout_width="45sp"-->
+<!--            android:layout_height="45sp"-->
+<!--            android:layout_marginBottom="10sp"-->
+<!--            android:elevation="10sp"-->
+<!--            android:background="@drawable/circle"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/line"-->
+<!--            android:layout_marginEnd="20sp"-->
+<!--            android:layout_marginTop="20sp">-->
+
+<!--            <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                android:id="@+id/location_btnn"-->
+<!--                android:layout_width="33sp"-->
+<!--                android:layout_height="33sp"-->
+<!--                android:layout_gravity="center"-->
+<!--                app:civ_border_overlay="false"-->
+<!--                android:src="@drawable/location"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/location_btn"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/location_btn"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/location_btn"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/location_btn"-->
+<!--                />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
 <!--        <Button-->
 <!--            android:id="@+id/back_btn"-->
 <!--            android:layout_width="56dp"-->
@@ -117,8 +159,9 @@
 
         <TextView
             android:id="@+id/howto_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="지도를 길게 눌러 실종/목격 위치를 등록해주세요"
             android:visibility="visible"
             android:textStyle="bold"
@@ -126,8 +169,9 @@
             android:background="@drawable/tooltip_bg"
             android:textSize="16dp"
             android:padding = "13dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/location_btn"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20sp"
             app:layout_constraintBottom_toBottomOf="@id/kakaoMapView4"
             android:layout_marginBottom="30sp" />
 
@@ -142,8 +186,9 @@
             android:background="@drawable/tooltip_bg"
             android:textSize="15dp"
             android:padding = "13dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/location_btn"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20sp"
             app:layout_constraintBottom_toBottomOf="@id/kakaoMapView4"
             android:layout_marginBottom="30sp" />
 

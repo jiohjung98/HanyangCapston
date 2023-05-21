@@ -60,6 +60,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
+    private var currentLocation: MapPoint? = null
 
     // 권한
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -134,6 +135,11 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         weatherImage = binding.img1
         temperature = binding.temperatureTv
         weatherLocaction = binding.locTxt
+
+        binding.locationBtn.setOnClickListener {
+            mapView?.setMapCenterPoint(currentLocation,true)
+        }
+
         return binding.root
     }
 
@@ -722,6 +728,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 //        Log.i("onCurrentLocationUpdate","Call")
+
+        currentLocation = p1
 
         this.curLat = p1?.mapPointGeoCoord!!.latitude
         this.curLon = p1.mapPointGeoCoord!!.longitude

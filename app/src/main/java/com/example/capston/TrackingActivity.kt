@@ -17,14 +17,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
-import com.example.capston.databinding.LayoutCommunityRcViewItemBinding
-import com.example.capston.databinding.LostBalloonLayoutBinding
 import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
+import com.google.type.LatLng
 import kotlinx.android.synthetic.main.activity_tracking.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -228,23 +226,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-
-//        // 커스텀 이미지 마커
-//        val marker = MapPOIItem().apply {
-//            markerType = MapPOIItem.MarkerType.CustomImage
-//            customImageResourceId = R.drawable.marker_nonclick           // 커스텀 마커 이미지
-////            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양 (커스텀)
-////            customSelectedImageResourceId = R.drawable.marker_click    // 클릭 시 커스텀 마커 이미지
-//            isCustomImageAutoscale = true
-//            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-//            itemName = "실종견"
-//            mapPoint = p1
-//            isShowCalloutBalloonOnTouch = false
-//            tag = 0
-//        }
-
-//        p0?.removePOIItems(p0.poiItems)
-//        p0!!.addPOIItem(marker)
     }
 
     fun findAddress(p1: MapPoint) {
@@ -262,12 +243,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         addressAdmin = address[0]
         addressLocality = address[1]
         addressThoroughfare = address[2]
-//        val pref = this.getPreferences(Context.MODE_PRIVATE)
-//        val edit = pref.edit()
-//        edit.putString("addressAdmin", address[0])
-//        edit.putString("addressLocality", address[1])
-//        edit.putString("addressThoroughfare", address[2])
-//        edit.apply()
         queryMarkers()
     }
 
@@ -306,7 +281,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             }
                         }
                     }
-
                 }
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
@@ -331,7 +305,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         view.breedText.text = "견종: " + snapshot.child("pet_info").child("breed").getValue(String::class.java)
         Log.d("MAKE MAKER", view.toString())
 
-
         // set image
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -355,7 +328,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-
     /*
      지도에 마커 생성하기
      생성시 해당 마커의 말풍선도 설정함
@@ -363,6 +335,12 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private fun makeMarker(snapshot:DataSnapshot, view: View){
         val lat = snapshot.child("latitude").getValue(Double::class.java)!!
         val lon = snapshot.child("longitude").getValue(Double::class.java)!!
+
+//        view.tag = MapPoint.mapPointWithGeoCoord(lat, lon) // 마커의 위도와 경도 값을 view에 저장
+//        view.setOnClickListener { itemView ->
+//            val mapPoint = itemView.tag as MapPoint
+//            moveMapToMarker(mapPoint.mapPointGeoCoord.latitude, mapPoint.mapPointGeoCoord.longitude)
+//        }
 
         val marker = MapPOIItem().apply {
             markerType = MapPOIItem.MarkerType.CustomImage
@@ -373,13 +351,23 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
             isShowCalloutBalloonOnTouch = true
             customCalloutBalloon = view
-//            Log.d("MAKE MAKER", customCalloutBalloon.width.toString())
-
-//            userObject = markerData
         }
         mapView!!.addPOIItem(marker)
+
+//        // View 클릭 이벤트 처리
+//        view.setOnClickListener {
+//            moveMapToMarker(marker.mapPoint.mapPointGeoCoord.latitude, marker.mapPoint.mapPointGeoCoord.longitude)
+//        }
+        // View 클릭 이벤트 처리
+        view.setOnClickListener {
+            moveMapToMarker(lat, lon)
+        }
     }
 
+    private fun moveMapToMarker(lat: Double, lon: Double) {
+        val mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
+        mapView?.setMapCenterPoint(mapPoint, true)
+    }
 
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
     private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {

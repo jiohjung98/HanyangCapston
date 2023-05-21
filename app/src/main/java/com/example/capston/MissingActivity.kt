@@ -56,6 +56,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
+    private var currentLocation: MapPoint? = null
 
     private var isStart: Boolean = false
     private var isPause: Boolean = false
@@ -135,6 +136,10 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             Log.d("FLAG","${this.flag}")
         }
 
+        binding.locationBtn.setOnClickListener {
+            mapView?.setMapCenterPoint(currentLocation,true)
+        }
+
     }
 
     // 메모리 누수 방지
@@ -192,10 +197,10 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-
         if (!isStart || isPause) {
             return
         }
+        currentLocation = p1
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {

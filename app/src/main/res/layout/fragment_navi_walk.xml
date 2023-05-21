@@ -366,8 +366,34 @@
                 android:layout_marginStart="30sp"
                 android:layout_marginEnd="30sp"
                 android:layout_marginBottom="20sp"
-                android:layout_marginTop="20sp"
-                />
+                android:layout_marginTop="20sp" >
+            </RelativeLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/location_btn"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_marginBottom="20sp"
+                android:layout_marginRight="15sp"
+                android:elevation="10sp"
+                android:background="@drawable/circle"
+                app:layout_constraintBottom_toBottomOf="@+id/kakaoMapView3"
+                app:layout_constraintEnd_toEndOf="@+id/kakaoMapView3">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/location_btnn"
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_gravity="center"
+                    app:civ_border_overlay="false"
+                    android:src="@drawable/location"
+                    app:layout_constraintStart_toStartOf="@+id/location_btn"
+                    app:layout_constraintEnd_toEndOf="@+id/location_btn"
+                    app:layout_constraintTop_toTopOf="@+id/location_btn"
+                    app:layout_constraintBottom_toBottomOf="@+id/location_btn" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/walkBtn"
