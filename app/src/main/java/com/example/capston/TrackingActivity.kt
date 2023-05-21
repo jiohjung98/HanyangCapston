@@ -21,6 +21,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.capston.databinding.ActivityTrackingBinding
 import com.example.capston.databinding.LayoutCommunityRcViewItemBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
+import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
@@ -323,11 +324,11 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val time = snapshot.child("time").getValue(String::class.java)
 
         // set text
-        val view = LostBalloonLayoutBinding.inflate(layoutInflater)
+        val view = SpotBalloonLayoutBinding.inflate(layoutInflater)
 //        val view: View = layoutInflater.inflate(R.layout.custom_balloon_layout, null)
-        view.nameText.text = "알수없음"
-        view.timeText.text = date+ " " + time
-        view.breedText.text = snapshot.child("pet_info").child("breed").getValue(String::class.java)
+//        view.blank.text = "이름: 알 수 없음"
+        view.timeText.text = "시간: " + date+ " " + time
+        view.breedText.text = "견종: " + snapshot.child("pet_info").child("breed").getValue(String::class.java)
         Log.d("MAKE MAKER", view.toString())
 
 
@@ -365,7 +366,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         val marker = MapPOIItem().apply {
             markerType = MapPOIItem.MarkerType.CustomImage
-            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
+            customImageResourceId = R.drawable.marker_spot_yellow_64        // 커스텀 마커 이미지
             isCustomImageAutoscale = true
             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
             itemName = snapshot.key
@@ -427,7 +428,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     // 커스텀 말풍선 클래스
     class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
 
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.lost_balloon_layout, null)
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             return mCalloutBalloon
