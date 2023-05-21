@@ -54,14 +54,14 @@
                 app:layout_constraintStart_toStartOf="@id/parent"
                 app:layout_constraintTop_toBottomOf="@id/ball_tv_name1">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/enter_image"
                     android:layout_width="70sp"
                     android:layout_height="70sp"
                     android:padding="1sp"
                     android:layout_weight="1"
                     android:gravity="center">
-                </ImageView>
+                </de.hdodenhof.circleimageview.CircleImageView>
 
                 <View
                     android:layout_width="1sp"

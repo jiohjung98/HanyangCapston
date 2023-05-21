@@ -1,11 +1,13 @@
 package com.example.capston.homepackage
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import com.bumptech.glide.request.target.Target
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -13,6 +15,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -39,6 +44,7 @@ import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.ballon_layout.view.*
 import kotlinx.android.synthetic.main.lost_balloon_layout.view.*
 import kotlinx.android.synthetic.main.fragment_navi_home.*
@@ -80,7 +86,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var _binding: FragmentNaviHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var mainActivity: MainActivity
+    lateinit var mainActivity: MainActivity
     private val auth get() = mainActivity.auth
     private var database : DatabaseReference = FirebaseDatabase.getInstance().reference
     private var witnessDB : DatabaseReference? = database.child("post").child("witness")
@@ -481,16 +487,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     viewBinding = witBinding
                 }
             }
-
-
-//            if(fragment.isAdded()) {
-//                GlideApp.with(fragment)
-//                    .load(Uri.parse(data.pet_info?.image_url.toString()))
-//                    .into(viewBinding.enterImage)
-//            }
-
         }
-
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
@@ -513,13 +510,32 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
         }
 
-        override fun onCalloutBalloonOfPOIItemTouched (
+        override fun onCalloutBalloonOfPOIItemTouched(
             mapView: MapView?,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
         ) {
+            mapView?.context?.let { context ->
+                val dialog = Dialog(context)
+                // 다이얼로그 테두리 둥글게 만들기
+                dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+                dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+                dialog.setContentView(R.layout.backtomain_dialog)
 
+                val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+                val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+
+                btnOk.setOnClickListener {
+                }
+                btnCancel.setOnClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
+            }
         }
+
 
         override fun onDraggablePOIItemMoved(
             mapView: MapView?,

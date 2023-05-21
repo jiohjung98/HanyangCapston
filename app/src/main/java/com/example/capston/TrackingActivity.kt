@@ -35,7 +35,7 @@ import java.util.*
 import kotlin.math.*
 
 class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
-    MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener  {
+    MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener{
 
     var listen: MarkerEventListener? = null
 
@@ -269,13 +269,17 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             val time = snapshot.child("time").getValue(String::class.java)
                             val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
                             val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
+                            val lat = snapshot.child("latitude").getValue(Double::class.java)!!
+                            val lon = snapshot.child("longitude").getValue(Double::class.java)!!
 
 
-                            if (date != null && breed != null && imageUrl != null) {
+                            if (date != null && breed != null && imageUrl != null && lat != null && lon != null) {
                                 val markerData = MarkerData(
                                     time = date,
                                     breed = breed,
-                                    imageUrl = imageUrl
+                                    imageUrl = imageUrl,
+                                    latitude = lat,
+                                    longitude = lon
                                 )
                                 markerList.add(markerData)
                             }

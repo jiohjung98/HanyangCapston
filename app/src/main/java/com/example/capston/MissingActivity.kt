@@ -135,11 +135,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
             }
             Log.d("FLAG","${this.flag}")
         }
-
-        binding.locationBtn.setOnClickListener {
-            mapView?.setMapCenterPoint(currentLocation,true)
-        }
-
     }
 
     // 메모리 누수 방지
