@@ -522,14 +522,10 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
                 dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-                dialog.setContentView(R.layout.backtomain_dialog)
+                dialog.setContentView(R.layout.markerclick_lostdog)
 
-                val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
-                val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
-
-                btnOk.setOnClickListener {
-                }
-                btnCancel.setOnClickListener {
+                val btnClose = dialog.findViewById<TextView>(R.id.close_btn)
+                btnClose.setOnClickListener {
                     dialog.dismiss()
                 }
                 dialog.show()
