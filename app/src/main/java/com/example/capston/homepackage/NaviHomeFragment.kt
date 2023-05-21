@@ -193,7 +193,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_spot_64        // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_spot_yellow_64        // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
@@ -214,7 +214,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
                         val marker = MapPOIItem().apply {
                             markerType = MapPOIItem.MarkerType.CustomImage
-                            customImageResourceId = R.drawable.marker_missing_64         // 커스텀 마커 이미지
+                            customImageResourceId = R.drawable.marker_missing_orange_64         // 커스텀 마커 이미지
                             isCustomImageAutoscale = true
                             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
                             itemName = key
@@ -458,9 +458,9 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
             when(category){
                 0 -> { // lost
-                    lostBinding.timeText.text = (data.date + " " + data.time)
-                    lostBinding.nameText.text = data.pet_info?.pet_name
-                    lostBinding.breedText.text = data.pet_info?.breed
+                    lostBinding.timeText.text = "시간: " + (data.date + " " + data.time)
+                    lostBinding.nameText.text = "이름: " + data.pet_info?.pet_name
+                    lostBinding.breedText.text = "견종: " + data.pet_info?.breed
                     val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
                     url.doInput = true
                     url.connect()
@@ -470,8 +470,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     viewBinding = lostBinding
                 }
                 1 -> { // witness
-                    witBinding.timeText.text = (data.date + " " + data.time)
-                    witBinding.breedText.text = data.pet_info?.breed
+                    witBinding.timeText.text = "시간: " + (data.date + " " + data.time)
+                    witBinding.breedText.text = "견종: " + data.pet_info?.breed
                     val url = URL(data.pet_info?.image_url.toString()).openConnection() as HttpURLConnection
                     url.doInput = true
                     url.connect()

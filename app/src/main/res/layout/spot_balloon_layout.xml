@@ -5,15 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/balloon_bubble_bg2"
     android:id="@+id/ball_view"
-    android:layout_width="320sp"
-    android:layout_height="120sp"
+    android:layout_width="300sp"
+    android:layout_height="100sp"
     android:layout_margin="4px"
     app:cardCornerRadius="8px"
     >
 
     <androidx.cardview.widget.CardView
-        android:layout_width="320sp"
-        android:layout_height="120sp"
+        android:layout_width="300sp"
+        android:layout_height="100sp"
         android:layout_gravity="center"
         android:background="@color/white"
         android:elevation="20dp"
@@ -22,8 +22,8 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/card"
-            android:layout_width="320dp"
-            android:layout_height="120dp"
+            android:layout_width="300sp"
+            android:layout_height="100sp"
             android:layout_gravity="center"
             android:background="@drawable/balloon_bubble_bg2"
             android:elevation="20dp"
@@ -36,7 +36,7 @@
                 android:layout_height="24sp"
                 android:text="목격 정보"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -77,36 +77,49 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:gravity="center"
+                    android:layout_marginTop="1sp"
+                    android:layout_marginBottom="1sp"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/blank"
+                        android:layout_width="match_parent"
+                        android:layout_height="15sp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="2sp"
+                        android:text="이름: 알 수 없음"
+                        android:textStyle="bold"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/breed_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3sp"
-                        android:layout_marginTop="5sp"
-                        android:text=""
+                        android:layout_marginTop="1sp"
+                        android:text="견종: "
                         android:textStyle="bold"
-                        android:textSize="13sp" />
+                        android:textSize="11sp" />
                     <TextView
                         android:id="@+id/time_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3sp"
-                        android:layout_marginTop="5sp"
-                        android:text=""
+                        android:layout_marginTop="1sp"
+                        android:text="시간: "
                         android:textStyle="bold"
-                        android:textSize="13sp" />
+                        android:textSize="11sp" />
+
                     <TextView
                         android:id="@+id/content_text"
                         android:layout_width="match_parent"
                         android:layout_height="15sp"
                         android:layout_marginLeft="3sp"
-                        android:layout_marginTop="8sp"
+                        android:layout_marginTop="3sp"
                         android:textStyle="bold"
                         android:text="상세내용을 보려면 클릭해주세요"
                         android:textColor="@color/skyblue"
-                        android:textSize="13sp" />
+                        android:textSize="11sp" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
