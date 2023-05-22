@@ -38,7 +38,6 @@ import kotlin.math.*
 class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
 
-
     private val RequestPermissionCode = 1
     private var mapView: MapView? = null
     private var polyline: MapPolyline? = null
@@ -55,11 +54,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private val walkingAmounts = ArrayList<Double>()
     private var walkingTimer: Timer? = null
     private var runningDogImageTimer: Timer? = null
-    private var runningDogImage = arrayOf(
-        R.drawable.running_dog_1, R.drawable.running_dog_2
-        , R.drawable.running_dog_3, R.drawable.running_dog_4, R.drawable.running_dog_5
-        , R.drawable.running_dog_6, R.drawable.running_dog_7, R.drawable.running_dog_8
-    )
     private var runningDogImageCounter: Int = 1
     private var time = 0
     private var isTimerRunning: Boolean = false
@@ -133,16 +127,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     fun findAddress() {
         val mapReverseGeoCoder =
             MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-
         mapReverseGeoCoder.startFindingAddress()
     }
-
-//    private fun onClickEnd() {
-//        val dlg = WalkEndAlertDialog(this)
-//        dlg.setOnOKClickedListener{ content ->
-//        }
-//        dlg.show("산책 종료 전 띄워주기")
-//    }
 
     private fun initView() {
         // 위치 권한 설정 확인
@@ -268,7 +254,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         })
     }
 
-
     // 배변활동 표시
     private fun toiletActivity() {
         val marker = MapPOIItem()
@@ -282,6 +267,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         marker.setCustomImageAnchor(0.5f, 1.0f)
         mapView!!.addPOIItem(marker)
     }
+
     // 위치 권한 설정 확인 함수
     private fun isSetLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
@@ -305,7 +291,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             RequestPermissionCode
         )
         this.recreate()
-
     }
 
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
@@ -331,6 +316,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             return
         } else {
             val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+
             // 이동 거리 표시
             walkingDistance += distance
             if (walkingDistance < 1000) {
@@ -339,20 +325,15 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 digitId.text = "km"
                 distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
             }
+
             // 소모 칼로리 표시
             walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
             Log.d("태그", "칼로리: " + walkingCalorie)
             calorieView.text = String.format("%.2f", walkingCalorie)
-//            // 충족량 표시
-////            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-//            amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-
-
-//            if (prevLat != 0.0) {
                 prevLat = lat
                 prevLon = lon
-//            }
         }
+
         // 변환 주소 가져오기
         if (!getAddress) {
             findAddress()
@@ -366,18 +347,16 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     }
 
-
     // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
     private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6372.8;
-        val dLat = Math.toRadians(lat2 - lat1);
-        val dLon = Math.toRadians(lon2 - lon1);
-        val rLat1 = Math.toRadians(lat1);
-        val rLat2 = Math.toRadians(lat2);
-        var dist = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2);
-        dist = 2 * asin(sqrt(dist))
-
-        return r * dist * 1000
+        val r = 6372.8
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val rLat1 = Math.toRadians(lat1)
+        val rLat2 = Math.toRadians(lat2)
+        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return r * c * 1000
     }
 
     private fun meterToKillo(meter: Double): Double {
@@ -482,18 +461,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
-//        Log.d("logpress", "맵뷰롱프레스트")
-//        p0?.setMapCenterPoint(p1,true)
-//        val marker = MapPOIItem()
-//        marker.itemName = "배변"
-//        marker.isShowCalloutBalloonOnTouch = false
-//        marker.mapPoint = p1
-//        marker.markerType = MapPOIItem.MarkerType.BluePin
-//        marker.customImageResourceId =
-//            R.drawable.toilet_activity
-//        marker.isCustomImageAutoscale = false
-//        marker.setCustomImageAnchor(0.5f, 1.0f)
-//        p0!!.addPOIItem(marker)
     }
 
     override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {

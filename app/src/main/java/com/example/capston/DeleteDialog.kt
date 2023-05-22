@@ -43,11 +43,8 @@ class DeleteDialog(private val context : MainActivity) {
 
         //ok 버튼 동작
         binding.yesBtn.setOnClickListener {
-            Log.d("dd","click ok")
             deleteDlg.dismiss()
             deleteComplete()
-            // 어플 종료
-//            ActivityCompat.finishAffinity(context)
         }
 
         //cancel 버튼 동작
@@ -71,7 +68,6 @@ class DeleteDialog(private val context : MainActivity) {
     }
 
     fun deleteComplete() {
-
         // 데이터베이스 users 에서 삭제
         database.child(auth.currentUser!!.uid).removeValue()
         // 스토리지 이미지 삭제

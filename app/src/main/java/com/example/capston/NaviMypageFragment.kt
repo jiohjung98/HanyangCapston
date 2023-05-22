@@ -269,7 +269,6 @@ class NaviMypageFragment : Fragment() {
         }
         emailDlg.show("이메일")
     }
-
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

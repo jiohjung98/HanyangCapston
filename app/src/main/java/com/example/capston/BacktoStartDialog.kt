@@ -12,10 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.capston.databinding.BacktostartDialogBinding
 import com.google.firebase.auth.FirebaseAuth
 
-/*
- * 마이페이지 이메일 문의 누르면 이메일 보내겠냐는 다이얼로그
- * -> dogplanet@dogplanet.com 으로 메일 보내도록 외부 프로그램 연결
- */
 class BacktoStartDialog(private val context : AppCompatActivity) {
     private lateinit var listener : MyDialogOKClickedListener
     private lateinit var binding : BacktostartDialogBinding
