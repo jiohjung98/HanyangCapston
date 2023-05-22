@@ -515,6 +515,11 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
         ) {
+//            val data : UserPost = poiItem?.userObject as UserPost
+//            val category = data.category!!
+//            markerDialog(data,category)
+
+
             mapView?.context?.let { context ->
                 val dialog = Dialog(context)
                 // 다이얼로그 테두리 둥글게 만들기
