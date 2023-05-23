@@ -83,12 +83,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     // 산책중 업데이트 관련
     private val handler = Handler(Looper.getMainLooper())
-    private val delay = 3000L // 3초
+    private val delay = 1000L // 1초
 
     // 이동평균 스무딩
     private val locationQueue: Queue<MapPoint> = LinkedList()
     private var lastestPoint: MapPoint? = null
-    private val MAX_DISTANCE : Double = 10.0
+    private val MAX_DISTANCE : Double = 15.0 // 튈 경우 방지하는 쓰레시홀드
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
