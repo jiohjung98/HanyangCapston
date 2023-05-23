@@ -9,6 +9,7 @@ import com.example.capston.MarkerData
 import com.example.capston.R
 import com.jakewharton.threetenabp.AndroidThreeTen.init
 import net.daum.mf.map.api.MapPoint
+import org.w3c.dom.Text
 
 class MarkerAdapter(
     private val markerList: List<MarkerData>,
@@ -29,12 +30,13 @@ class MarkerAdapter(
         val markerData = markerList[position]
 
         // 마커 정보 활용
-        val date = markerData.time
+        val date = markerData.date
+        val time = markerData.time
         val breed = markerData.breed
         val imageUrl = markerData.imageUrl
 
         // 나머지 작업 수행
-        holder.lostTimeText.text = date
+        holder.lostTimeText.text = date + " "+ time
         holder.lostBreedText.text = breed
 
         // 이미지 로드

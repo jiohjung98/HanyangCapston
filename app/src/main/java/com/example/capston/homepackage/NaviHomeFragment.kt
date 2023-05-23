@@ -151,15 +151,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         listen = MarkerEventListener(mainActivity, this)
 
-//        // 뷰 추가 전 기존 뷰 삭제
-//        kakaoMapViewContainer?.removeAllViews()
-//
-//
-//
-//        val kakaoMapView = view.findViewById<MapView>(R.id.kakaoMapView)
-//
-//        kakaoMapViewContainer?.addView(kakaoMapView)
-
         mapView = MapView(mainActivity)
         val mapViewContainer = kakaoMapView as ViewGroup
         mapViewContainer.addView(mapView)

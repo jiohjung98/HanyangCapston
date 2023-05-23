@@ -12,46 +12,112 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/TrackingMapView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background" />
-
-        <LinearLayout
-            android:id="@+id/back_button"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"
-            android:layout_marginTop="15sp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="45sp"
+            android:background="@color/white"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/back_btnn"
+            <LinearLayout
+                android:id="@+id/back_btn"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:background="@drawable/circle"
-                app:civ_border_overlay="false"
-                app:civ_border_width="1sp"
-                app:civ_border_color="#FF974C"
-                android:layout_gravity="center"
-                android:src="@drawable/backk" />
+                android:layout_marginLeft="20sp"
+                app:layout_constraintTop_toTopOf="@+id/topView"
+                app:layout_constraintBottom_toBottomOf="@+id/topView"
+                app:layout_constraintStart_toStartOf="@+id/topView" >
 
-            <FrameLayout
-                android:id="@+id/balloonContainer"
-                android:layout_width="match_parent"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/back_button"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:background="@drawable/back_btn"
+                    android:layout_gravity="center"
+                    app:layout_constraintTop_toTopOf="@+id/text1"
+                    app:layout_constraintBottom_toBottomOf="@+id/text1"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/back_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="뒤로가기"
+                    android:textColor="#D5D2D2"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="20sp"
+                    app:layout_constraintTop_toTopOf="@+id/topView"
+                    app:layout_constraintBottom_toBottomOf="@+id/topView"
+                    app:layout_constraintStart_toStartOf="@+id/topView"  />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="16dp" />
-        </LinearLayout>
+                android:text="유사 반려견"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/topView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topView"
+            app:layout_constraintBottom_toTopOf="@+id/TrackingMapView"
+            android:background="@color/gray" />
+
+    <RelativeLayout
+        android:id="@+id/TrackingMapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topView"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/location_btn"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="45sp"
+            android:layout_height="45sp"
+            android:layout_marginBottom="70sp"
+            android:elevation="10sp"
+            android:background="@drawable/circle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20sp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/location_btnn"
+                android:layout_width="33sp"
+                android:layout_height="33sp"
+                android:layout_gravity="center"
+                app:civ_border_overlay="false"
+                android:src="@drawable/location"
+                app:layout_constraintStart_toStartOf="@+id/location_btn"
+                app:layout_constraintEnd_toEndOf="@+id/location_btn"
+                app:layout_constraintTop_toTopOf="@+id/location_btn"
+                app:layout_constraintBottom_toBottomOf="@+id/location_btn"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <include layout="@layout/bottom_sheet" ></include>
 

@@ -345,10 +345,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                 }
             })
     }
-
-
-
-
+    
     /*
      말풍선에 표시할 정보 세팅
      */
