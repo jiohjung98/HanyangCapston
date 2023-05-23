@@ -94,8 +94,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                 mapView?.setMapCenterPoint(selectedMapPoint, true)
             }
         })
-
-
         recyclerView.adapter = markerAdapter
 
         // 바텀시트 상태 변경 콜백 메소드 예시 (onStateChanged 또는 onSlide 등)
@@ -103,37 +101,13 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 //                    // 바텀시트가 전체 화면으로 확장된 상태일 때
-//
-//                    // 바텀시트의 리사이클러뷰 요소 찾기
-//                    val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
-//
-////                    // 마커 데이터 설정
-////                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
-////                    recyclerView.adapter = MarkerAdapter(markerList)
-//
-//                    // 마커 데이터 설정
-//                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
-//                    val markerAdapter = MarkerAdapter(markerList)
-//                    recyclerView.adapter = markerAdapter
-//
-//                    // 마커 정보 클릭 리스너 설정
-//                    markerAdapter.setOnItemClickListener(object : MarkerAdapter.OnItemClickListener {
-//                        override fun onItemClick(position: Int) {
-//                            val selectedMarker = markerList[position]
-//                            val selectedMapPoint = MapPoint.mapPointWithGeoCoord(selectedMarker.latitude, selectedMarker.longitude)
-//                            mapView?.setMapCenterPoint(selectedMapPoint, true)
-//                        }
-//                    })
-
                     if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                         val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
                         recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
                         recyclerView.adapter = markerAdapter
                     }
                 }
-
             }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // 바텀시트 슬라이드 시 호출됩니다.
             }
@@ -156,7 +130,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         mapView!!.setPOIItemEventListener(listen)
 
-//        isSetLocationPermission()
         mapView!!.setMapViewEventListener(this)
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
@@ -271,47 +244,106 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     /*
      주소 동일한 witness post 가져오기
      */
-    private fun queryMarkers(){
-        //witness 중 주소(구) 동일한 post 가져오기
+//    private fun queryMarkers(){
+//        markerList.clear() // 기존 마커 정보를 모두 제거
+//
+//        //witness 중 주소(구) 동일한 post 가져오기
+//        database.child("post").child("witness").orderByChild("address2")
+//            .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object:ValueEventListener{
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    //snapshot : 퀴리결과모두
+//                    //childSnapshot : 결과 중 한개
+//                    for(childSnapshot in snapshot.children){
+//                        // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
+//                        // 견종이 동일한 데이터
+////                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
+//                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)) {
+//                            // 좌표값 전달
+//                            Log.d("queryMarker", breed!!)
+//                            setBalloon(childSnapshot)
+//                            // 마커 데이터 생성
+//                            val date = childSnapshot.child("date").getValue(String::class.java)
+//                            val time = snapshot.child("time").getValue(String::class.java)
+//                            val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
+//                            val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
+//                            val lat = childSnapshot.child("latitude").getValue(Double::class.java)
+//                            val lon = childSnapshot.child("longitude").getValue(Double::class.java)
+//
+//                            if (date != null && breed != null && imageUrl != null && lat != null && lon != null) {
+//                                val markerData = MarkerData(
+//                                    time = date,
+//                                    breed = breed,
+//                                    imageUrl = imageUrl,
+//                                    latitude = lat,
+//                                    longitude = lon
+//                                )
+//                                markerList.add(markerData)
+//                            }
+//                        }
+//                    }
+//                }
+//                override fun onCancelled(error: DatabaseError) {
+//                    TODO("Not yet implemented")
+//                }
+//            })
+//    }
+
+    private fun queryMarkers() {
+        markerList.clear() // 기존 마커 정보를 모두 제거
+
+        // witness 중 주소(구) 동일한 post 가져오기
         database.child("post").child("witness").orderByChild("address2")
-            .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object:ValueEventListener{
+            .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    //snapshot : 퀴리결과모두
-                    //childSnapshot : 결과 중 한개
-                    for(childSnapshot in snapshot.children){
-                        // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
-                        // 견종이 동일한 데이터
-//                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
-                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)) {
+                    //snapshot : 쿼리 결과 모두
+                    //childSnapshot : 결과 중 한 개
+                    val existingMarkers = mutableSetOf<MarkerData>() // 중복 체크를 위한 Set
+
+                    for (childSnapshot in snapshot.children) {
+                        // 견종이 동일한 데이터인지 확인
+                        if (childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim()
+                                .equals(breed)
+                        ) {
                             // 좌표값 전달
                             Log.d("queryMarker", breed!!)
-                            setBalloon(childSnapshot)
+
                             // 마커 데이터 생성
                             val date = childSnapshot.child("date").getValue(String::class.java)
-                            val time = snapshot.child("time").getValue(String::class.java)
+                            val time = childSnapshot.child("time").getValue(String::class.java)
                             val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
                             val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
                             val lat = childSnapshot.child("latitude").getValue(Double::class.java)
                             val lon = childSnapshot.child("longitude").getValue(Double::class.java)
 
-                            if (date != null && breed != null && imageUrl != null && lat != null && lon != null) {
+                            if (date != null && time != null && breed != null && imageUrl != null && lat != null && lon != null) {
                                 val markerData = MarkerData(
-                                    time = date,
+                                    date = date,
+                                    time = time,
                                     breed = breed,
                                     imageUrl = imageUrl,
                                     latitude = lat,
                                     longitude = lon
                                 )
-                                markerList.add(markerData)
+                                // 중복 체크
+                                if (!existingMarkers.contains(markerData)) {
+                                    setBalloon(childSnapshot)
+                                    markerList.add(markerData)
+                                    existingMarkers.add(markerData)
+                                }
                             }
                         }
                     }
+                    // 마커 데이터가 변경되었으므로, 어댑터에 변경 내용을 알려줍니다.
+                    markerAdapter.notifyDataSetChanged()
                 }
+
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    // 오류 처리
                 }
             })
     }
+
+
 
     /*
      말풍선에 표시할 정보 세팅
