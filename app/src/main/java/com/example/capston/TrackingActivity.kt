@@ -298,9 +298,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         database.child("post").child("witness").orderByChild("address2")
             .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    //snapshot : 쿼리 결과 모두
-                    //childSnapshot : 결과 중 한 개
-                    val existingMarkers = mutableSetOf<MarkerData>() // 중복 체크를 위한 Set
+                    val existingCoordinates = mutableSetOf<String>() // 중복 체크를 위한 Set
 
                     for (childSnapshot in snapshot.children) {
                         // 견종이 동일한 데이터인지 확인
@@ -319,19 +317,21 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             val lon = childSnapshot.child("longitude").getValue(Double::class.java)
 
                             if (date != null && time != null && breed != null && imageUrl != null && lat != null && lon != null) {
-                                val markerData = MarkerData(
-                                    date = date,
-                                    time = time,
-                                    breed = breed,
-                                    imageUrl = imageUrl,
-                                    latitude = lat,
-                                    longitude = lon
-                                )
+                                val coordinate = "$lat,$lon"
                                 // 중복 체크
-                                if (!existingMarkers.contains(markerData)) {
+                                if (!existingCoordinates.contains(coordinate)) {
                                     setBalloon(childSnapshot)
-                                    markerList.add(markerData)
-                                    existingMarkers.add(markerData)
+                                    markerList.add(
+                                        MarkerData(
+                                            date = date,
+                                            time = time,
+                                            breed = breed,
+                                            imageUrl = imageUrl,
+                                            latitude = lat,
+                                            longitude = lon
+                                        )
+                                    )
+                                    existingCoordinates.add(coordinate)
                                 }
                             }
                         }
@@ -345,6 +345,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                 }
             })
     }
+
 
 
 
