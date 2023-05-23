@@ -7,8 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.capston.MarkerData
 import com.example.capston.R
+import com.jakewharton.threetenabp.AndroidThreeTen.init
+import net.daum.mf.map.api.MapPoint
 
-class MarkerAdapter(private val markerList: List<MarkerData>) : RecyclerView.Adapter<MarkerAdapter.MarkerViewHolder>() {
+class MarkerAdapter(
+    private val markerList: List<MarkerData>,
+    private val itemClickListener: OnItemClickListener
+    ) : RecyclerView.Adapter<MarkerAdapter.MarkerViewHolder>() {
+
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarkerViewHolder {
+//        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_community_rc_view_item, parent, false)
+//        return MarkerViewHolder(itemView)
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarkerViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_community_rc_view_item, parent, false)
@@ -40,9 +50,22 @@ class MarkerAdapter(private val markerList: List<MarkerData>) : RecyclerView.Ada
     }
 
     // MarkerViewHolder 클래스를 MarkerAdapter 클래스 외부로 이동시킵니다.
-    class MarkerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MarkerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    itemClickListener.onItemClick(position)
+                }
+            }
+        }
         val lostTimeText: TextView = itemView.findViewById(R.id.lost_time_text)
         val lostBreedText: TextView = itemView.findViewById(R.id.lost_breed_text)
         val lostImageView: ImageView = itemView.findViewById(R.id.lost_image_view)
     }
+}
+
+interface OnItemClickListener {
+    fun onItemClick(position: Int)
 }

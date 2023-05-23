@@ -1,6 +1,7 @@
 package com.example.capston
 
 import MarkerAdapter
+import OnItemClickListener
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
@@ -24,6 +25,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
 import com.google.type.LatLng
 import kotlinx.android.synthetic.main.activity_tracking.*
+import kotlinx.android.synthetic.main.layout_community_rc_view_item.*
+import kotlinx.android.synthetic.main.layout_community_rc_view_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,22 +84,54 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         recyclerView = findViewById(R.id.dogList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         markerList = mutableListOf()
-        markerAdapter = MarkerAdapter(markerList)
+//        markerAdapter = MarkerAdapter(markerList)
+
+        // itemClickListener를 생성하여 MarkerAdapter에 전달
+        markerAdapter = MarkerAdapter(markerList, object : OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val selectedMarker = markerList[position]
+                val selectedMapPoint = MapPoint.mapPointWithGeoCoord(selectedMarker.latitude, selectedMarker.longitude)
+                mapView?.setMapCenterPoint(selectedMapPoint, true)
+            }
+        })
+
+
         recyclerView.adapter = markerAdapter
 
         // 바텀시트 상태 변경 콜백 메소드 예시 (onStateChanged 또는 onSlide 등)
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    // 바텀시트가 전체 화면으로 확장된 상태일 때
+//                    // 바텀시트가 전체 화면으로 확장된 상태일 때
+//
+//                    // 바텀시트의 리사이클러뷰 요소 찾기
+//                    val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
+//
+////                    // 마커 데이터 설정
+////                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
+////                    recyclerView.adapter = MarkerAdapter(markerList)
+//
+//                    // 마커 데이터 설정
+//                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
+//                    val markerAdapter = MarkerAdapter(markerList)
+//                    recyclerView.adapter = markerAdapter
+//
+//                    // 마커 정보 클릭 리스너 설정
+//                    markerAdapter.setOnItemClickListener(object : MarkerAdapter.OnItemClickListener {
+//                        override fun onItemClick(position: Int) {
+//                            val selectedMarker = markerList[position]
+//                            val selectedMapPoint = MapPoint.mapPointWithGeoCoord(selectedMarker.latitude, selectedMarker.longitude)
+//                            mapView?.setMapCenterPoint(selectedMapPoint, true)
+//                        }
+//                    })
 
-                    // 바텀시트의 리사이클러뷰 요소 찾기
-                    val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
-
-                    // 마커 데이터 설정
-                    recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
-                    recyclerView.adapter = MarkerAdapter(markerList)
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        val recyclerView = bottomSheet.findViewById<RecyclerView>(R.id.dogList)
+                        recyclerView.layoutManager = LinearLayoutManager(bottomSheet.context)
+                        recyclerView.adapter = markerAdapter
+                    }
                 }
+
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -142,8 +177,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     }
 
-
-
     // 메모리 누수 방지
     override fun onDestroy() {
         super.onDestroy()
@@ -166,21 +199,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-
     override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-//        val lat = p1!!.mapPointGeoCoord.latitude
-//        val lon = p1!!.mapPointGeoCoord.longitude
-//
-//        route.add(arrayListOf(lat, lon))
-//
-//        mapPoint = p1
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
-
         // 변환 주소 가져오기
         if (!getAddress) {
             findAddress(p1!!)
@@ -269,9 +291,8 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             val time = snapshot.child("time").getValue(String::class.java)
                             val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
                             val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
-                            val lat = snapshot.child("latitude").getValue(Double::class.java)!!
-                            val lon = snapshot.child("longitude").getValue(Double::class.java)!!
-
+                            val lat = childSnapshot.child("latitude").getValue(Double::class.java)
+                            val lon = childSnapshot.child("longitude").getValue(Double::class.java)
 
                             if (date != null && breed != null && imageUrl != null && lat != null && lon != null) {
                                 val markerData = MarkerData(
@@ -303,8 +324,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         // set text
         val view = SpotBalloonLayoutBinding.inflate(layoutInflater)
-//        val view: View = layoutInflater.inflate(R.layout.custom_balloon_layout, null)
-//        view.blank.text = "이름: 알 수 없음"
         view.timeText.text = "시간: " + date+ " " + time
         view.breedText.text = "견종: " + snapshot.child("pet_info").child("breed").getValue(String::class.java)
         Log.d("MAKE MAKER", view.toString())
@@ -340,12 +359,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val lat = snapshot.child("latitude").getValue(Double::class.java)!!
         val lon = snapshot.child("longitude").getValue(Double::class.java)!!
 
-//        view.tag = MapPoint.mapPointWithGeoCoord(lat, lon) // 마커의 위도와 경도 값을 view에 저장
-//        view.setOnClickListener { itemView ->
-//            val mapPoint = itemView.tag as MapPoint
-//            moveMapToMarker(mapPoint.mapPointGeoCoord.latitude, mapPoint.mapPointGeoCoord.longitude)
-//        }
-
         val marker = MapPOIItem().apply {
             markerType = MapPOIItem.MarkerType.CustomImage
             customImageResourceId = R.drawable.marker_spot_yellow_64        // 커스텀 마커 이미지
@@ -357,39 +370,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             customCalloutBalloon = view
         }
         mapView!!.addPOIItem(marker)
-
-//        // View 클릭 이벤트 처리
-//        view.setOnClickListener {
-//            moveMapToMarker(marker.mapPoint.mapPointGeoCoord.latitude, marker.mapPoint.mapPointGeoCoord.longitude)
-//        }
-        // View 클릭 이벤트 처리
-        view.setOnClickListener {
-            moveMapToMarker(lat, lon)
-        }
     }
-
-    private fun moveMapToMarker(lat: Double, lon: Double) {
-        val mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
-        mapView?.setMapCenterPoint(mapPoint, true)
-    }
-
-    // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
-    private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6372.8;
-        val dLat = Math.toRadians(lat2 - lat1);
-        val dLon = Math.toRadians(lon2 - lon1);
-        val rLat1 = Math.toRadians(lat1);
-        val rLat2 = Math.toRadians(lat2);
-        var dist = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2);
-        dist = 2 * asin(sqrt(dist))
-
-        return r * dist * 1000
-    }
-
-    private fun meterToKillo(meter: Double): Double {
-        return meter / 1000
-    }
-
 
     // 마커 클릭 이벤트 리스너
     class MarkerEventListener(var context: AppCompatActivity): MapView.POIItemEventListener {

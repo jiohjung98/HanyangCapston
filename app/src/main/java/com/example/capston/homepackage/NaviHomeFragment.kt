@@ -402,7 +402,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 //        Log.d("CENTER",center.mapPointGeoCoord.latitude.toString() +" "+center.mapPointGeoCoord.longitude.toString())
 //        Log.d("RADIUS",meterToKillo(radius).toString())
 
-
         geoQuery?.addGeoQueryEventListener(geoQueryListener)
     }
 
