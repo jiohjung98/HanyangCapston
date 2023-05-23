@@ -82,6 +82,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private lateinit var markerAdapter: MarkerAdapter
 
     private var postImages = ArrayList<String>()
+    private var postKeys = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -294,6 +295,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
                             // 쿼리한 포스트의 이미지url 저장
                             postImages.add(imageUrl!!)
+                            postKeys.add(childSnapshot.key!!)
 
 //                            val lat = snapshot.child("latitude").getValue(Double::class.java)!!
 //                            val lon = snapshot.child("longitude").getValue(Double::class.java)!!
@@ -459,6 +461,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 //            address.text = "getPressedCalloutBalloon"
             return mCalloutBalloon
         }
+    }
+
+    override fun onBackPressed() {
+        goToMain()
     }
 
     fun goToMain() {
