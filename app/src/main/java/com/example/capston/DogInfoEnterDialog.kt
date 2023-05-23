@@ -569,6 +569,8 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         activity.kakaoMapViewContainer?.removeAllViews()
         val intent = Intent(activity, MissingAfterActivity::class.java)
         intent.putExtra("breed",pet_info.breed)
+        intent.putExtra("imageUrl",pet_info.image_url)
+        intent.putExtra("address2",post.address2)
         activity.startActivity(intent)
         activity.finish()
     }
