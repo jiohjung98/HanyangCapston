@@ -493,7 +493,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         functions.getHttpsCallable("similarityCheck")
             .call(data)
             .addOnSuccessListener { task->
-                TODO()
+                Log.d("similarity",task.data.toString())
+            }
+            .addOnFailureListener{
+                Log.d("similarity","FAIL")
             }
     }
 }
