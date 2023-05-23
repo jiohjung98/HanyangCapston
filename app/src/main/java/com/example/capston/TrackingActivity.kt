@@ -92,6 +92,9 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                 val selectedMarker = markerList[position]
                 val selectedMapPoint = MapPoint.mapPointWithGeoCoord(selectedMarker.latitude, selectedMarker.longitude)
                 mapView?.setMapCenterPoint(selectedMapPoint, true)
+
+                // 바텀시트를 닫기 위해 state를 STATE_COLLAPSED로 변경
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         })
         recyclerView.adapter = markerAdapter
