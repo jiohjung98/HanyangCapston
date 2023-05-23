@@ -83,10 +83,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     // 산책중 업데이트 관련
     private val handler = Handler(Looper.getMainLooper())
-    private val delay = 5000L // 5초
+    private val delay = 3000L // 3초
 
     // 이동평균 스무딩
-    val locationQueue: Queue<MapPoint> = LinkedList()
+    private val locationQueue: Queue<MapPoint> = LinkedList()
+    private var lastestPoint: MapPoint? = null
+    private val MAX_DISTANCE : Double = 10.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
@@ -127,7 +129,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             isStart = false
             if (walkingDistance != 0.0) {
                 finishWalking()
-                submitResult()
+//                submitResult()
             }
             pauseFab.visibility = View.GONE
             toiletFab.visibility = View.GONE
@@ -219,23 +221,37 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     private fun smoothLocationUpdate(p1 : MapPoint) {
-        locationQueue.offer(p1)
-        if (locationQueue.size > 10) {
-            locationQueue.poll()
-        }
+        // lastestPoint 가장 최근 유효한 위치포인트
+        if(lastestPoint != null){
+            // 최근위치와 현재 위치 간 거리차이가 10m 미만일때만
+            if(haversine(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude,
+                lastestPoint!!.mapPointGeoCoord.latitude,lastestPoint!!.mapPointGeoCoord.longitude) < MAX_DISTANCE){
 
-        // 위치 정보의 평균 계산
-        var sumLat = 0.0
-        var sumLng = 0.0
-        for (location in locationQueue) {
-            sumLat += p1.mapPointGeoCoord.latitude
-            sumLng += p1.mapPointGeoCoord.longitude
-        }
-        val smoothedLat = sumLat / locationQueue.size
-        val smoothedLng = sumLng / locationQueue.size
+                locationQueue.offer(p1)
+                if (locationQueue.size > 20) {
+                    locationQueue.poll()
+                }
 
-        // 사용자 정의 로직을 통한 위치 처리
-        updateUI(smoothedLat,smoothedLng)
+                // 위치 정보의 평균 계산
+                var sumLat = 0.0
+                var sumLng = 0.0
+                for (location in locationQueue) {
+                    sumLat += location.mapPointGeoCoord.latitude
+                    sumLng += location.mapPointGeoCoord.longitude
+                }
+                val smoothedLat = sumLat / locationQueue.size
+                val smoothedLng = sumLng / locationQueue.size
+
+                lastestPoint = p1
+
+                // 사용자 정의 로직을 통한 위치 처리
+                updateUI(smoothedLat,smoothedLng)
+            }
+        } else{
+            locationQueue.offer(p1)
+            lastestPoint = p1
+            updateUI(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude)
+        }
     }
 
 
@@ -317,58 +333,58 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         })
     }
 
-    private fun submitResult() {
-        val pref = getSharedPreferences("pref", MODE_PRIVATE)
-        val userToken = pref.getString("userToken", "")
-        val walkingRetrofit = WalkingRetrofitCreators(this).WalkingRetrofitCreator()
-        walkingRetrofit.createWalking(
-            userToken!!, walkingCalorie, walkingDistance, time, walkingAmounts,
-            addressAdmin, addressLocality, addressThoroughfare, animal, route, toiletLoc
-        ).enqueue(object : Callback<CreateWalkingResultModel> {
-            override fun onFailure(call: Call<CreateWalkingResultModel>, t: Throwable) {
-                Log.d("DEBUG", " Walking Retrofit failed!!")
-                Toast.makeText(
-                    this@WalkActivity,
-                    "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            override fun onResponse(
-                call: Call<CreateWalkingResultModel>,
-                response: Response<CreateWalkingResultModel>
-            ) {
-                val error = response.body()?.error
-                val walkingId = response.body()?.walkingId
-                Log.d("ERROR", error.toString())
-
-                // 등록에 실패했을 때 후 처리
-                if (error == 1) {
-                    Toast.makeText(
-                        this@WalkActivity,
-                        "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                // 산책 등록 후 처리 - 액티비티 이동
-                if (error == null || error == 0) {
-                    Toast.makeText(
-                        this@WalkActivity,
-                        "3초 후 산책이 종료됩니다.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    timer(period = 3000, initialDelay = 3000) {
-                        val intent = Intent(this@WalkActivity, Statics::class.java)
-                        intent.putExtra("walkingId", walkingId)
-                        startActivity(intent)
-                        finish()
-                        cancel()
-                    }
-                }
-            }
-        })
-    }
+//    private fun submitResult() {
+//        val pref = getSharedPreferences("pref", MODE_PRIVATE)
+//        val userToken = pref.getString("userToken", "")
+//        val walkingRetrofit = WalkingRetrofitCreators(this).WalkingRetrofitCreator()
+//        walkingRetrofit.createWalking(
+//            userToken!!, walkingCalorie, walkingDistance, time, walkingAmounts,
+//            addressAdmin, addressLocality, addressThoroughfare, animal, route, toiletLoc
+//        ).enqueue(object : Callback<CreateWalkingResultModel> {
+//            override fun onFailure(call: Call<CreateWalkingResultModel>, t: Throwable) {
+//                Log.d("DEBUG", " Walking Retrofit failed!!")
+//                Toast.makeText(
+//                    this@WalkActivity,
+//                    "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+//
+//            override fun onResponse(
+//                call: Call<CreateWalkingResultModel>,
+//                response: Response<CreateWalkingResultModel>
+//            ) {
+//                val error = response.body()?.error
+//                val walkingId = response.body()?.walkingId
+//                Log.d("ERROR", error.toString())
+//
+//                // 등록에 실패했을 때 후 처리
+//                if (error == 1) {
+//                    Toast.makeText(
+//                        this@WalkActivity,
+//                        "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//
+//                // 산책 등록 후 처리 - 액티비티 이동
+//                if (error == null || error == 0) {
+//                    Toast.makeText(
+//                        this@WalkActivity,
+//                        "3초 후 산책이 종료됩니다.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    timer(period = 3000, initialDelay = 3000) {
+//                        val intent = Intent(this@WalkActivity, Statics::class.java)
+//                        intent.putExtra("walkingId", walkingId)
+//                        startActivity(intent)
+//                        finish()
+//                        cancel()
+//                    }
+//                }
+//            }
+//        })
+//    }
 
 
     // 배변활동 표시
