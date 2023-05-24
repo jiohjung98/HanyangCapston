@@ -82,8 +82,6 @@ class ServiceFragment : Fragment() {
                     .commit()
             }
         }
-
-
         return binding.root
     }
 
@@ -120,13 +118,13 @@ class ServiceFragment : Fragment() {
             }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-//    }
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    }
 }

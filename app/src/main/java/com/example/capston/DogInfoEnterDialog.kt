@@ -400,7 +400,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.bornSpinner.adapter = ageAdapter
 
         binding.bornSpinner.setSelection(ageAdapter.count)
-        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(80f).toInt()
+        binding.bornSpinner.dropDownVerticalOffset = dipToPixels(38f).toInt()
 
     }
 

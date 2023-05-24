@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="PawPaw"
                 android:textColor="#FF974C"
-                android:fontFamily="@font/dungeon"
+                android:fontFamily="@font/real"
                 android:layout_marginStart="8dp"
                 android:textAppearance="@style/some_id"
                 android:textSize="24dp"

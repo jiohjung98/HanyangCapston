@@ -65,25 +65,18 @@ class NaviMypageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        _binding = FragmentNaviMypageBinding.inflate(inflater, container, false)
-//        val view = binding.root
-//        return view
         binding = FragmentNaviMypageBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        binding.service.setOnClickListener{
-//            childFragmentManager.beginTransaction().apply {
-//                replace(R.id.my_page_fr, serviceFragment)
-//                addToBackStack(null)
-//                commit()
-//            }
+        binding.service.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
-                    replace(R.id.main_frm, serviceFragment)
+                replace(R.id.main_frm, serviceFragment)
                     .addToBackStack(null)
                     .commit()
             }
         }
 
-        binding.changePw.setOnClickListener{
+        binding.changePw.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
                 replace(R.id.main_frm, changePwFragment)
                     .addToBackStack(null)
@@ -91,15 +84,20 @@ class NaviMypageFragment : Fragment() {
             }
         }
 
-        binding.dogAdmin.setOnClickListener{
+        binding.dogAdmin.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
                 replace(R.id.main_frm, wroteFragment)
                     .addToBackStack(null)
                     .commit()
             }
         }
-        return binding.root
+
+//        val toolbarLine = view.findViewById<View>(R.id.toolbarline)
+//        toolbarLine?.visibility = View.GONE // 또는 View.INVISIBLE
+
+        return view
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -154,9 +152,9 @@ class NaviMypageFragment : Fragment() {
         breed.text = snapshot.child("breed").value.toString()
         age.text = snapshot.child("born").value.toString() + "년생"
         if (snapshot.child("gender").value == 1)
-            gender.text = "♂"
+            gender.text = "남아"
         else
-            gender.text = "♀"
+            gender.text = "여아"
     }
 
     private fun invalidDog(){
@@ -205,7 +203,7 @@ class NaviMypageFragment : Fragment() {
     // DB에서 받아와서 정보 할당하기
     private fun getFromDB(){
         //카카오로 로그인 시, 마이페이지 프래그먼트에서 이름 띄워주기(무조건 여기(onActivityCreated)에 선언해줘야 오류 안남)
-        val nickname = requireView().findViewById<TextView>(R.id.receive_name) // 로그인 버튼
+//        val nickname = requireView().findViewById<TextView>(R.id.receive_name) // 로그인 버튼
 //        val petname = requireView().findViewById<TextView>(R.id.receive_dog_name)
 //        val breed = requireView().findViewById<TextView>(R.id.receive_breed)
 //        val gender = requireView().findViewById<TextView>(R.id.receive_gender)
@@ -216,7 +214,7 @@ class NaviMypageFragment : Fragment() {
                 // 데이터가 변경되면 리스너가 감지함
                 // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
                 // 유저이름 불러오기
-                nickname.text = snapshot.child("username").value.toString()
+//                nickname.text = snapshot.child("username").value.toString()
                 // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
 //                petname.text = snapshot.child("pet_list").child("0").child("pet_name").value.toString()
 //                breed.text = snapshot.child("pet_list").child("0").child("breed").value.toString()
@@ -234,6 +232,7 @@ class NaviMypageFragment : Fragment() {
     // fragment 액션바 없애주기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
 //        (activity as AppCompatActivity).supportActionBar?.hide()
 
         // 현재 반려견 인덱스 불러오기
@@ -243,6 +242,8 @@ class NaviMypageFragment : Fragment() {
         breed = binding.walkBreed
         gender = binding.walkGender
         age = binding.walkAge
+
+
     }
 
     private fun onClick(view: View?) {
