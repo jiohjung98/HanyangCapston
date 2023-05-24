@@ -5,12 +5,14 @@ import OnItemClickListener
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,7 @@ import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
+import com.google.firebase.functions.FirebaseFunctions
 import com.google.type.LatLng
 import kotlinx.android.synthetic.main.activity_tracking.*
 import kotlinx.android.synthetic.main.layout_community_rc_view_item.*
@@ -36,9 +39,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.daum.mf.map.api.*
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.*
 
 class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
@@ -47,12 +53,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     var listen: MarkerEventListener? = null
 
     var mapView: MapView? = null
+    val _mapView get() = mapView
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
     private var currentLocation: MapPoint? = null
 
     //firebase
     private var database : DatabaseReference = FirebaseDatabase.getInstance().reference
+    private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
 
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -65,18 +73,29 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     private lateinit var binding: ActivityTrackingBinding
 
+    // 이전 액티비티 전달값
     private var breed : String? = null
+    private var imageUrl : String? = null
+    private var address2 : String? = null
+
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var recyclerView: RecyclerView
     private lateinit var markerList: MutableList<MarkerData>
+    val _markerList get() = markerList
     private lateinit var markerAdapter: MarkerAdapter
 
+    private var postImages = ArrayList<String>()
+    private var postKeys = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        breed = intent.getStringExtra("breed")!!.trim()
+        imageUrl = intent.getStringExtra("imageUrl")!!.trim()
+        address2 = intent.getStringExtra("address2")!!.trim()
 
         val bottomSheetView = findViewById<View>(R.id.bottomSheet)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
@@ -120,8 +139,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             }
         })
 
-
-        breed = intent.getStringExtra("breed")!!.trim()
 
         listen = MarkerEventListener(this)
 
@@ -276,6 +293,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             val lat = childSnapshot.child("latitude").getValue(Double::class.java)
                             val lon = childSnapshot.child("longitude").getValue(Double::class.java)
 
+                            // 쿼리한 포스트의 이미지url 저장
+                            postImages.add(imageUrl!!)
+                            postKeys.add(childSnapshot.key!!)
+
                             if (date != null && time != null && breed != null && imageUrl != null && lat != null && lon != null) {
                                 val coordinate = "$lat,$lon"
                                 // 중복 체크
@@ -298,6 +319,8 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                     }
                     // 마커 데이터가 변경되었으므로, 어댑터에 변경 내용을 알려줍니다.
                     markerAdapter.notifyDataSetChanged()
+                    // for문 종료 = 모든 쿼리 끝난 뒤 유사도 체크
+                    similarity()
                 }
                 override fun onCancelled(error: DatabaseError) {
                     // 오류 처리
@@ -308,7 +331,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     /*
      말풍선에 표시할 정보 세팅
      */
-    private fun setBalloon(snapshot: DataSnapshot){
+    fun setBalloon(snapshot: DataSnapshot){
 
         val imageUrl = snapshot.child("pet_info").child("image_url").getValue(String::class.java)!!
         val date = snapshot.child("date").getValue(String::class.java)
@@ -437,6 +460,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
+    override fun onBackPressed() {
+        goToMain()
+    }
+
     fun goToMain() {
         val dialog = Dialog(this)
         // 다이얼로그 테두리 둥글게 만들기
@@ -459,5 +486,20 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun similarity(){
+        val data = hashMapOf(
+            "target_image" to this.imageUrl,
+            "query_images" to postImages
+        )
+        functions.getHttpsCallable("similarityCheck")
+            .call(data)
+            .addOnSuccessListener { task->
+                Log.d("similarity",task.data.toString())
+            }
+            .addOnFailureListener {
+                Log.d("similarity","FAIL")
+            }
     }
 }

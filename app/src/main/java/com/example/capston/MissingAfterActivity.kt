@@ -14,25 +14,27 @@ class MissingAfterActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMissingAfterBinding
 
-    private var imageUrl : String? = null
-    private var enteredBreed : String? = null
+
     private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
 
     private var breed : String? = null
+    private var imageUrl : String? = null
+    private var address2 : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMissingAfterBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        breed = intent.getStringExtra("breed")
-
-        imageUrl = intent.getStringExtra("url")
-        enteredBreed = intent.getStringExtra("EnteredBreed")?.trim()
+        breed = intent.getStringExtra("breed")!!.trim()
+        imageUrl = intent.getStringExtra("imageUrl")!!.trim()
+        address2 = intent.getStringExtra("address2")!!.trim()
 
         viewBinding.goNextBtn.setOnClickListener {
             val intent = Intent(this, TrackingActivity::class.java)
             intent.putExtra("breed",breed)
+            intent.putExtra("imageUrl",imageUrl)
+            intent.putExtra("address2",address2)
             startActivity(intent)
             finish()
         }
@@ -42,8 +44,6 @@ class MissingAfterActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }, 3000)
 
-        if(imageUrl != null)
-            sendToServer(imageUrl!!)
     }
 
     /*
@@ -61,25 +61,11 @@ class MissingAfterActivity : AppCompatActivity() {
             .addOnSuccessListener { task->
                 val result = task.data.toString()
                 Log.d("인공지능 결과",result)
-                checkEqual(result)
             }
             .addOnFailureListener {
                 Log.d("인공지능 결과","FAIL")
             }
     }
 
-    // 인공지능 결과와 입력한 견종이 같은지 확인
-    private fun checkEqual(result : String){
-        val intent = Intent(this, TrackingActivity::class.java)
-        intent.putExtra("breed",breed)
-        startActivity(intent)
-        finish()
 
-        if(enteredBreed.equals(result.trim()) == true){
-
-        }
-        else{
-
-        }
-    }
 }
