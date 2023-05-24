@@ -367,19 +367,19 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         // 최초(아무값도 없을때)로 실행 됐을때도 감지 됨
         // 반려견정보 불러오기 -> 현재 등록된 첫번째 반려견 정보 불러옴, 이후 반려견 추가된다면 변경할 필요O
         petname.text = snapshot.child("pet_name").value.toString()
-        breed.text = snapshot.child("breed").value.toString()
-        age.text = snapshot.child("born").value.toString() + "년생"
+        breed.text = "견종: " + snapshot.child("breed").value.toString()
+        age.text = "출생: " + snapshot.child("born").value.toString() + "년생"
         if (snapshot.child("gender").value == 1)
-            gender.text = "남아"
+            gender.text = "성별:" + "남아"
         else
-            gender.text = "여아"
+            gender.text = "성별: "+ "여아"
     }
 
     private fun invalidDog(){
         Log.d("등록 없음","")
         binding.registerBtn.visibility = View.VISIBLE
-        binding.walkAgeSlash.visibility = View.INVISIBLE
-        binding.walkBreedSlash.visibility = View.INVISIBLE
+//        binding.walkAgeSlash.visibility = View.INVISIBLE
+//        binding.walkBreedSlash.visibility = View.INVISIBLE
         binding.addingBtn.visibility = View.INVISIBLE
         binding.addingBtn.isEnabled = false
         binding.camera.visibility = View.INVISIBLE

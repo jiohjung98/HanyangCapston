@@ -76,7 +76,7 @@
         app:layout_constraintStart_toEndOf="@+id/number"
         app:layout_constraintTop_toTopOf="@+id/number"
         app:layout_constraintBottom_toBottomOf="@id/number"
-        android:text=""
+        android:text="01028515729"
         android:textColor="@color/black"
         android:textSize="13sp"
         android:textStyle="bold"/>

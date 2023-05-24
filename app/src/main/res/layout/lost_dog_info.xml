@@ -207,7 +207,7 @@
             android:layout_width="match_parent"
             android:layout_height="35sp"
             android:hint="연락처를 입력해주세요."
-            android:inputType="text"
+            android:inputType="number"
             android:textSize="14sp"
             android:textColorHint="#808080"
             android:background="@drawable/info_edittext_rounded_corner_rectangle"

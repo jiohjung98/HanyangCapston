@@ -270,29 +270,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         addressAdmin = address[0]
         addressLocality = address[1]
         addressThoroughfare = address[2]
-//        val pref = this.getPreferences(Context.MODE_PRIVATE)
-//        val edit = pref.edit()
-//        edit.putString("addressAdmin", address[0])
-//        edit.putString("addressLocality", address[1])
-//        edit.putString("addressThoroughfare", address[2])
-//        edit.apply()
-    }
-
-    // 위도, 경도를 거리로 변환 - 리턴 값: Meter 단위
-    private fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6372.8;
-        val dLat = Math.toRadians(lat2 - lat1);
-        val dLon = Math.toRadians(lon2 - lon1);
-        val rLat1 = Math.toRadians(lat1);
-        val rLat2 = Math.toRadians(lat2);
-        var dist = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(rLat1) * cos(rLat2);
-        dist = 2 * asin(sqrt(dist))
-
-        return r * dist * 1000
-    }
-
-    private fun meterToKillo(meter: Double): Double {
-        return meter / 1000
     }
 
     // 실종/목격 플래그 반환
@@ -305,8 +282,6 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         val marker = MapPOIItem().apply {
             markerType = MapPOIItem.MarkerType.CustomImage
             customImageResourceId = R.drawable.marker_nonclick           // 커스텀 마커 이미지
-//            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양 (커스텀)
-//            customSelectedImageResourceId = R.drawable.marker_click    // 클릭 시 커스텀 마커 이미지
             isCustomImageAutoscale = true
             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
             itemName = "실종견"

@@ -8,14 +8,18 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.databinding.ActivityTrackingBinding
@@ -247,50 +251,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     /*
      주소 동일한 witness post 가져오기
      */
-//    private fun queryMarkers(){
-//        markerList.clear() // 기존 마커 정보를 모두 제거
-//
-//        //witness 중 주소(구) 동일한 post 가져오기
-//        database.child("post").child("witness").orderByChild("address2")
-//            .equalTo(addressThoroughfare).addListenerForSingleValueEvent(object:ValueEventListener{
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    //snapshot : 퀴리결과모두
-//                    //childSnapshot : 결과 중 한개
-//                    for(childSnapshot in snapshot.children){
-//                        // 가져온 데이터를 활용하여 원하는 작업을 수행합니다.
-//                        // 견종이 동일한 데이터
-////                    Log.d("queryMarker", childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim())
-//                        if(childSnapshot.child("pet_info").child("breed").getValue(String::class.java)!!.trim().equals(breed)) {
-//                            // 좌표값 전달
-//                            Log.d("queryMarker", breed!!)
-//                            setBalloon(childSnapshot)
-//                            // 마커 데이터 생성
-//                            val date = childSnapshot.child("date").getValue(String::class.java)
-//                            val time = snapshot.child("time").getValue(String::class.java)
-//                            val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
-//                            val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
-//                            val lat = childSnapshot.child("latitude").getValue(Double::class.java)
-//                            val lon = childSnapshot.child("longitude").getValue(Double::class.java)
-//
-//                            if (date != null && breed != null && imageUrl != null && lat != null && lon != null) {
-//                                val markerData = MarkerData(
-//                                    time = date,
-//                                    breed = breed,
-//                                    imageUrl = imageUrl,
-//                                    latitude = lat,
-//                                    longitude = lon
-//                                )
-//                                markerList.add(markerData)
-//                            }
-//                        }
-//                    }
-//                }
-//                override fun onCancelled(error: DatabaseError) {
-//                    TODO("Not yet implemented")
-//                }
-//            })
-//    }
-
     private fun queryMarkers() {
         markerList.clear() // 기존 마커 정보를 모두 제거
 
@@ -339,13 +299,12 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                     // 마커 데이터가 변경되었으므로, 어댑터에 변경 내용을 알려줍니다.
                     markerAdapter.notifyDataSetChanged()
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     // 오류 처리
                 }
             })
     }
-    
+
     /*
      말풍선에 표시할 정보 세팅
      */
@@ -420,6 +379,33 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
         ) {
+            val dialog = Dialog(context)
+            // 다이얼로그 테두리 둥글게 만들기
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+            dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+            dialog.setContentView(R.layout.markerclick_spotdog)
+
+            val btnCall = dialog.findViewById<TextView>(R.id.call_btn)
+            val receiveNum = dialog.findViewById<TextView>(R.id.phone_receive)
+
+            // 전화번호 표시로 변경
+            receiveNum.addTextChangedListener(PhoneNumberFormattingTextWatcher())
+
+            // 전화걸기 화면 이동
+            btnCall.setOnClickListener {
+                val telNumber = "${receiveNum.text}"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:$telNumber"))
+                context.startActivity(intent)
+                dialog.dismiss()
+            }
+
+            val btnClose = dialog.findViewById<TextView>(R.id.close_btn)
+            btnClose.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
 
         override fun onDraggablePOIItemMoved(
