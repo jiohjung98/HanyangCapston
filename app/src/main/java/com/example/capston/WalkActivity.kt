@@ -1,6 +1,7 @@
 package com.example.capston
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -8,6 +9,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,12 +27,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityWalkBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_walk.*
 import net.daum.mf.map.api.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
 import kotlin.math.*
 
@@ -36,11 +44,12 @@ import kotlin.math.*
  * 다이얼로그에서 산책 시작하고나서 나오는 화면, 지도
  */
 class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
-    MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener {
+    MapView.MapViewEventListener {
 
     private val RequestPermissionCode = 1
     private var mapView: MapView? = null
     private var polyline: MapPolyline? = null
+    // 현재위치 포인트
     private var mapPoint: MapPoint? = null
     private var prevLat: Double? = null
     private var prevLon: Double? = null
@@ -49,7 +58,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private var isStart: Boolean = false
     private var isPause: Boolean = false
     private var tapTimer: Timer? = null
-    private val route = ArrayList<ArrayList<Double>>()
+    private val route = ArrayList<Pair<Double,Double>>()
     private val toiletLoc = ArrayList<ArrayList<Double>>()
     private val walkingAmounts = ArrayList<Double>()
     private var walkingTimer: Timer? = null
@@ -65,6 +74,16 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private var fullAmount = ArrayList<Double>()
 
     lateinit var viewBinding: ActivityWalkBinding
+
+    // 산책중 업데이트 관련
+    private val handler = Handler(Looper.getMainLooper())
+    private val delay = 1000L // 1초
+
+    // 이동평균 스무딩
+    private val locationLatQueue = ArrayDeque<Double>()
+    private val locationLongQueue = ArrayDeque<Double>()
+    private var lastestPoint: MapPoint? = null
+    private val MAX_DISTANCE : Double = 5.0 // 튈 경우 방지하는 쓰레시홀드
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
@@ -105,7 +124,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             isStart = false
             if (walkingDistance != 0.0) {
                 finishWalking()
-                submitResult()
+//                submitResult()
             }
             pauseFab.visibility = View.GONE
             toiletFab.visibility = View.GONE
@@ -122,13 +141,20 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         camera_btn.setOnClickListener {
             goToMain()
         }
-    }
 
-    fun findAddress() {
-        val mapReverseGeoCoder =
-            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-        mapReverseGeoCoder.startFindingAddress()
     }
+//
+//    fun findAddress() {
+//        val mapReverseGeoCoder =
+//            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
+//        mapReverseGeoCoder.startFindingAddress()
+//    }
+//    fun findAddress() {
+//        val mapReverseGeoCoder =
+//            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
+//
+//        mapReverseGeoCoder.startFindingAddress()
+//    }
 
     private fun initView() {
         // 위치 권한 설정 확인
@@ -157,6 +183,105 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 221, 135, 69)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startLocationUpdates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    private fun startLocationUpdates() {
+        handler.postDelayed(locationUpdateRunnable, delay)
+    }
+
+    private fun stopLocationUpdates() {
+        handler.removeCallbacks(locationUpdateRunnable)
+    }
+
+    private val locationUpdateRunnable = object : Runnable {
+        override fun run() {
+            if(mapPoint!=null) {
+                // 폴리라인, 정보창 업데이트
+                smoothLocationUpdate(mapPoint!!)
+            }
+            handler.postDelayed(this, delay)
+        }
+    }
+
+    private fun smoothLocationUpdate(p1 : MapPoint) {
+        // lastestPoint 가장 최근 유효한 위치포인트
+        if(lastestPoint != null){
+            // 최근위치와 현재 위치 간 거리차이가 10m 미만일때만
+            if(haversine(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude,
+                lastestPoint!!.mapPointGeoCoord.latitude,lastestPoint!!.mapPointGeoCoord.longitude) < MAX_DISTANCE){
+
+                locationLatQueue.offer(p1.mapPointGeoCoord.latitude)
+                locationLongQueue.offer(p1.mapPointGeoCoord.longitude)
+                if (locationLatQueue.size > 10) {
+                    locationLatQueue.poll()
+                    locationLongQueue.poll()
+                }
+
+                // 위치 정보의 평균 계산
+                var sumLat = locationLatQueue.sum()
+                var sumLng = locationLongQueue.sum()
+
+                val smoothedLat = sumLat / locationLatQueue.size
+                val smoothedLng = sumLng / locationLongQueue.size
+
+                lastestPoint = p1
+
+                // 사용자 정의 로직을 통한 위치 처리
+                updateUI(smoothedLat,smoothedLng)
+            }
+        } else{
+            locationLatQueue.offer(p1.mapPointGeoCoord.latitude)
+            locationLongQueue.offer(p1.mapPointGeoCoord.longitude)
+            lastestPoint = p1
+            updateUI(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude)
+        }
+    }
+
+
+    private fun updateUI(lat: Double, lon: Double){
+        val smoothPt = MapPoint.mapPointWithGeoCoord(lat,lon)
+
+//            val lat = mapPoint!!.mapPointGeoCoord.latitude
+//            val lon = mapPoint!!.mapPointGeoCoord.longitude
+
+        polyline!!.addPoint(smoothPt)
+        mapView!!.removePolyline(polyline)
+        mapView!!.addPolyline(polyline)
+
+        route.add(Pair(lat, lon))
+
+        if (prevLat == null && prevLon == null) {
+            prevLat = lat
+            prevLon = lon
+        } else {
+            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+            // 이동 거리 표시
+            walkingDistance += distance
+            if (walkingDistance < 1000) {
+                distanceId.text = String.format("%.1f", walkingDistance)
+            } else {
+                digitId.text = "km"
+                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+            }
+            // 소모 칼로리 표시
+            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+            Log.d("태그", "칼로리: " + walkingCalorie)
+            calorieView.text = String.format("%.2f", walkingCalorie)
+
+            prevLat = lat
+            prevLon = lon
+        }
+
     }
 
     // 일시 정지
@@ -201,58 +326,58 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         })
     }
 
-    private fun submitResult() {
-        val pref = getSharedPreferences("pref", MODE_PRIVATE)
-        val userToken = pref.getString("userToken", "")
-        val walkingRetrofit = WalkingRetrofitCreators(this).WalkingRetrofitCreator()
-        walkingRetrofit.createWalking(
-            userToken!!, walkingCalorie, walkingDistance, time, walkingAmounts,
-            addressAdmin, addressLocality, addressThoroughfare, animal, route, toiletLoc
-        ).enqueue(object : Callback<CreateWalkingResultModel> {
-            override fun onFailure(call: Call<CreateWalkingResultModel>, t: Throwable) {
-                Log.d("DEBUG", " Walking Retrofit failed!!")
-                Toast.makeText(
-                    this@WalkActivity,
-                    "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            override fun onResponse(
-                call: Call<CreateWalkingResultModel>,
-                response: Response<CreateWalkingResultModel>
-            ) {
-                val error = response.body()?.error
-                val walkingId = response.body()?.walkingId
-                Log.d("ERROR", error.toString())
-
-                // 등록에 실패했을 때 후 처리
-                if (error == 1) {
-                    Toast.makeText(
-                        this@WalkActivity,
-                        "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                // 산책 등록 후 처리 - 액티비티 이동
-                if (error == null || error == 0) {
-                    Toast.makeText(
-                        this@WalkActivity,
-                        "3초 후 산책이 종료됩니다.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    timer(period = 3000, initialDelay = 3000) {
-                        val intent = Intent(this@WalkActivity, Statics::class.java)
-                        intent.putExtra("walkingId", walkingId)
-                        startActivity(intent)
-                        finish()
-                        cancel()
-                    }
-                }
-            }
-        })
-    }
+//    private fun submitResult() {
+//        val pref = getSharedPreferences("pref", MODE_PRIVATE)
+//        val userToken = pref.getString("userToken", "")
+//        val walkingRetrofit = WalkingRetrofitCreators(this).WalkingRetrofitCreator()
+//        walkingRetrofit.createWalking(
+//            userToken!!, walkingCalorie, walkingDistance, time, walkingAmounts,
+//            addressAdmin, addressLocality, addressThoroughfare, animal, route, toiletLoc
+//        ).enqueue(object : Callback<CreateWalkingResultModel> {
+//            override fun onFailure(call: Call<CreateWalkingResultModel>, t: Throwable) {
+//                Log.d("DEBUG", " Walking Retrofit failed!!")
+//                Toast.makeText(
+//                    this@WalkActivity,
+//                    "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+//
+//            override fun onResponse(
+//                call: Call<CreateWalkingResultModel>,
+//                response: Response<CreateWalkingResultModel>
+//            ) {
+//                val error = response.body()?.error
+//                val walkingId = response.body()?.walkingId
+//                Log.d("ERROR", error.toString())
+//
+//                // 등록에 실패했을 때 후 처리
+//                if (error == 1) {
+//                    Toast.makeText(
+//                        this@WalkActivity,
+//                        "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//
+//                // 산책 등록 후 처리 - 액티비티 이동
+//                if (error == null || error == 0) {
+//                    Toast.makeText(
+//                        this@WalkActivity,
+//                        "3초 후 산책이 종료됩니다.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    timer(period = 3000, initialDelay = 3000) {
+//                        val intent = Intent(this@WalkActivity, Statics::class.java)
+//                        intent.putExtra("walkingId", walkingId)
+//                        startActivity(intent)
+//                        finish()
+//                        cancel()
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     // 배변활동 표시
     private fun toiletActivity() {
@@ -300,44 +425,79 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         if (!isStart || isPause) {
             return
         }
-        val lat = p1!!.mapPointGeoCoord.latitude
-        val lon = p1!!.mapPointGeoCoord.longitude
-
-        route.add(arrayListOf(lat, lon))
+//        val lat = p1!!.mapPointGeoCoord.latitude
+//        val lon = p1.mapPointGeoCoord.longitude
+//
+//        route.add(Pair(lat, lon))
 
         mapPoint = p1
-        polyline!!.addPoint(p1)
-        p0!!.removePolyline(polyline)
-        p0.addPolyline(polyline)
 
-        if (prevLat == null && prevLon == null) {
-            prevLat = lat
-            prevLon = lon
-            return
-        } else {
-            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
+//
+//        if (prevLat == null && prevLon == null) {
+//            prevLat = lat
+//            prevLon = lon
+//            return
+//        } else {
+//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+//
+//            // 이동 거리 표시
+//            walkingDistance += distance
+//            if (walkingDistance < 1000) {
+//                distanceId.text = String.format("%.1f", walkingDistance)
+//            } else {
+//                digitId.text = "km"
+//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+//            }
+//
+//            // 소모 칼로리 표시
+//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+//            Log.d("태그", "칼로리: " + walkingCalorie)
+//            calorieView.text = String.format("%.2f", walkingCalorie)
+//                prevLat = lat
+//                prevLon = lon
+//        }
+//
+//        // 변환 주소 가져오기
+//        if (!getAddress) {
+//            findAddress()
+//        }
 
-            // 이동 거리 표시
-            walkingDistance += distance
-            if (walkingDistance < 1000) {
-                distanceId.text = String.format("%.1f", walkingDistance)
-            } else {
-                digitId.text = "km"
-                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-            }
 
-            // 소모 칼로리 표시
-            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-            Log.d("태그", "칼로리: " + walkingCalorie)
-            calorieView.text = String.format("%.2f", walkingCalorie)
-                prevLat = lat
-                prevLon = lon
-        }
+//        polyline!!.addPoint(p1)
+//        p0!!.removePolyline(polyline)
+//        p0.addPolyline(polyline)
 
-        // 변환 주소 가져오기
-        if (!getAddress) {
-            findAddress()
-        }
+//        if (prevLat == null && prevLon == null) {
+//            prevLat = lat
+//            prevLon = lon
+//            return
+//        } else {
+//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
+//            // 이동 거리 표시
+//            walkingDistance += distance
+//            if (walkingDistance < 1000) {
+//                distanceId.text = String.format("%.1f", walkingDistance)
+//            } else {
+//                digitId.text = "km"
+//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
+//            }
+//            // 소모 칼로리 표시
+//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
+//            Log.d("태그", "칼로리: " + walkingCalorie)
+//            calorieView.text = String.format("%.2f", walkingCalorie)
+////            // 충족량 표시
+//////            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
+////            amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
+//
+//
+////            if (prevLat != 0.0) {
+//                prevLat = lat
+//                prevLon = lon
+////            }
+//        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -463,22 +623,22 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
     }
 
-    override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
-    }
-
-    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
-        getAddress = true
-        val address = p1!!.split(" ")
-        addressAdmin = address[0]
-        addressLocality = address[1]
-        addressThoroughfare = address[2]
-        val pref = getSharedPreferences("pref", MODE_PRIVATE)
-        val edit = pref.edit()
-        edit.putString("addressAdmin", address[0])
-        edit.putString("addressLocality", address[1])
-        edit.putString("addressThoroughfare", address[2])
-        edit.apply()
-    }
+//    override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
+//    }
+//
+//    override fun onReverseGeoCoderFoundAddress(p0: MapReverseGeoCoder?, p1: String?) {
+//        getAddress = true
+//        val address = p1!!.split(" ")
+//        addressAdmin = address[0]
+//        addressLocality = address[1]
+//        addressThoroughfare = address[2]
+//        val pref = getSharedPreferences("pref", MODE_PRIVATE)
+//        val edit = pref.edit()
+//        edit.putString("addressAdmin", address[0])
+//        edit.putString("addressLocality", address[1])
+//        edit.putString("addressThoroughfare", address[2])
+//        edit.apply()
+//    }
 
     override fun onBackPressed() {
         goToMain()
@@ -526,10 +686,13 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialogPolyline.tag = 1000
 
             // 폴리라인 좌표 가져오기
-            val polylinePoints = polyline?.mapPoints
+            val polylinePoints = polyline?.mapPoints!!
             dialogPolyline.addPoints(polylinePoints)
 
             dialogMapView.addPolyline(dialogPolyline)
+
+            Log.d("ROUTE",route.toString())
+            saveRoute()
 
             // 다이얼로그 크기 조정
             val params: WindowManager.LayoutParams = dialog2.window!!.attributes
@@ -562,7 +725,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             Handler(Looper.getMainLooper()).postDelayed({
                 // 다이얼로그 카카오맵뷰 제거
                 dialogMapViewContainer.removeAllViews()
-
+                dialog2.dismiss()
                 val intent = Intent(this, MainActivity::class.java)
                 this.startActivity(intent)
                 (this as Activity).finish()
@@ -582,6 +745,15 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         }
 
         dialog.show()
+    }
+
+    private fun saveRoute(){
+
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val database = FirebaseDatabase.getInstance().reference.child("route").child(uid)
+        database.get().addOnCompleteListener { task ->
+            database.child(task.result.childrenCount.toString()).setValue(route)
+        }
     }
 
 }

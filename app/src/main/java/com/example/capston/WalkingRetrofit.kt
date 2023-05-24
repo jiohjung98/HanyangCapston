@@ -15,7 +15,7 @@ interface WalkingRetrofit {
                       @Field("addressLocality") addressLocality: String,
                       @Field("addressThoroughfare") addressThoroughfare: String,
                       @Field("animal") animal: ArrayList<String>,
-                      @Field("route") route: ArrayList<ArrayList<Double>>,
+                      @Field("route") route: ArrayList<Pair<Double,Double>>,
                       @Field("toiletLoc") toiletLoc: ArrayList<ArrayList<Double>>
     ): Call<CreateWalkingResultModel>
 
