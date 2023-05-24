@@ -185,7 +185,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="계정관리"
-        android:textSize="15sp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/real"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_line"
         android:layout_marginStart="35sp"
@@ -197,7 +199,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
         android:text="반려견 관리"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
         android:layout_marginStart="35sp"
@@ -218,9 +219,8 @@
         android:id="@+id/change_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15sp"
+        android:layout_marginTop="12sp"
         android:text="비밀번호 변경"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
         android:layout_marginStart="35sp"
@@ -237,17 +237,17 @@
 <!--        android:layout_marginRight="35dp"-->
 <!--        android:background="@drawable/confirm_btn" />-->
 
-        <View
-            android:id="@+id/admin_line"
-            android:layout_width="0dp"
-            android:layout_height="1sp"
-            android:layout_marginTop="25sp"
-            android:layout_marginStart="30sp"
-            android:layout_marginEnd="30sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/change_pw"
-            android:background="#DADADA" />
+<!--        <View-->
+<!--            android:id="@+id/admin_line"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="1sp"-->
+<!--            android:layout_marginTop="25sp"-->
+<!--            android:layout_marginStart="30sp"-->
+<!--            android:layout_marginEnd="30sp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/change_pw"-->
+<!--            android:background="#DADADA" />-->
 
 
     <TextView
@@ -255,11 +255,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="서비스설정"
-        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/real"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/admin_line"
+        app:layout_constraintTop_toBottomOf="@+id/change_pw"
         android:layout_marginStart="35sp"
-        android:layout_marginTop="20sp" />
+        android:layout_marginTop="40sp" />
 
 
     <TextView
@@ -268,7 +270,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
         android:text="서비스 약관"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/serviceTxt"
@@ -289,10 +290,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="자주 묻는 질문"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
-        android:layout_marginTop="15sp"
+        android:layout_marginTop="12sp"
         app:layout_constraintStart_toStartOf="@id/serviceTxt"
         app:layout_constraintTop_toBottomOf="@+id/service" />
 
@@ -306,28 +306,30 @@
 <!--        android:layout_marginRight="35dp"-->
 <!--        android:background="@drawable/confirm_btn" />-->
 
-    <View
-        android:id="@+id/service_line"
-        android:layout_width="0dp"
-        android:layout_height="1sp"
-        android:layout_marginTop="25sp"
-        android:layout_marginStart="30sp"
-        android:layout_marginEnd="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question"
-        android:background="#DADADA" />
+<!--    <View-->
+<!--        android:id="@+id/service_line"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="1sp"-->
+<!--        android:layout_marginTop="25sp"-->
+<!--        android:layout_marginStart="30sp"-->
+<!--        android:layout_marginEnd="30sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/question"-->
+<!--        android:background="#DADADA" />-->
 
     <TextView
         android:id="@+id/companyTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="고객센터"
-        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/real"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/service_line"
+        app:layout_constraintTop_toBottomOf="@+id/question"
         android:layout_marginStart="35sp"
-        android:layout_marginTop="20sp" />
+        android:layout_marginTop="40sp" />
 
     <TextView
         android:id="@+id/phone"
@@ -335,7 +337,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
         android:text="전화 문의"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/companyTxt"
@@ -345,13 +346,23 @@
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15sp"
+        android:layout_marginTop="12sp"
         android:text="이메일 문의"
-        android:textColor="@color/black"
         android:fontFamily="@font/real"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/companyTxt"
         app:layout_constraintTop_toBottomOf="@+id/phone" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12sp"
+        android:text="정보"
+        android:fontFamily="@font/real"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/companyTxt"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <View
         android:id="@+id/line2"
@@ -361,7 +372,7 @@
         android:layout_marginEnd="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/info"
         android:layout_marginTop="25sp"
         android:background="#DADADA" />
 
@@ -370,6 +381,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="회원탈퇴"
+        android:textSize="14sp"
+        android:fontFamily="@font/real"
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="@+id/line2"
         app:layout_constraintTop_toBottomOf="@+id/line2" />
@@ -379,6 +392,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="로그아웃"
+        android:textSize="14sp"
+        android:fontFamily="@font/real"
         app:layout_constraintEnd_toStartOf="@+id/withdraw"
         app:layout_constraintTop_toTopOf="@+id/withdraw"
         app:layout_constraintEnd_toEndOf="@+id/withdraw"
@@ -390,6 +405,7 @@
         android:layout_height="wrap_content"
         android:text="대표전화: 010-2851-5729"
         android:textSize="12dp"
+        android:fontFamily="@font/real"
         android:layout_marginTop="5sp"
         app:layout_constraintTop_toBottomOf="@+id/location"
         app:layout_constraintStart_toStartOf="@id/teamName"/>
@@ -400,6 +416,7 @@
         android:layout_height="wrap_content"
         android:text="경기 안산시 상록구 한양대학로 55"
         android:textSize="12dp"
+        android:fontFamily="@font/real"
         android:layout_marginTop="8sp"
         app:layout_constraintTop_toBottomOf="@+id/teamName"
         app:layout_constraintStart_toStartOf="@id/teamName"
@@ -412,6 +429,7 @@
         android:layout_marginTop="40sp"
         android:text="인지조화"
         android:textSize="14dp"
+        android:fontFamily="@font/real"
         android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/withdraw"
@@ -422,6 +440,7 @@
         android:layout_height="match_parent"
         android:text="버전: 1.0.1"
         android:textSize="12dp"
+        android:fontFamily="@font/real"
         android:layout_marginTop="5sp"
         android:layout_marginStart="35sp"
         android:layout_marginBottom="20sp"
