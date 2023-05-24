@@ -52,8 +52,8 @@
 
     <ImageView
         android:id="@+id/image_background"
-        android:layout_width="120sp"
-        android:layout_height="120sp"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
         android:layout_marginTop="30sp"
         android:background="@drawable/circle5"
         app:layout_constraintTop_toTopOf="parent"
@@ -65,7 +65,7 @@
             android:id="@+id/profile"
             android:layout_width="0sp"
             android:layout_height="0sp"
-            android:layout_margin="1dp"
+            android:layout_margin="4dp"
             android:background="@drawable/home_mainimage"
             app:layout_constraintStart_toStartOf="@+id/image_background"
             app:layout_constraintEnd_toEndOf="@+id/image_background"
@@ -79,6 +79,7 @@
             android:textColor="@color/black"
             android:fontFamily="@font/real"
             android:textSize="22sp"
+            android:textStyle="bold"
             android:text="ㅇㅇㅇ"
             android:layout_marginTop="20sp"
             app:layout_constraintTop_toBottomOf="@+id/profile"
@@ -101,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/black"
+            android:textColor="#424141"
             android:fontFamily="@font/real"
             android:text="244"
             app:layout_constraintEnd_toStartOf="@+id/walk_age_slash"
@@ -114,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=" / "
-            android:textColor="@color/black"
+            android:textColor="#424141"
             android:fontFamily="@font/real"
             app:layout_constraintTop_toTopOf="@+id/walk_breed"
             app:layout_constraintBottom_toBottomOf="@+id/walk_breed"
@@ -126,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/black"
+            android:textColor="#424141"
             android:fontFamily="@font/real"
             app:layout_constraintTop_toBottomOf="@+id/walk_name"
             android:text="비숑"/>
@@ -138,7 +139,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/real"
             android:text=" / "
-            android:textColor="@color/black"
+            android:textColor="#424141"
             app:layout_constraintBottom_toBottomOf="@+id/walk_breed"
             app:layout_constraintStart_toEndOf="@+id/walk_breed"
             app:layout_constraintTop_toTopOf="@+id/walk_breed" />
@@ -148,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/black"
+            android:textColor="#424141"
             android:fontFamily="@font/real"
             android:text="ㅇㅇ"
             app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
@@ -160,9 +161,9 @@
         android:id="@+id/profile_line"
         android:layout_width="0dp"
         android:layout_height="1sp"
-        android:layout_marginTop="40sp"
-        android:layout_marginStart="30sp"
-        android:layout_marginEnd="30sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="35sp"
+        android:layout_marginEnd="35sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/infoGroup"
@@ -205,6 +206,18 @@
         app:layout_constraintStart_toStartOf="@id/adminTxt"
         app:layout_constraintTop_toBottomOf="@+id/adminTxt" />
 
+    <TextView
+        android:id="@+id/walk_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15sp"
+        android:text="산책 기록"
+        android:fontFamily="@font/real"
+        android:textSize="14sp"
+        android:layout_marginStart="35sp"
+        app:layout_constraintStart_toStartOf="@id/dog_admin"
+        app:layout_constraintTop_toBottomOf="@+id/dog_admin" />
+
 <!--    <androidx.appcompat.widget.AppCompatButton-->
 <!--        android:id="@+id/write_detail_btn"-->
 <!--        android:layout_width="7dp"-->
@@ -224,8 +237,8 @@
         android:fontFamily="@font/real"
         android:textSize="14sp"
         android:layout_marginStart="35sp"
-        app:layout_constraintStart_toStartOf="@id/dog_admin"
-        app:layout_constraintTop_toBottomOf="@+id/dog_admin" />
+        app:layout_constraintStart_toStartOf="@id/walk_record"
+        app:layout_constraintTop_toBottomOf="@+id/walk_record" />
 
 <!--    <androidx.appcompat.widget.AppCompatButton-->
 <!--        android:id="@+id/change_pw_btn"-->
