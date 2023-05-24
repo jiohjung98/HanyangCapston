@@ -56,6 +56,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     private var validGender : Boolean = false
     private var validContent: Boolean= false
     private var validImage: Boolean= false
+    private var validContact: Boolean= false
 
     // 견종선택 리사이클러뷰
     private lateinit var breed_recycleR: RecyclerView
@@ -141,7 +142,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
                 val timePickerDialog = TimePickerDialog(activity, R.style.SpinnerTimePickerStyle, TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                     val selectedDateTime = Calendar.getInstance()
                     selectedDateTime.set(year, month, day, hour, minute)
-                    time = (hour.toString() + ":" + minute)
+                    time = (String.format("%02d",hour.toInt()) + ":" + String.format("%02d",minute.toInt()))
 
                     // 텍스트뷰에 설정된 날짜시간 표시
                     binding.timeInput.text = (date + " " + time)
@@ -152,7 +153,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
 
                     validTime = true
 
-                    checkValid( validBreed, validTime,  validGender, validContent, validImage)
+                    checkValid( validBreed, validTime,  validGender, validContent, validImage, validContact)
 
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
                 timePickerDialog.show()
@@ -163,11 +164,23 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             datePickerDialog.show()
         }
 
+        // 연락처 텍스트 리스너
+        binding.phoneInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                // 이름값 할당
+                post.contact = binding.phoneInput.text.toString()
+                validContact = editable.isNotEmpty()
+                checkValid( validBreed, validTime,  validGender, validContent, validImage, validContact)
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
+
         // 상세내용 텍스트 리스너
         binding.contentInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validContent = true
-                checkValid( validBreed, validTime,  validGender, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage, validContact)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -330,7 +343,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
                         Log.d("스피너2", "$validGender")
                     }
                 }
-                checkValid( validBreed, validTime,  validGender, validContent, validImage)
+                checkValid( validBreed, validTime,  validGender, validContent, validImage,validContact)
                 // 성별 저장
 //                Log.d("GENDER", "${position.toString()}")
                 if(position==1) // 수
@@ -409,7 +422,7 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
-        checkValid(validBreed, validTime,  validGender, validContent, validImage)
+        checkValid(validBreed, validTime,  validGender, validContent, validImage, validContact)
     }
 
     /*
@@ -532,9 +545,9 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
     /*
      * 확인버튼 검사
      */
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean){
-        Log.d("Valid", (v1 && v2 && v3 && v4 && v5).toString())
-        if(v1 && v2 && v3 && v4 && v5){
+    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean, v6:Boolean){
+        Log.d("Valid", (v1 && v2 && v3 && v4 && v5 && v6).toString())
+        if(v1 && v2 && v3 && v4 && v5 && v6){
             binding.yesBtn.isEnabled = true
             binding.yesBtn.isClickable = true
         } else {

@@ -447,7 +447,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
 
         private fun setBalloon(data : UserPost, category : Int) {
-
             when(category){
                 0 -> { // lost
                     lostBinding.timeText.text = "시간: " + (data.date + " " + data.time)

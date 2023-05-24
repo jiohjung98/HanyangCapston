@@ -56,6 +56,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     private var validBorn : Boolean = false
     private var validContent: Boolean= false
     private var validImage: Boolean= false
+    private var validContact : Boolean= false
 
     // 견종선택 리사이클러뷰
     private lateinit var breed_recycleR: RecyclerView
@@ -153,7 +154,19 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                 // 이름값 할당
                 pet_info.pet_name = binding.nameInput.text.toString()
                 validName = editable.isNotEmpty()
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage, validContact)
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
+        
+        // 연락처 텍스트 리스너
+        binding.phoneInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                // 이름값 할당
+                post.contact = binding.phoneInput.text.toString()
+                validContact = editable.isNotEmpty()
+                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage,validContact)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -174,7 +187,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                 val timePickerDialog = TimePickerDialog(activity, R.style.SpinnerTimePickerStyle, TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                     val selectedDateTime = Calendar.getInstance()
                     selectedDateTime.set(year, month, day, hour, minute)
-                    time = (hour.toString() + ":" + minute)
+                    time = (String.format("%02d",hour.toInt()) + ":" + String.format("%02d",minute.toInt()))
 
                     // 텍스트뷰에 설정된 날짜시간 표시
                     binding.timeInput.text = (date + " " + time)
@@ -185,7 +198,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
                     validTime = true
 
-                    checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                    checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage, validContact)
 
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
                 timePickerDialog.show()
@@ -200,7 +213,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.contentInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 validContent = true
-                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage)
+                checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage, validContact)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -363,7 +376,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                         Log.d("스피너2", "$validGender")
                     }
                 }
-                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage, validContact)
                 // 성별 저장
 //                Log.d("GENDER", "${position.toString()}")
                 if(position==1) // 수
@@ -418,7 +431,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
                         Log.d("스피너3", "$validBorn")
                     }
                 }
-                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+                checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage, validContact)
                 // 출생년도 저장
                 pet_info.born = binding.bornSpinner.selectedItem.toString()
 //                Log.d("BORN YEAR", "${pet_info.born}")
@@ -494,7 +507,7 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         binding.clickUploadText.visibility = View.INVISIBLE
         // 이미지 불러오기 성공했으므로
         validImage = true
-        checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage)
+        checkValid(validName, validBreed, validTime, validGender, validBorn, validContent, validImage, validContact)
     }
 
     /*
@@ -578,9 +591,9 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
     /*
      * 확인버튼 검사
      */
-    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean, v6:Boolean, v7:Boolean){
-        Log.d("Valid", (v1 && v2 && v3 && v4 && v5 && v6 && v7).toString())
-        if(v1 && v2 && v3 && v4 && v5 && v6 && v7){
+    private fun checkValid(v1:Boolean, v2:Boolean, v3:Boolean, v4:Boolean, v5:Boolean, v6:Boolean, v7:Boolean, v8:Boolean){
+        Log.d("Valid", (v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8).toString())
+        if(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8){
             binding.yesBtn.isEnabled = true
             binding.yesBtn.isClickable = true
         } else {
