@@ -12,6 +12,7 @@ import com.bumptech.glide.request.target.Target
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -127,11 +128,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
         }
-
-//        binding.locationBtn.setOnClickListener {
-//            mapView!!.currentLocationTrackingMode =
-//                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-//        }
 
         binding.locationBtn.setOnClickListener {
             mapView?.setMapCenterPoint(currentLocation,true)
@@ -505,11 +501,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
             poiItem: MapPOIItem?,
             buttonType: MapPOIItem.CalloutBalloonButtonType?
         ) {
-//            val data : UserPost = poiItem?.userObject as UserPost
-//            val category = data.category!!
-//            markerDialog(data,category)
-
-
             mapView?.context?.let { context ->
                 val dialog = Dialog(context)
                 // 다이얼로그 테두리 둥글게 만들기
@@ -518,6 +509,30 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
                 dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
                 dialog.setContentView(R.layout.markerclick_lostdog)
+
+                val userPost = poiItem?.userObject as UserPost
+                if (userPost.category == 0) {
+                    dialog.setContentView(R.layout.markerclick_lostdog)
+                    // 실종 마커에 대한 다이얼로그 설정
+                    // ...
+                } else if (userPost.category == 1) {
+                    dialog.setContentView(R.layout.markerclick_spotdog)
+                    // 목격 마커에 대한 다이얼로그 설정
+                    // ...
+                }
+                val btnCall = dialog.findViewById<TextView>(R.id.call_btn)
+                val receiveNum = dialog.findViewById<TextView>(R.id.phone_receive)
+
+                // 전화번호 표시로 변경
+                receiveNum.addTextChangedListener(PhoneNumberFormattingTextWatcher())
+
+                // 전화걸기 화면 이동
+                btnCall.setOnClickListener {
+                    val telNumber = "${receiveNum.text}"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:$telNumber"))
+                    context.startActivity(intent)
+                    dialog.dismiss()
+                }
 
                 val btnClose = dialog.findViewById<TextView>(R.id.close_btn)
                 btnClose.setOnClickListener {

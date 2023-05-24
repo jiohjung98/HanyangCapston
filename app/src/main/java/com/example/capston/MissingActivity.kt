@@ -68,6 +68,7 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
 
+
     // Viewbinding
     private var _binding: ActivityMissingBinding? = null
     internal val binding get() = _binding!!
@@ -122,6 +123,12 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
+
+//        binding.locationBtn.setOnClickListener {
+//            if (mapView != null) {
+//                mapView!!.setMapCenterPoint(currentLocation, true)
+//            }
+//        }
 
         // 좌측 뒤로가기 버튼
         binding.backBtn.setOnClickListener {
@@ -192,6 +199,10 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+
+        p0!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+
         if (!isStart || isPause) {
             return
         }

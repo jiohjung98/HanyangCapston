@@ -60,7 +60,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var addressAdmin: String = ""
     private var addressLocality: String = ""
     private var addressThoroughfare: String = ""
-    private var currentLocation: MapPoint? = null
 
     // 권한
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -90,6 +89,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private lateinit var age : TextView
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
+    private var currentLocation: MapPoint? = null
 
     // 초기값 서울시청
     private var curLat : Double = 37.5667297
@@ -137,9 +137,10 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         weatherLocaction = binding.locTxt
 
         binding.locationBtn.setOnClickListener {
-            mapView?.setMapCenterPoint(currentLocation,true)
+            if (mapView != null) {
+                mapView!!.setMapCenterPoint(currentLocation, true)
+            }
         }
-
         return binding.root
     }
 
@@ -175,48 +176,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-
-//        listen = NaviHomeFragment.MarkerEventListener(mainActivity)
-//
-//        // 뷰 추가 전 기존 뷰 삭제
-//        homecontainer?.removeAllViews()
-//
-//        val kakaoMapView = view.findViewById<MapView>(R.id.walk_map_view)
-//
-//        homecontainer?.addView(kakaoMapView)
-//
-//        kakaoMapView.setPOIItemEventListener(listen)
-//
-//        isSetLocationPermission()
-//        kakaoMapView.setMapViewEventListener(this)
-
-//
-//        kakaoMapView.setZoomLevel(0, true)
-//        kakaoMapView.setCustomCurrentLocationMarkerTrackingImage(
-//            R.drawable.dog_icon_64,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView.setCustomCurrentLocationMarkerImage(
-//            R.drawable.dog_icon_64,
-//            MapPOIItem.ImageOffset(50, 50)
-//        )
-//        kakaoMapView.currentLocationTrackingMode =
-//            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
-//        Log.d("트래킹", kakaoMapView.currentLocationTrackingMode.toString())
-//        kakaoMapView.setCurrentLocationEventListener(this)
-//        polyline = MapPolyline()
-//        polyline!!.tag = 1000
-//        polyline!!.lineColor = Color.argb(255, 103, 114, 241)
-
-
-////       binding?.NaviWalkFragment = this
-//        _binding?.NaviWalkFragment = this
-//        binding?.apply {
-//            temperature = temperatureTv
-////            weatherState = weatherTv
-////            weatherTip = weatherTipTv
-////            weatherIcon = weatherIc
-//        }
 
         binding.walkBtn.setOnClickListener {
             goToWalk()
@@ -727,15 +686,18 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-//        Log.i("onCurrentLocationUpdate","Call")
 
-        currentLocation = p1
+        p0!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+//        Log.i("onCurrentLocationUpdate","Call")
 
         this.curLat = p1?.mapPointGeoCoord!!.latitude
         this.curLon = p1.mapPointGeoCoord!!.longitude
 
         if (!getAddress)
             findAddress(p1)
+
+        currentLocation = p1
 
 
 

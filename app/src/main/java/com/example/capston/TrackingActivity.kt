@@ -49,17 +49,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     var mapView: MapView? = null
     private var polyline: MapPolyline? = null
     var mapPoint: MapPoint? = null
+    private var currentLocation: MapPoint? = null
 
     //firebase
     private var database : DatabaseReference = FirebaseDatabase.getInstance().reference
 
     var REQUIRED_PERMISSIONS = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
-    private val RequestPermissionCode = 1
-    private var isStart: Boolean = false
-    private var isPause: Boolean = false
 
     private var tapTimer: Timer? = null
-    private val route = ArrayList<ArrayList<Double>>()
 
     private var getAddress: Boolean = false
     private var addressAdmin: String = ""
@@ -88,7 +85,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         recyclerView = findViewById(R.id.dogList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         markerList = mutableListOf()
-//        markerAdapter = MarkerAdapter(markerList)
+
+        binding.locationBtn.setOnClickListener {
+            mapView?.setMapCenterPoint(currentLocation,true)
+        }
 
         // itemClickListener를 생성하여 MarkerAdapter에 전달
         markerAdapter = MarkerAdapter(markerList, object : OnItemClickListener {
@@ -154,7 +154,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
-
     }
 
     // 메모리 누수 방지
@@ -187,6 +186,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         if (!getAddress) {
             findAddress(p1!!)
         }
+        currentLocation = p1
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
