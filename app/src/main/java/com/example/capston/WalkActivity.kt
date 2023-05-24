@@ -86,9 +86,10 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private val delay = 1000L // 1초
 
     // 이동평균 스무딩
-    private val locationQueue: Queue<MapPoint> = LinkedList()
+    private val locationLatQueue = ArrayDeque<Double>()
+    private val locationLongQueue = ArrayDeque<Double>()
     private var lastestPoint: MapPoint? = null
-    private val MAX_DISTANCE : Double = 15.0 // 튈 경우 방지하는 쓰레시홀드
+    private val MAX_DISTANCE : Double = 5.0 // 튈 경우 방지하는 쓰레시홀드
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityWalkBinding.inflate(layoutInflater)
@@ -227,20 +228,19 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             if(haversine(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude,
                 lastestPoint!!.mapPointGeoCoord.latitude,lastestPoint!!.mapPointGeoCoord.longitude) < MAX_DISTANCE){
 
-                locationQueue.offer(p1)
-                if (locationQueue.size > 20) {
-                    locationQueue.poll()
+                locationLatQueue.offer(p1.mapPointGeoCoord.latitude)
+                locationLongQueue.offer(p1.mapPointGeoCoord.longitude)
+                if (locationLatQueue.size > 10) {
+                    locationLatQueue.poll()
+                    locationLongQueue.poll()
                 }
 
                 // 위치 정보의 평균 계산
-                var sumLat = 0.0
-                var sumLng = 0.0
-                for (location in locationQueue) {
-                    sumLat += location.mapPointGeoCoord.latitude
-                    sumLng += location.mapPointGeoCoord.longitude
-                }
-                val smoothedLat = sumLat / locationQueue.size
-                val smoothedLng = sumLng / locationQueue.size
+                var sumLat = locationLatQueue.sum()
+                var sumLng = locationLongQueue.sum()
+
+                val smoothedLat = sumLat / locationLatQueue.size
+                val smoothedLng = sumLng / locationLongQueue.size
 
                 lastestPoint = p1
 
@@ -248,7 +248,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 updateUI(smoothedLat,smoothedLng)
             }
         } else{
-            locationQueue.offer(p1)
+            locationLatQueue.offer(p1.mapPointGeoCoord.latitude)
+            locationLongQueue.offer(p1.mapPointGeoCoord.longitude)
             lastestPoint = p1
             updateUI(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude)
         }
