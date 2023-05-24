@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -34,6 +35,8 @@ import com.example.capston.data.UserPost
 import com.example.capston.databinding.BallonLayoutBinding
 import com.example.capston.databinding.FragmentNaviHomeBinding
 import com.example.capston.databinding.LostBalloonLayoutBinding
+import com.example.capston.databinding.MarkerclickLostdogBinding
+import com.example.capston.databinding.MarkerclickSpotdogBinding
 import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
@@ -45,6 +48,7 @@ import net.daum.mf.map.api.*
 import net.daum.mf.map.api.MapView
 import java.util.*
 import com.google.firebase.database.*
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.ballon_layout.view.*
 import kotlinx.android.synthetic.main.lost_balloon_layout.view.*
@@ -102,6 +106,14 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     private var currentLocation: MapPoint? = null
     private var initCurLocUpdate: Boolean = false
     private var firstMoveFinished : Boolean = false
+
+    private var bitmap : Bitmap? = null
+    var getBitmap: Bitmap?
+        get() = bitmap
+        set(value) {
+            bitmap = value
+            // 추가적인 로직 수행 가능
+        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -447,7 +459,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         }
 
         private fun setBalloon(data : UserPost, category : Int) {
-
             when(category){
                 0 -> { // lost
                     lostBinding.timeText.text = "시간: " + (data.date + " " + data.time)
@@ -457,6 +468,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     url.doInput = true
                     url.connect()
                     val bitmap = BitmapFactory.decodeStream(url.inputStream)
+                    fragment.getBitmap = bitmap
 
                     lostBinding.enterImage.setImageBitmap(bitmap)
                     viewBinding = lostBinding
@@ -468,6 +480,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                     url.doInput = true
                     url.connect()
                     val bitmap = BitmapFactory.decodeStream(url.inputStream)
+                    fragment.getBitmap = bitmap
 
                     witBinding.enterImage.setImageBitmap(bitmap)
                     viewBinding = witBinding
@@ -508,17 +521,34 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
                 dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-                dialog.setContentView(R.layout.markerclick_lostdog)
 
+                // 다이얼로그의 정보 설정
                 val userPost = poiItem?.userObject as UserPost
-                if (userPost.category == 0) {
-                    dialog.setContentView(R.layout.markerclick_lostdog)
-                    // 실종 마커에 대한 다이얼로그 설정
-                    // ...
-                } else if (userPost.category == 1) {
-                    dialog.setContentView(R.layout.markerclick_spotdog)
-                    // 목격 마커에 대한 다이얼로그 설정
-                    // ...
+                val petInfo = userPost.pet_info!!
+
+                when(userPost.category){
+                    0 -> {
+                        val binding = MarkerclickLostdogBinding.inflate(fragment.layoutInflater)
+                        binding.nameTitle.text = petInfo.pet_name
+                        binding.breedTitle.text = petInfo.breed
+                        binding.genderText.text = if(petInfo.gender==0) "여아" else "남아"
+                        binding.bornText.text = petInfo.born
+                        binding.timeReceive.text = userPost.date + " " + userPost.time
+                        binding.contentReceive.text = userPost.content
+                        binding.imageArea.setImageBitmap(fragment.getBitmap)
+
+                        dialog.setContentView(binding.root)
+                    }
+                    1 -> {
+                        val binding = MarkerclickSpotdogBinding.inflate(fragment.layoutInflater)
+                        binding.breedTitle.text = petInfo.breed
+                        binding.genderText.text = if(petInfo.gender==0) "여아" else "남아"
+                        binding.timeReceive.text = userPost.date + " " + userPost.time
+                        binding.contentReceive.text = userPost.content
+                        binding.imageArea.setImageBitmap(fragment.getBitmap)
+
+                        dialog.setContentView(binding.root)
+                    }
                 }
                 val btnCall = dialog.findViewById<TextView>(R.id.call_btn)
                 val receiveNum = dialog.findViewById<TextView>(R.id.phone_receive)
@@ -530,6 +560,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 btnCall.setOnClickListener {
                     val telNumber = "${receiveNum.text}"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:$telNumber"))
+                    fragment.onPause()
                     context.startActivity(intent)
                     dialog.dismiss()
                 }

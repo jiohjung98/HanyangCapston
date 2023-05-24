@@ -22,7 +22,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.capston.data.UserPost
 import com.example.capston.databinding.ActivityTrackingBinding
+import com.example.capston.databinding.MarkerclickSpotdogBinding
 import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -318,7 +321,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val view = SpotBalloonLayoutBinding.inflate(layoutInflater)
         view.timeText.text = "시간: " + date+ " " + time
         view.breedText.text = "견종: " + snapshot.child("pet_info").child("breed").getValue(String::class.java)
-        Log.d("MAKE MAKER", view.toString())
+//        Log.d("MAKE MAKER", view.toString())
 
         // set image
         CoroutineScope(Dispatchers.IO).launch {
@@ -357,6 +360,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             isCustomImageAutoscale = true
             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
             itemName = snapshot.key
+            userObject = snapshot.getValue(UserPost::class.java)!!
             mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
             isShowCalloutBalloonOnTouch = true
             customCalloutBalloon = view
@@ -381,15 +385,27 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         ) {
             val dialog = Dialog(context)
             // 다이얼로그 테두리 둥글게 만들기
+            val binding = MarkerclickSpotdogBinding.inflate(context.layoutInflater)
+            val userPost = poiItem?.userObject as UserPost
+            val petInfo = userPost.pet_info!!
+
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
             dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
-            dialog.setContentView(R.layout.markerclick_spotdog)
 
-            val btnCall = dialog.findViewById<TextView>(R.id.call_btn)
-            val receiveNum = dialog.findViewById<TextView>(R.id.phone_receive)
+            binding.breedTitle.text = petInfo.breed
+            binding.genderText.text = if(petInfo.gender==0) "여아" else "남아"
+            binding.timeReceive.text = userPost.date + " " + userPost.time
+            binding.contentReceive.text = userPost.content
 
+            GlideApp.with(context).load(petInfo.image_url).into(binding.imageArea)
+
+            dialog.setContentView(binding.root)
+
+            val btnCall = binding.callBtn
+
+            val receiveNum = binding.phoneReceive
             // 전화번호 표시로 변경
             receiveNum.addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
@@ -433,6 +449,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
+    override fun onBackPressed() {
+        goToMain()
+    }
+
     fun goToMain() {
         val dialog = Dialog(this)
         // 다이얼로그 테두리 둥글게 만들기
@@ -448,6 +468,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         btnOk.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             TrackingMapView.removeAllViews()
+            dialog.dismiss()
             startActivity(intent)
             finish()
         }

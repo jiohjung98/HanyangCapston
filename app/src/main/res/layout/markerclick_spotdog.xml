@@ -33,7 +33,7 @@
 
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/lost_image_area"
+            android:id="@+id/image_area"
             android:layout_width="80sp"
             android:layout_height="80sp"
             android:layout_marginTop="20dp"
@@ -49,13 +49,13 @@
             android:id="@+id/breed_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="페키니즈"
+            android:text=""
             android:layout_marginTop="20sp"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/content_receive"
-            app:layout_constraintTop_toBottomOf="@+id/lost_image_area" />
+            app:layout_constraintTop_toBottomOf="@+id/image_area" />
 
         <TextView
             android:id="@+id/breed_receive"
@@ -83,43 +83,6 @@
             app:layout_constraintTop_toTopOf="@+id/breed_title"  />
 
         <TextView
-            android:id="@+id/gender_receive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" / "
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/gender_text"
-            app:layout_constraintStart_toEndOf="@+id/gender_text"
-            app:layout_constraintTop_toTopOf="@+id/gender_text" />
-
-        <TextView
-            android:id="@+id/born_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2007"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/gender_receive"
-            app:layout_constraintBottom_toBottomOf="@+id/breed_title"
-            app:layout_constraintTop_toTopOf="@+id/breed_title"/>
-
-        <TextView
-            android:id="@+id/born_receive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="년생"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/born_text"
-            app:layout_constraintStart_toEndOf="@+id/born_text"
-            app:layout_constraintTop_toTopOf="@+id/born_text" />
-
-
-        <TextView
             android:id="@+id/time_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,13 +92,13 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/breed_title"
-            app:layout_constraintTop_toBottomOf="@+id/born_text" />
+            app:layout_constraintTop_toBottomOf="@+id/breed_title" />
 
         <TextView
             android:id="@+id/time_receive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2023-4-20 17:20"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -159,7 +122,7 @@
             android:id="@+id/phone_receive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="01028515719"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -184,7 +147,7 @@
             android:id="@+id/content_receive"
             android:layout_width="180sp"
             android:layout_height="wrap_content"
-            android:text="검은색 푸들이고 몸무게는 5키로 정도로 중형견이에요. 발견시 꼭 연락부탁드려요"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
