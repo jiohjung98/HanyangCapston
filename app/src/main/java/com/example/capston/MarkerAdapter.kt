@@ -35,11 +35,15 @@ class MarkerAdapter(
         val breed = markerData.breed
         val imageUrl = markerData.imageUrl
         val phone = markerData.phone
+        val likeAs = markerData.likeAs
 
         // 나머지 작업 수행
         holder.lostTimeText.text = date + " "+ time
         holder.lostBreedText.text = breed
         holder.contactNum.text = phone
+        if(likeAs == 1){
+            holder.like.visibility = View.VISIBLE
+        }
 
         // 이미지 로드
         Glide.with(holder.itemView)
@@ -68,6 +72,7 @@ class MarkerAdapter(
         val lostBreedText: TextView = itemView.findViewById(R.id.lost_breed_text)
         val lostImageView: ImageView = itemView.findViewById(R.id.lost_image_view)
         val contactNum : TextView = itemView.findViewById(R.id.number_text)
+        val like : View = itemView.findViewById(R.id.likeas)
     }
 }
 

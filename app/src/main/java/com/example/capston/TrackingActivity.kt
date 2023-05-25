@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Base64
@@ -20,6 +21,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -88,7 +90,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var recyclerView: RecyclerView
     private lateinit var markerList: MutableList<MarkerData>
-    val _markerList get() = markerList
+    private lateinit var markerList2: MutableList<MarkerData>
     private lateinit var markerAdapter: MarkerAdapter
 
     private var postImages = ArrayList<String>()
@@ -291,45 +293,48 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                                 .equals(breed)
                         ) {
                             // 좌표값 전달
-                            Log.d("queryMarker", breed!!)
+//                            Log.d("queryMarker", breed!!)
 
                             // 마커 데이터 생성
-                            val date = childSnapshot.child("date").getValue(String::class.java)
-                            val time = childSnapshot.child("time").getValue(String::class.java)
-                            val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
+//                            val date = childSnapshot.child("date").getValue(String::class.java)
+//                            val time = childSnapshot.child("time").getValue(String::class.java)
+//                            val breed = childSnapshot.child("pet_info").child("breed").getValue(String::class.java)
+//                            val lat = childSnapshot.child("latitude").getValue(Double::class.java)
+//                            val lon = childSnapshot.child("longitude").getValue(Double::class.java)
+//                            val phone = childSnapshot.child("contact").getValue(String::class.java)
+
                             val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
-                            val lat = childSnapshot.child("latitude").getValue(Double::class.java)
-                            val lon = childSnapshot.child("longitude").getValue(Double::class.java)
-                            val phone = childSnapshot.child("contact").getValue(String::class.java)
 
                             // 쿼리한 포스트의 이미지url 저장
                             postImages.add(imageUrl!!)
                             postKeys.add(childSnapshot.key!!)
 
-                            if (date != null && time != null && breed != null && imageUrl != null
-                                    && lat != null && lon != null && phone != null) {
-                                val coordinate = "$lat,$lon"
-                                // 중복 체크
-                                if (!existingCoordinates.contains(coordinate)) {
-                                    setBalloon(childSnapshot)
-                                    markerList.add(
-                                        MarkerData(
-                                            date = date,
-                                            time = time,
-                                            breed = breed,
-                                            imageUrl = imageUrl,
-                                            latitude = lat,
-                                            longitude = lon,
-                                            phone = phone
-                                        )
-                                    )
-                                    existingCoordinates.add(coordinate)
-                                }
-                            }
+                            setBalloon(childSnapshot)
+
+//                            if (date != null && time != null && breed != null && imageUrl != null
+//                                    && lat != null && lon != null && phone != null) {
+//                                val coordinate = "$lat,$lon"
+//                                // 중복 체크
+//                                if (!existingCoordinates.contains(coordinate)) {
+//                                    setBalloon(childSnapshot)
+//                                    markerList.add(
+//                                        MarkerData(
+//                                            date = date,
+//                                            time = time,
+//                                            breed = breed,
+//                                            imageUrl = imageUrl,
+//                                            latitude = lat,
+//                                            longitude = lon,
+//                                            phone = phone
+//                                        )
+//                                    )
+//                                    existingCoordinates.add(coordinate)
+//                                }
+//                            }
                         }
                     }
                     // 마커 데이터가 변경되었으므로, 어댑터에 변경 내용을 알려줍니다.
-                    markerAdapter.notifyDataSetChanged()
+//                    markerAdapter.notifyDataSetChanged()
                     // for문 종료 = 모든 쿼리 끝난 뒤 유사도 체크
                     similarity()
                 }
@@ -413,6 +418,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             // 이 함수도 작동하지만 그냥 아래 있는 함수에 작성하자
         }
 
+        // 말풍선클릭
         override fun onCalloutBalloonOfPOIItemTouched(
             mapView: MapView?,
             poiItem: MapPOIItem?,
@@ -469,21 +475,21 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-    // 커스텀 말풍선 클래스
-    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-
-        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
-
-        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-            return mCalloutBalloon
-        }
-
-        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            // 말풍선 클릭 시
-//            address.text = "getPressedCalloutBalloon"
-            return mCalloutBalloon
-        }
-    }
+//    // 커스텀 말풍선 클래스
+//    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+//
+//        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
+//
+//        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+//            return mCalloutBalloon
+//        }
+//
+//        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+//            // 말풍선 클릭 시
+////            address.text = "getPressedCalloutBalloon"
+//            return mCalloutBalloon
+//        }
+//    }
 
     override fun onBackPressed() {
         goToMain()
@@ -514,6 +520,69 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         dialog.show()
     }
 
+    private fun setBottomSheet(data : Any?){
+        val index = data as MutableList<Int>
+        val existingCoordinates = mutableSetOf<String>() // 중복 체크를 위한 Set
+
+//        postKeys.removeIf{ index.contains(postKeys.indexOf(it)) }
+
+        for(i in index){
+            database.child("post").child("witness").child(postKeys[i]).get()
+                .addOnSuccessListener { result ->
+                    // 마커 데이터 생성
+                    setMarkerData(result,existingCoordinates,1)
+                }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            postKeys.removeIf{ index.contains(postKeys.indexOf(it)) }
+        }
+
+        Log.d("postKeys after delete",postKeys.toString())
+
+        for(key in postKeys){
+            database.child("post").child("witness").child(key).get()
+                .addOnSuccessListener { result ->
+                    // 마커 데이터 생성
+                    setMarkerData(result,existingCoordinates,0)
+                }
+        }
+
+        markerAdapter.notifyDataSetChanged()
+    }
+
+    private fun setMarkerData(result:DataSnapshot, existingCoordinates:MutableSet<String>,likeAs: Int){
+        val date = result.child("date").getValue(String::class.java)
+        val time = result.child("time").getValue(String::class.java)
+        val breed = result.child("pet_info").child("breed").getValue(String::class.java)
+        val imageUrl = result.child("pet_info").child("image_url").getValue(String::class.java)
+        val lat = result.child("latitude").getValue(Double::class.java)
+        val lon = result.child("longitude").getValue(Double::class.java)
+        val phone = result.child("contact").getValue(String::class.java)
+
+        if (date != null && time != null && breed != null && imageUrl != null
+            && lat != null && lon != null && phone != null) {
+            val coordinate = "$lat,$lon"
+            // 중복 체크
+            if (!existingCoordinates.contains(coordinate)) {
+                setBalloon(result)
+                markerList.add(
+                    MarkerData(
+                        date = date,
+                        time = time,
+                        breed = breed,
+                        imageUrl = imageUrl,
+                        latitude = lat,
+                        longitude = lon,
+                        phone = phone,
+                        likeAs = likeAs,
+                    )
+                )
+                existingCoordinates.add(coordinate)
+            }
+        }
+    }
+
     private fun similarity(){
         val data = hashMapOf(
             "target_image" to this.imageUrl,
@@ -522,8 +591,11 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         functions.getHttpsCallable("similarityCheck")
             .call(data)
             .addOnSuccessListener { task->
-                Log.d("similarity",task.data.toString())
+                Log.d("similarity",task.data.toString()) // {similarArray=[1, 0]}
                 loading!!.dismiss()
+                val simArray = task.data as Map<*,*>
+                val index = simArray["similarArray"]
+                setBottomSheet(index)
             }
             .addOnFailureListener {
                 Log.d("similarity","FAIL")
