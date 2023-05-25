@@ -137,12 +137,12 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
             var time : String
 
             val datePickerDialog = DatePickerDialog(activity, R.style.SpinnerDatePickerStyle, DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
-                date = (year.toString() + "-" + month + "-" + day)
+                date = ( year.toString() + "-" + String.format("%02d",month.plus(1)) + "-" + String.format("%02d",day) )
 
                 val timePickerDialog = TimePickerDialog(activity, R.style.SpinnerTimePickerStyle, TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                     val selectedDateTime = Calendar.getInstance()
                     selectedDateTime.set(year, month, day, hour, minute)
-                    time = (String.format("%02d",hour.toInt()) + ":" + String.format("%02d",minute.toInt()))
+                    time = (String.format("%02d",hour) + ":" + String.format("%02d",minute))
 
                     // 텍스트뷰에 설정된 날짜시간 표시
                     binding.timeInput.text = (date + " " + time)
