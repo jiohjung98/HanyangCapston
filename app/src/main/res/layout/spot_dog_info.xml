@@ -110,7 +110,7 @@
             android:visibility="invisible"
             android:text="견종이 다르다면 직접 선택해주세요"
             android:textColor="@color/skyblue"
-            android:textSize="9sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/breed_input"
             app:layout_constraintTop_toBottomOf="@+id/breed_input" />
@@ -201,16 +201,30 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
+            android:id="@+id/phone_explain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="270sp"
+            android:paddingLeft="5sp"
+            android:visibility="invisible"
+            android:text="올바르지 않은 번호입니다."
+            android:textColor="@color/skyblue"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/breed_input"
+            app:layout_constraintTop_toBottomOf="@+id/phone_input" />
+
+        <TextView
             android:id="@+id/content_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="상세 정보"
             app:layout_constraintStart_toStartOf="@+id/Dialog_title"
-            app:layout_constraintTop_toBottomOf="@+id/phone_input"
+            app:layout_constraintTop_toBottomOf="@+id/phone_explain"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:layout_marginTop="12sp"
+            android:layout_marginTop="3sp"
             />
 
         <EditText

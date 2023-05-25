@@ -167,9 +167,11 @@ class DogInfoEnterDialog2(private val activity: MissingActivity) : BreedItemClic
         // 연락처 텍스트 리스너
         binding.phoneInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                // 이름값 할당
-                post.contact = binding.phoneInput.text.toString()
-                validContact = editable.isNotEmpty()
+                // 전화번호 하이픈 넣어서 저장
+                validContact = (editable.isNotEmpty() && binding.phoneInput.text.toString().length == 11)
+                post.contact = binding.phoneInput.text.toString().replaceFirst("(\\d{3})(\\d{4})(\\d{4})".toRegex(), "$1-$2-$3")
+//                validContact = editable.isNotEmpty()
+                binding.phoneExplain.visibility = if(validContact) View.INVISIBLE else View.VISIBLE
                 checkValid( validBreed, validTime,  validGender, validContent, validImage, validContact)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
