@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick  {
+class DogInfoEnterDialog(val activity: MissingActivity) : BreedItemClick  {
 
     private final val REQUEST_FIRST = 1010
 
@@ -577,12 +577,11 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
     /*
      다음 페이지로
-     넘어가면서 인공지능서버에 요청 보내기
      */
     private fun goNext(){
         _dlg?.dismiss()
-        activity.kakaoMapViewContainer?.removeAllViews()
-        val intent = Intent(activity, MissingAfterActivity::class.java)
+        activity.binding.kakaoMapView4.removeAllViews()
+        val intent = Intent(activity, TrackingActivity::class.java)
         intent.putExtra("breed",pet_info.breed)
         intent.putExtra("imageUrl",pet_info.image_url)
         intent.putExtra("address2",post.address2)

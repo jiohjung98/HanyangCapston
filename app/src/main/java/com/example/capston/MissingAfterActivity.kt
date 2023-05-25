@@ -15,8 +15,6 @@ class MissingAfterActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMissingAfterBinding
 
 
-    private var functions : FirebaseFunctions = FirebaseFunctions.getInstance()
-
     private var breed : String? = null
     private var imageUrl : String? = null
     private var address2 : String? = null
@@ -39,33 +37,15 @@ class MissingAfterActivity : AppCompatActivity() {
             finish()
         }
 
-//        Handler().postDelayed(Runnable {
-//            val intent = Intent(this, TrackingActivity::class.java)
-//            startActivity(intent)
-//        }, 3000)
+        Handler().postDelayed(Runnable {
+            val intent = Intent(this, TrackingActivity::class.java)
+            intent.putExtra("breed",breed)
+            intent.putExtra("imageUrl",imageUrl)
+            intent.putExtra("address2",address2)
+            startActivity(intent)
+            finish()
+        }, 2000)
 
     }
-
-    /*
-    인공지능서버에 이미지url 보냄
-    */
-    private fun sendToServer(uri: String) {
-        val data = hashMapOf(
-            "imageUrl" to uri,
-        )
-
-        Log.d("sendToServer", data.toString())
-
-        functions.getHttpsCallable("sendImageToServer")
-            .call(data)
-            .addOnSuccessListener { task->
-                val result = task.data.toString()
-                Log.d("인공지능 결과",result)
-            }
-            .addOnFailureListener {
-                Log.d("인공지능 결과","FAIL")
-            }
-    }
-
 
 }

@@ -81,6 +81,9 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
     private var imageUrl : String? = null
     private var address2 : String? = null
 
+    // 로딩 다이얼로그
+    var loading : LoadingDialog? = null
+
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var recyclerView: RecyclerView
@@ -142,7 +145,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             }
         })
 
-
         listen = MarkerEventListener(this)
 
         binding.backButton.setOnClickListener {
@@ -174,6 +176,9 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
+
+        loading = LoadingDialog(this@TrackingActivity)
+        loading!!.show()
     }
 
     // 메모리 누수 방지
@@ -428,6 +433,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             binding.genderText.text = if(petInfo.gender==0) "여아" else "남아"
             binding.timeReceive.text = userPost.date + " " + userPost.time
             binding.contentReceive.text = userPost.content
+            binding.phoneReceive.text = userPost.contact
 
             GlideApp.with(context).load(petInfo.image_url).into(binding.imageArea)
 
@@ -517,6 +523,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             .call(data)
             .addOnSuccessListener { task->
                 Log.d("similarity",task.data.toString())
+                loading!!.dismiss()
             }
             .addOnFailureListener {
                 Log.d("similarity","FAIL")

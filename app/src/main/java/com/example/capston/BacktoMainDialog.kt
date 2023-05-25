@@ -52,7 +52,7 @@ class BacktoMainDialog(private val activity: MissingActivity) {
     }
 
     private fun backProcess(){
-        activity.kakaoMapViewContainer?.removeAllViews()
+        activity.binding.kakaoMapView4.removeAllViews()
         val intent = Intent(activity, MainActivity::class.java)
         activity.startActivity(intent)
         activity.finish()
