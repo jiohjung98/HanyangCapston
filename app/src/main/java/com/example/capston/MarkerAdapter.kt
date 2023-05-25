@@ -34,11 +34,12 @@ class MarkerAdapter(
         val time = markerData.time
         val breed = markerData.breed
         val imageUrl = markerData.imageUrl
+        val phone = markerData.phone
 
         // 나머지 작업 수행
         holder.lostTimeText.text = date + " "+ time
         holder.lostBreedText.text = breed
-//        holder.contactNum.text =
+        holder.contactNum.text = phone
 
         // 이미지 로드
         Glide.with(holder.itemView)

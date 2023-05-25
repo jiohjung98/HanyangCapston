@@ -295,12 +295,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                             val imageUrl = childSnapshot.child("pet_info").child("image_url").getValue(String::class.java)
                             val lat = childSnapshot.child("latitude").getValue(Double::class.java)
                             val lon = childSnapshot.child("longitude").getValue(Double::class.java)
+                            val phone = childSnapshot.child("contact").getValue(String::class.java)
 
                             // 쿼리한 포스트의 이미지url 저장
                             postImages.add(imageUrl!!)
                             postKeys.add(childSnapshot.key!!)
 
-                            if (date != null && time != null && breed != null && imageUrl != null && lat != null && lon != null) {
+                            if (date != null && time != null && breed != null && imageUrl != null
+                                    && lat != null && lon != null && phone != null) {
                                 val coordinate = "$lat,$lon"
                                 // 중복 체크
                                 if (!existingCoordinates.contains(coordinate)) {
@@ -312,7 +314,8 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
                                             breed = breed,
                                             imageUrl = imageUrl,
                                             latitude = lat,
-                                            longitude = lon
+                                            longitude = lon,
+                                            phone = phone
                                         )
                                     )
                                     existingCoordinates.add(coordinate)

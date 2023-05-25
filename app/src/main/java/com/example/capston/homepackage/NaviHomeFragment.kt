@@ -535,6 +535,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                         binding.bornText.text = petInfo.born
                         binding.timeReceive.text = userPost.date + " " + userPost.time
                         binding.contentReceive.text = userPost.content
+                        binding.phoneReceive.text = userPost.contact
                         binding.imageArea.setImageBitmap(fragment.getBitmap)
 
                         dialog.setContentView(binding.root)
@@ -545,6 +546,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                         binding.genderText.text = if(petInfo.gender==0) "여아" else "남아"
                         binding.timeReceive.text = userPost.date + " " + userPost.time
                         binding.contentReceive.text = userPost.content
+                        binding.phoneReceive.text = userPost.contact
                         binding.imageArea.setImageBitmap(fragment.getBitmap)
 
                         dialog.setContentView(binding.root)
