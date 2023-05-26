@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="130dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -30,7 +30,7 @@
                 android:text="정말 PawPaw를\n탈퇴하시겠습니까?"
                 android:textColor="@color/black"
                 android:fontFamily="@font/real"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:paddingTop="20dp"
                 />
 
@@ -43,7 +43,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80sp"
+            android:layout_height="60sp"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -54,7 +54,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/real"
                 android:text="네"
@@ -71,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/real"
                 android:text="아니오"
