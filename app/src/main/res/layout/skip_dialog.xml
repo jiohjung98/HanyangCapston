@@ -29,7 +29,7 @@
                 android:text="반려견 등록은 다음에 하시겠어요?"
                 android:textColor="@color/black"
                 android:textSize="22sp"
-                android:fontFamily="@font/dungeon"
+                android:fontFamily="@font/real"
                 android:paddingTop="20dp"
                 />
 
@@ -55,7 +55,7 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/dungeon"
+                android:fontFamily="@font/real"
                 android:text="네"
                 android:textColor="#FF974C" />
 
@@ -67,14 +67,13 @@
             <TextView
                 android:id="@+id/no_btn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="8dp"
-                android:text="아니오"
-                android:fontFamily="@font/dungeon"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/real"
+                android:text="아니오"
                 android:textColor="#FCCE65" />
         </LinearLayout>
     </LinearLayout>

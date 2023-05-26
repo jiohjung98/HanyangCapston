@@ -37,6 +37,7 @@
                 android:text="목격 정보"
                 android:textColor="@color/white"
                 android:textSize="12sp"
+                android:fontFamily="@font/real"
                 android:textStyle="bold"
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"

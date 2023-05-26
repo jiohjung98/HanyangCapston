@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="산책을 완료했습니다!"
             android:textColor="@color/main"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             android:textSize="22sp"
             app:layout_constraintStart_toStartOf="@+id/frame"
             app:layout_constraintEnd_toEndOf="@+id/frame"

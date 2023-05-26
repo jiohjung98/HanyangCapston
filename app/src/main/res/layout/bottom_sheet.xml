@@ -25,6 +25,7 @@
         android:textColor="@color/black"
         android:text="모든 정보 보기"
         android:textStyle="bold"
+        android:fontFamily="@font/real"
         android:layout_margin="10dp"
         android:textSize="18sp" />
 

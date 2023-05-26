@@ -85,7 +85,7 @@
             android:text="멋진 이름이네요!"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             app:layout_constraintTop_toTopOf="@+id/textLayout"
             app:layout_constraintStart_toStartOf="@+id/textLayout"
             />
@@ -98,7 +98,7 @@
             android:text="회원님의 이메일은"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             android:layout_marginTop="10sp"
             app:layout_constraintTop_toBottomOf="@+id/text1"
             app:layout_constraintStart_toStartOf="@+id/text1" />
@@ -111,7 +111,7 @@
             android:text="무엇인가요?"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             android:layout_marginTop="10sp"
             app:layout_constraintTop_toBottomOf="@+id/text2"
             app:layout_constraintStart_toStartOf="@+id/text1" />

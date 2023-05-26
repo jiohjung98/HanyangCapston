@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:fontFamily="@font/dungeon"
+        android:fontFamily="@font/real"
         android:textColor="@color/black"
         android:text="등록된 반려견이 없어요. \n\n등록 후 이용가능합니다."/>
 

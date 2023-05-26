@@ -101,7 +101,7 @@
             android:text="반려견의 이름은"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             android:layout_marginTop="10sp"
             app:layout_constraintTop_toBottomOf="@+id/text1"
             app:layout_constraintStart_toStartOf="@+id/text1" />
@@ -114,7 +114,7 @@
             android:text="무엇인가요?"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/dungeon"
+            android:fontFamily="@font/real"
             android:layout_marginTop="10sp"
             app:layout_constraintTop_toBottomOf="@+id/text2"
             app:layout_constraintStart_toStartOf="@+id/text1" />

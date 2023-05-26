@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center"
-        android:fontFamily="@font/dungeon"
+        android:fontFamily="@font/real"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:text="메일함을 확인해주세요. \n인증 후 서비스를 이용하실 수 있습니다." />
@@ -66,6 +66,7 @@
         android:textColor="@color/chocolate"
         android:visibility="invisible"
         android:enabled="false"
+        android:fontFamily="@font/real"
         app:layout_constraintTop_toBottomOf="@id/email_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text2" />
+        app:layout_constraintTop_toBottomOf="@+id/text1" />
 
     <View
         android:id="@+id/line"
@@ -40,9 +40,11 @@
     <TextView
         android:id="@+id/text1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60sp"
         android:textColor="@color/black"
         android:text="위치 기반 서비스 약관"
+        android:fontFamily="@font/real"
+        android:gravity="center"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,8 +72,8 @@
         android:layout_marginTop="20dp"
         android:text="위치 기반 서비스 약관 내용입니다~!!@!@!@!@!@!@!@!@!@!@!@!#!#!#!#!#!#!#!#!#!#!#!#!#!$!$!#!#!#"
         android:textSize="18dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintStart_toEndOf="@id/back_button"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintStart_toStartOf="@id/back_button"
         app:layout_constraintTop_toBottomOf="@+id/line"
         app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -100,19 +100,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/likeas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8sp"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
         android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal"
         >
 
         <ImageView
             android:id="@+id/verified"
-            android:layout_width="15sp"
-            android:layout_height="15sp"
+            android:layout_width="45sp"
+            android:layout_height="45sp"
+            android:layout_marginTop="5sp"
             android:background="@drawable/verified"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -120,12 +120,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5sp"
             android:text="비슷해요!"
             android:textColor="@color/main"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/verified"
-            app:layout_constraintTop_toTopOf="@+id/verified"/>
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/likeas"
+            app:layout_constraintStart_toStartOf="@+id/verified"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

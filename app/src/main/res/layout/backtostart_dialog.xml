@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:fontFamily="@font/dungeon"
+                android:fontFamily="@font/real"
                 android:text="회원가입을 그만두고 \n시작화면으로 돌아가시겠어요?"
                 android:textColor="@color/black"
                 android:textSize="22sp"
@@ -56,7 +56,7 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/dungeon"
+                android:fontFamily="@font/real"
                 android:text="네"
                 android:textColor="#FF974C" />
 
@@ -68,14 +68,13 @@
             <TextView
                 android:id="@+id/no_btn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:padding="8dp"
-                android:text="아니오"
-                android:fontFamily="@font/dungeon"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/real"
+                android:text="아니오"
                 android:textColor="#FCCE65" />
         </LinearLayout>
     </LinearLayout>
