@@ -57,8 +57,6 @@ import java.util.*
 import kotlin.coroutines.resumeWithException
 import kotlin.math.*
 
-
-
 /*
  * 메인화면, 첫번째 메뉴, 지도
  */

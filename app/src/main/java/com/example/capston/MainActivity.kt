@@ -248,8 +248,6 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-
-
     /* ---------------- GET & SET METHODS -----------------------*/
 
     fun setCurrentLocation(lat:Double, lon:Double){

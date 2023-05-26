@@ -176,7 +176,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
-
         binding.walkBtn.setOnClickListener {
             goToWalk()
         }
@@ -240,6 +239,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     // 메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        mapView!!.removeAllPOIItems()
         kakaoMapView3.removeAllViews()
 //        homecontainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
 //        mapView?.onPause() // 맵뷰를 일시정지
@@ -687,6 +687,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
 
+        currentLocation = p1
+
         p0!!.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
 //        Log.i("onCurrentLocationUpdate","Call")
@@ -696,10 +698,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         if (!getAddress)
             findAddress(p1)
-
-        currentLocation = p1
-
-
 
         if(!isGetWeather)
             setWeatherInfo()

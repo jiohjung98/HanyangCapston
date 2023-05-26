@@ -38,12 +38,10 @@ class MissingAfterActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
 //        Handler().postDelayed(Runnable {
 //            val intent = Intent(this, TrackingActivity::class.java)
 //            startActivity(intent)
 //        }, 3000)
-
     }
 
     /*
@@ -66,6 +64,4 @@ class MissingAfterActivity : AppCompatActivity() {
                 Log.d("인공지능 결과","FAIL")
             }
     }
-
-
 }
