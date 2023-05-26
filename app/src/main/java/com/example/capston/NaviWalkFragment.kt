@@ -88,6 +88,7 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     private lateinit var gender : TextView
     private lateinit var age : TextView
 
+
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
 
@@ -342,7 +343,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         binding.addingBtn.visibility = View.INVISIBLE
         binding.addingBtn.isEnabled = false
         binding.camera.visibility = View.INVISIBLE
-        petname.text = "등록된 반려견이 없습니다"
+//        petname.text = "등록된 반려견이 없습니다"
+        no_dog.text = "등록된 반려견이 없습니다.\n반려견을 등록해주세요."
     }
 
     /*

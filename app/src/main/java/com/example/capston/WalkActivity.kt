@@ -690,6 +690,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialogPolyline.addPoints(polylinePoints)
 
             dialogMapView.addPolyline(dialogPolyline)
+            dialogMapView.setMapRotationAngle(0.0f, false)
 
             Log.d("ROUTE",route.toString())
             saveRoute()

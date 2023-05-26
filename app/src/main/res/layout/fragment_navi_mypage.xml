@@ -104,7 +104,7 @@
             android:layout_weight="1"
             android:textColor="#424141"
             android:fontFamily="@font/real"
-            android:text="244"
+            android:text=""
             app:layout_constraintEnd_toStartOf="@+id/walk_age_slash"
             app:layout_constraintTop_toTopOf="@+id/walk_breed"
             app:layout_constraintBottom_toBottomOf="@+id/walk_breed" />
@@ -130,7 +130,7 @@
             android:textColor="#424141"
             android:fontFamily="@font/real"
             app:layout_constraintTop_toBottomOf="@+id/walk_name"
-            android:text="비숑"/>
+            android:text=""/>
 
         <TextView
             android:id="@+id/walk_breed_slash"
@@ -151,7 +151,7 @@
             android:layout_weight="1"
             android:textColor="#424141"
             android:fontFamily="@font/real"
-            android:text="ㅇㅇ"
+            android:text=""
             app:layout_constraintStart_toEndOf="@+id/walk_breed_slash"
             app:layout_constraintTop_toTopOf="@+id/walk_breed"
             app:layout_constraintBottom_toBottomOf="@+id/walk_breed" />
@@ -161,7 +161,7 @@
         android:id="@+id/profile_line"
         android:layout_width="0dp"
         android:layout_height="1sp"
-        android:layout_marginTop="20sp"
+        android:layout_marginTop="35sp"
         android:layout_marginStart="35sp"
         android:layout_marginEnd="35sp"
         app:layout_constraintStart_toStartOf="parent"

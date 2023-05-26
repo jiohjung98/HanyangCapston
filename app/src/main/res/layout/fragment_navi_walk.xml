@@ -73,7 +73,7 @@
                 android:layout_marginStart="20sp"
                 android:layout_marginTop="3sp"
                 android:fontFamily="@font/real"
-                android:text="ddd"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintStart_toEndOf="@+id/profile"
@@ -88,7 +88,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                android:text="2004년생"
+                android:text=""
                 app:layout_constraintStart_toStartOf="@+id/walk_name"
                 app:layout_constraintTop_toBottomOf="@+id/walk_name" />
 
@@ -99,7 +99,7 @@
                 android:fontFamily="@font/real"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:text="골든 리트리버"
+                android:text=""
                 app:layout_constraintStart_toStartOf="@+id/walk_gender"
                 app:layout_constraintBottom_toBottomOf="@+id/profile"
                 android:layout_marginBottom="3sp"/>
@@ -112,10 +112,21 @@
                 android:fontFamily="@font/real"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:text="여아"
+                android:text=""
                 app:layout_constraintTop_toBottomOf="@+id/walk_age"
                 app:layout_constraintBottom_toTopOf="@+id/walk_breed"
                 app:layout_constraintStart_toStartOf="@+id/walk_age"/>
+
+            <TextView
+                android:id="@+id/no_dog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/real"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="@+id/profile"
+                app:layout_constraintBottom_toBottomOf="@+id/profile"
+                app:layout_constraintStart_toStartOf="@+id/walk_breed"/>
 
             <TextView
                 android:id="@+id/pet_select_text"
