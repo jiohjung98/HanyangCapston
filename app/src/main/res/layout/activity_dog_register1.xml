@@ -125,6 +125,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="1"
+        android:layout_marginStart="5sp"
         app:layout_constraintStart_toStartOf="@+id/num1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textLayout"

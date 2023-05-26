@@ -43,8 +43,6 @@ class DogRegister2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityDogRegister2Binding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-//        BreedSearch = viewBinding.breedSearch
-//        breed_recycleR = viewBinding.rvPhoneBook
 
         dogName = intent.getStringExtra("DogName")!!
 
@@ -65,12 +63,6 @@ class DogRegister2Activity : AppCompatActivity() {
             super.onBackPressed()
         }
 
-//        //배경 클릭시 포커스해제
-//        viewBinding.background.setOnClickListener {
-//            breed_recycleR.visibility= View.INVISIBLE
-//            BreedSearch.clearFocus()
-//        }
-
         // 성별 남 버튼
         viewBinding.genderBoy.setOnClickListener{
             validGender = true
@@ -86,12 +78,6 @@ class DogRegister2Activity : AppCompatActivity() {
 
         setupAgeData()
         setupAgeHandler()
-
-//        BreedSearch.setOnQueryTextListener(searchViewTextListener)
-//        breed = tempPersons()
-//        setAdapter()
-//        setupBreedData()
-
     }
 
 
@@ -153,9 +139,6 @@ class DogRegister2Activity : AppCompatActivity() {
             resources.displayMetrics
         )
     }
-
-
-
 
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {

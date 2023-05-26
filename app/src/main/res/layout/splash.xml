@@ -5,20 +5,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/splash"
     android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="130sp"
         android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:srcCompat="@drawable/real_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/real_logo" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/logo_text"/>
+
+    <TextView
+        android:id="@+id/logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PawPaw"
+        android:fontFamily="@font/dungeon"
+        android:textSize="35sp"
+        android:textColor="@color/main"
+        android:layout_marginTop="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

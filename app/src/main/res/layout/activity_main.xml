@@ -43,10 +43,10 @@
                 android:layout_height="wrap_content"
                 android:text="PawPaw"
                 android:textColor="#FF974C"
-                android:fontFamily="@font/real"
+                android:fontFamily="@font/dungeon"
                 android:layout_marginStart="8dp"
                 android:textAppearance="@style/some_id"
-                android:textSize="24dp"
+                android:textSize="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

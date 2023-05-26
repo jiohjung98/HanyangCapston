@@ -209,7 +209,7 @@
         android:textStyle="bold"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/result_img"
-        app:layout_constraintStart_toStartOf="@id/textLayout"
+        app:layout_constraintStart_toStartOf="@id/dog_photo"
         android:layout_marginTop="10sp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
