@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick  {
+class DogInfoEnterDialog(val activity: MissingActivity) : BreedItemClick  {
 
     private final val REQUEST_FIRST = 1010
 
@@ -163,9 +163,11 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
         // 연락처 텍스트 리스너
         binding.phoneInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                // 이름값 할당
-                post.contact = binding.phoneInput.text.toString()
-                validContact = editable.isNotEmpty()
+                // 전화번호 하이픈 넣어서 저장
+                validContact = (editable.isNotEmpty() && binding.phoneInput.text.toString().length == 11)
+                post.contact = binding.phoneInput.text.toString().replaceFirst("(\\d{3})(\\d{4})(\\d{4})".toRegex(), "$1-$2-$3")
+//                validContact = editable.isNotEmpty()
+                binding.phoneExplain.visibility = if(validContact) View.INVISIBLE else View.VISIBLE
                 checkValid(validName, validBreed, validTime,  validGender, validBorn, validContent, validImage,validContact)
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
@@ -182,12 +184,13 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
             var time : String
 
             val datePickerDialog = DatePickerDialog(activity, R.style.SpinnerDatePickerStyle, DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
-                date = (year.toString() + "-" + month + "-" + day)
+                date = ( year.toString() + "-" + String.format("%02d",month.plus(1)) + "-" + String.format("%02d",day) )
+                Log.d("DATE", date)
 
                 val timePickerDialog = TimePickerDialog(activity, R.style.SpinnerTimePickerStyle, TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                     val selectedDateTime = Calendar.getInstance()
                     selectedDateTime.set(year, month, day, hour, minute)
-                    time = (String.format("%02d",hour.toInt()) + ":" + String.format("%02d",minute.toInt()))
+                    time = (String.format("%02d",hour) + ":" + String.format("%02d",minute))
 
                     // 텍스트뷰에 설정된 날짜시간 표시
                     binding.timeInput.text = (date + " " + time)
@@ -575,12 +578,11 @@ class DogInfoEnterDialog(private val activity: MissingActivity) : BreedItemClick
 
     /*
      다음 페이지로
-     넘어가면서 인공지능서버에 요청 보내기
      */
     private fun goNext(){
         _dlg?.dismiss()
-        activity.kakaoMapViewContainer?.removeAllViews()
-        val intent = Intent(activity, MissingAfterActivity::class.java)
+        activity.binding.kakaoMapView4.removeAllViews()
+        val intent = Intent(activity, TrackingActivity::class.java)
         intent.putExtra("breed",pet_info.breed)
         intent.putExtra("imageUrl",pet_info.image_url)
         intent.putExtra("address2",post.address2)

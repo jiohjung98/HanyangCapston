@@ -15,7 +15,9 @@ data class MarkerData(
     val breed: String,
     val imageUrl: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val phone: String,
+    val likeAs: Int,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -29,6 +31,8 @@ data class MarkerData(
         if (imageUrl != other.imageUrl) return false
         if (latitude != other.latitude) return false
         if (longitude != other.longitude) return false
+        if (phone != other.phone) return false
+        if (likeAs != other.likeAs) return false
 
         return true
     }
@@ -40,6 +44,8 @@ data class MarkerData(
         result = 31 * result + (imageUrl?.hashCode() ?: 0)
         result = 31 * result + (latitude?.hashCode() ?: 0)
         result = 31 * result + (longitude?.hashCode() ?: 0)
+        result = 31 * result + (phone?.hashCode() ?: 0)
+        result = 31 * result + (likeAs?.hashCode() ?: 0)
         return result
     }
 }
