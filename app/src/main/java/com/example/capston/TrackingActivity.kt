@@ -87,7 +87,8 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
     // 로딩 다이얼로그
     var loading : LoadingDialog? = null
-
+    // 추정 다이얼로그
+    var expectDialog : ExpectingDialog? = null
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var recyclerView: RecyclerView
@@ -119,11 +120,10 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             mapView?.setMapCenterPoint(currentLocation,true)
         }
 
+        // 추정위치 볼건지 물어보는 다이얼로그
         binding.expectingBtn.setOnClickListener {
-            val intent = Intent(this, ExpectingActivity::class.java)
-            TrackingMapView.removeAllViews()
-            startActivity(intent)
-            finish()
+            expectDialog = ExpectingDialog(this,this@TrackingActivity)
+            expectDialog!!.show()
         }
 
         // itemClickListener를 생성하여 MarkerAdapter에 전달
@@ -484,22 +484,6 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
     }
 
-//    // 커스텀 말풍선 클래스
-//    class CustomBalloonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
-//
-//        private val mCalloutBalloon: View = inflater.inflate(R.layout.spot_balloon_layout, null)
-//
-//        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
-//            return mCalloutBalloon
-//        }
-//
-//        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-//            // 말풍선 클릭 시
-////            address.text = "getPressedCalloutBalloon"
-//            return mCalloutBalloon
-//        }
-//    }
-
     override fun onBackPressed() {
         goToMain()
     }
@@ -527,6 +511,14 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    fun gotoExpect(){
+        val intent = Intent(this, ExpectingActivity::class.java)
+        expectDialog!!.dismiss()
+        TrackingMapView.removeAllViews()
+        startActivity(intent)
+        finish()
     }
 
     private fun setBottomSheet(data : Any?){
