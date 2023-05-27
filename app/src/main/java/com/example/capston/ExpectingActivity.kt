@@ -21,10 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capston.data.UserPost
-import com.example.capston.databinding.ActivityExpectingBinding
-import com.example.capston.databinding.ActivityTrackingBinding
-import com.example.capston.databinding.MarkerclickSpotdogBinding
-import com.example.capston.databinding.SpotBalloonLayoutBinding
+import com.example.capston.databinding.*
+import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -40,11 +38,12 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.exp
 
 class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     MapView.MapViewEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener{
 
-//    var listen: MarkerEventListener? = null
+    var listen: MarkerEventListener? = null
 
     var mapView: MapView? = null
     val _mapView get() = mapView
@@ -68,9 +67,9 @@ class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListe
     private lateinit var binding: ActivityExpectingBinding
 
     // 이전 액티비티 전달값
-    private var breed : String? = null
-    private var imageUrl : String? = null
-    private var address2 : String? = null
+//    private var breed : String? = null
+//    private var imageUrl : String? = null
+//    private var address2 : String? = null
 
     // 로딩 다이얼로그
     var loading : LoadingDialog? = null
@@ -83,15 +82,12 @@ class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListe
 
         this.uid = auth.currentUser!!.uid
 
-        breed = intent.getStringExtra("breed")!!.trim()
-        imageUrl = intent.getStringExtra("imageUrl")!!.trim()
-        address2 = intent.getStringExtra("address2")!!.trim()
 
         binding.locationBtn.setOnClickListener {
             mapView?.setMapCenterPoint(currentLocation,true)
         }
 
-//        listen = MarkerEventListener(this)
+        listen = MarkerEventListener(this)
 
         binding.backButton.setOnClickListener {
             goToMain()
@@ -106,7 +102,7 @@ class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListe
 //        mapView!!.setPOIItemEventListener(listen)
 
         mapView!!.setMapViewEventListener(this)
-        mapView!!.setZoomLevel(0, true)
+        mapView!!.setZoomLevel(3, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
             R.drawable.sad_dog_icon_64,
             MapPOIItem.ImageOffset(50, 50)
@@ -297,15 +293,65 @@ class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListe
             functions.getHttpsCallable("expectedLocation")
                 .call(data)
                 .addOnSuccessListener { task->
-                    Log.d("expectLocation",task.data.toString()) // {similarArray=[1, 0]}
+                    Log.d("expectLocation", task.data.toString())
+                    // 산책경로가 없으면 null 나올수있음
+                    if(task.data != null) {
+                        val result = task.data as Map<*, *>
+                        val top5list = result["top5Pairs"] as MutableList<ArrayList<Double>>
+                        //Log.d("expectLocation result",top5list.toString())
+                        makeMarker(top5list)
+                    }
                     loading!!.dismiss()
-                    val result = task.data as Map<*,*>
-                    val top5 = result["top5Pairs"]
-                    Log.d("top5",top5.toString())
                 }
                 .addOnFailureListener {
                     Log.d("expectLocation","FAIL")
                 }
+        }
+    }
+
+    /*
+     지도에 마커 생성하기
+     생성시 해당 마커의 말풍선도 설정함
+     */
+    private fun makeMarker(top5list: MutableList<ArrayList<Double>>){
+        for(expect in top5list){
+            Log.d("makeMarker", expect.toString())
+            val lat = expect[0]
+            val lon = expect[1]
+            Log.d("makeMarker", lat.toString() + lon.toString())
+            val marker = MapPOIItem().apply {
+                markerType = MapPOIItem.MarkerType.CustomImage
+                customImageResourceId = R.drawable.expected_location_64   // 커스텀 마커 이미지
+                isCustomImageAutoscale = true
+                itemName = "Expected Location"
+                setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                mapPoint = MapPoint.mapPointWithGeoCoord(lat, lon)
+                isShowCalloutBalloonOnTouch = true
+            }
+            mapView!!.addPOIItem(marker)
+        }
+    }
+
+    // 마커 클릭 이벤트 리스너
+    class MarkerEventListener(activity: AppCompatActivity): MapView.POIItemEventListener {
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            buttonType: MapPOIItem.CalloutBalloonButtonType?
+        ) {}
+        override fun onDraggablePOIItemMoved(
+            mapView: MapView?,
+            poiItem: MapPOIItem?,
+            mapPoint: MapPoint?
+        ) {
+            // 마커의 속성 중 isDraggable = true 일 때 마커를 이동시켰을 경우
         }
     }
 }

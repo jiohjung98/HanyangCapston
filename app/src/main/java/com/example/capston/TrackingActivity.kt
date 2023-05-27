@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Base64
 import android.util.Log
@@ -36,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.*
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.type.LatLng
+import kotlinx.android.synthetic.main.activity_expecting.*
 import kotlinx.android.synthetic.main.activity_tracking.*
 import kotlinx.android.synthetic.main.layout_community_rc_view_item.*
 import kotlinx.android.synthetic.main.layout_community_rc_view_item.view.*
@@ -115,6 +117,13 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
 
         binding.locationBtn.setOnClickListener {
             mapView?.setMapCenterPoint(currentLocation,true)
+        }
+
+        binding.expectingBtn.setOnClickListener {
+            val intent = Intent(this, ExpectingActivity::class.java)
+            TrackingMapView.removeAllViews()
+            startActivity(intent)
+            finish()
         }
 
         // itemClickListener를 생성하여 MarkerAdapter에 전달
@@ -549,6 +558,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         }
 
         markerAdapter.notifyDataSetChanged()
+
     }
 
     private fun setMarkerData(result:DataSnapshot, existingCoordinates:MutableSet<String>,likeAs: Int){

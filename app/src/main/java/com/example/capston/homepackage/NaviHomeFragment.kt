@@ -560,7 +560,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
                 btnCall.setOnClickListener {
                     val telNumber = "${receiveNum.text}"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:$telNumber"))
-                    fragment.onPause()
                     context.startActivity(intent)
                     dialog.dismiss()
                 }
