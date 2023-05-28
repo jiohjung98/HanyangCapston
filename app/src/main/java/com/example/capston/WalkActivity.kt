@@ -26,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.airbnb.lottie.model.Marker
 import com.example.capston.databinding.ActivityWalkBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -69,6 +70,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private var isTimerRunning: Boolean = false
     private var fullAmount = ArrayList<Double>()
 
+    private var isStartMarkerDisplayed = false // 시작 마커 표시 여부를 나타내는 플래그
+
     lateinit var viewBinding: ActivityWalkBinding
 
     // 산책중 업데이트 관련
@@ -93,6 +96,10 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         initView()
 
         playFab.setOnClickListener {
+            if (!isStartMarkerDisplayed) { // 시작 마커가 표시되지 않은 경우에만 실행
+                startWalkMarker()
+                isStartMarkerDisplayed = true // 시작 마커 표시 상태로 변경
+            }
             if (!isPause) {
                 isStart = true
             } else {
@@ -293,76 +300,31 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         val mapPointBounds = MapPointBounds(polyline!!.mapPoints)
         mapView!!.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, 100))
 
-        // 시작 지점 표시
-        val startMarker = MapPOIItem()
-        startMarker.itemName = "시작점"
-        startMarker.mapPoint = polyline!!.getPoint(0)
-        startMarker.markerType = MapPOIItem.MarkerType.CustomImage
-        startMarker.customImageResourceId =
-            R.drawable.start_walking_icon
-        startMarker.setCustomImageAnchor(0.5f, 0.5f)
-        startMarker.isCustomImageAutoscale = false
-        startMarker.isShowCalloutBalloonOnTouch = false
-        mapView!!.addPOIItem(startMarker)
-
         // 산책 충족량 확인
         fullAmount.forEach(fun(amount) {
             walkingAmounts.add((walkingCalorie / amount) * 100)
         })
     }
 
-//    private fun submitResult() {
-//        val pref = getSharedPreferences("pref", MODE_PRIVATE)
-//        val userToken = pref.getString("userToken", "")
-//        val walkingRetrofit = WalkingRetrofitCreators(this).WalkingRetrofitCreator()
-//        walkingRetrofit.createWalking(
-//            userToken!!, walkingCalorie, walkingDistance, time, walkingAmounts,
-//            addressAdmin, addressLocality, addressThoroughfare, animal, route, toiletLoc
-//        ).enqueue(object : Callback<CreateWalkingResultModel> {
-//            override fun onFailure(call: Call<CreateWalkingResultModel>, t: Throwable) {
-//                Log.d("DEBUG", " Walking Retrofit failed!!")
-//                Toast.makeText(
-//                    this@WalkActivity,
-//                    "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-//
-//            override fun onResponse(
-//                call: Call<CreateWalkingResultModel>,
-//                response: Response<CreateWalkingResultModel>
-//            ) {
-//                val error = response.body()?.error
-//                val walkingId = response.body()?.walkingId
-//                Log.d("ERROR", error.toString())
-//
-//                // 등록에 실패했을 때 후 처리
-//                if (error == 1) {
-//                    Toast.makeText(
-//                        this@WalkActivity,
-//                        "산책 등록에 실패하였습니다. 네트워크를 확인해주세요.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-//
-//                // 산책 등록 후 처리 - 액티비티 이동
-//                if (error == null || error == 0) {
-//                    Toast.makeText(
-//                        this@WalkActivity,
-//                        "3초 후 산책이 종료됩니다.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                    timer(period = 3000, initialDelay = 3000) {
-//                        val intent = Intent(this@WalkActivity, Statics::class.java)
-//                        intent.putExtra("walkingId", walkingId)
-//                        startActivity(intent)
-//                        finish()
-//                        cancel()
-//                    }
-//                }
-//            }
-//        })
-//    }
+    private fun startWalkMarker() {
+        if (mapView == null) {
+            initView()
+        }
+
+        // 시작 지점 표시
+        if (mapPoint != null) {
+            val startMarker = MapPOIItem()
+            startMarker.itemName = "시작점"
+            startMarker.mapPoint = mapPoint
+            startMarker.markerType = MapPOIItem.MarkerType.CustomImage
+            startMarker.customImageResourceId =
+                R.drawable.start_walking_icon
+            startMarker.setCustomImageAnchor(0.5f, 0.5f)
+            startMarker.isCustomImageAutoscale = false
+            startMarker.isShowCalloutBalloonOnTouch = false
+            mapView!!.addPOIItem(startMarker)
+        }
+    }
 
     // 배변활동 표시
     private fun toiletActivity() {

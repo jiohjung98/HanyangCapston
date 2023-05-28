@@ -30,8 +30,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#FF974C">
+        android:layout_height="1.5dp"
+        android:background="#FF974C" >
     </LinearLayout>
 
     <!--타이머 레이아웃-->
@@ -46,28 +46,31 @@
         <LinearLayout
             android:layout_width="60dp"
             android:layout_height="50dp"
+            android:layout_marginTop="3sp"
             android:gravity="center">
             <TextView
                 android:id="@+id/minTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
+                android:fontFamily="@font/real"
                 android:textColor="@color/black"
                 android:textSize="35dp"
-                android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3sp"
             android:text=":"
             android:textColor="@color/black"
             android:textSize="35dp"
-            android:textStyle="bold"
+            android:fontFamily="@font/real"
             android:gravity="center"/>
         <LinearLayout
             android:layout_width="60dp"
             android:layout_height="50dp"
+            android:layout_marginTop="3sp"
             android:gravity="center">
             <TextView
                 android:id="@+id/secTextView"
@@ -75,17 +78,18 @@
                 android:layout_height="wrap_content"
                 android:text="00"
                 android:textSize="35dp"
+                android:fontFamily="@font/real"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3sp"
             android:text=":"
             android:textSize="35dp"
             android:textColor="@color/black"
-            android:textStyle="bold"
+            android:fontFamily="@font/real"
             android:gravity="center"/>
         <LinearLayout
             android:layout_width="60dp"
@@ -95,10 +99,11 @@
                 android:id="@+id/milliTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3sp"
                 android:text="00"
                 android:textSize="35dp"
                 android:textColor="@color/black"
-                android:textStyle="bold"
+                android:fontFamily="@font/real"
                 android:gravity="center"/>
         </LinearLayout>
 
@@ -146,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textSize="20dp"
-                android:textStyle="bold"
+                android:fontFamily="@font/real"
                 android:textColor="@color/black"
                 />
 
@@ -157,7 +162,7 @@
                 android:text="m"
                 android:textSize="20dp"
                 android:textColor="@color/black"
-                android:textStyle="bold"
+                android:fontFamily="@font/real"
                 />
         </LinearLayout>
 
@@ -174,14 +179,14 @@
                 android:text="0"
                 android:textSize="20dp"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:fontFamily="@font/real" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="kcal"
                 android:textSize="20dp"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:fontFamily="@font/real" />
         </LinearLayout>
     </LinearLayout>
 
