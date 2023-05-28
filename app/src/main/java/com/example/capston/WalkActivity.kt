@@ -66,11 +66,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private var runningDogImageCounter: Int = 1
     private var time = 0
     private var isTimerRunning: Boolean = false
-    private var getAddress: Boolean = false
-    private var addressAdmin: String = ""
-    private var addressLocality: String = ""
-    private var addressThoroughfare: String = ""
-    private var animal = ArrayList<String>()
     private var fullAmount = ArrayList<Double>()
 
     lateinit var viewBinding: ActivityWalkBinding
@@ -143,18 +138,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         }
 
     }
-//
-//    fun findAddress() {
-//        val mapReverseGeoCoder =
-//            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-//        mapReverseGeoCoder.startFindingAddress()
-//    }
-//    fun findAddress() {
-//        val mapReverseGeoCoder =
-//            MapReverseGeoCoder("830d2ef983929904f477a09ea75d91cc", mapPoint, this, this)
-//
-//        mapReverseGeoCoder.startFindingAddress()
-//    }
 
     private fun initView() {
         // 위치 권한 설정 확인
@@ -177,9 +160,10 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             MapPOIItem.ImageOffset(50, 50)
         )
         mapView!!.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
         Log.d("트래킹", mapView!!.currentLocationTrackingMode.toString())
         mapView!!.setCurrentLocationEventListener(this)
+        mapView!!.setMapRotationAngle(0.0f, false)
         polyline = MapPolyline()
         polyline!!.tag = 1000
         polyline!!.lineColor = Color.argb(255, 221, 135, 69)
@@ -425,79 +409,9 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         if (!isStart || isPause) {
             return
         }
-//        val lat = p1!!.mapPointGeoCoord.latitude
-//        val lon = p1.mapPointGeoCoord.longitude
-//
-//        route.add(Pair(lat, lon))
-
         mapPoint = p1
-
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
-//
-//        if (prevLat == null && prevLon == null) {
-//            prevLat = lat
-//            prevLon = lon
-//            return
-//        } else {
-//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-//
-//            // 이동 거리 표시
-//            walkingDistance += distance
-//            if (walkingDistance < 1000) {
-//                distanceId.text = String.format("%.1f", walkingDistance)
-//            } else {
-//                digitId.text = "km"
-//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-//            }
-//
-//            // 소모 칼로리 표시
-//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-//            Log.d("태그", "칼로리: " + walkingCalorie)
-//            calorieView.text = String.format("%.2f", walkingCalorie)
-//                prevLat = lat
-//                prevLon = lon
-//        }
-//
-//        // 변환 주소 가져오기
-//        if (!getAddress) {
-//            findAddress()
-//        }
-
-
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
-
-//        if (prevLat == null && prevLon == null) {
-//            prevLat = lat
-//            prevLon = lon
-//            return
-//        } else {
-//            val distance = haversine(prevLat!!, prevLon!!, lat, lon)
-//            // 이동 거리 표시
-//            walkingDistance += distance
-//            if (walkingDistance < 1000) {
-//                distanceId.text = String.format("%.1f", walkingDistance)
-//            } else {
-//                digitId.text = "km"
-//                distanceId.text = String.format("%.3f", meterToKillo(walkingDistance))
-//            }
-//            // 소모 칼로리 표시
-//            walkingCalorie += distance * 0.026785714  // 1m당 소모 칼로리
-//            Log.d("태그", "칼로리: " + walkingCalorie)
-//            calorieView.text = String.format("%.2f", walkingCalorie)
-////            // 충족량 표시
-//////            if (walkingCalorie != 0.0 && fullAmount[0] != 0.0) {
-////            amountView.text = String.format("%.1f", walkingCalorie / fullAmount[0] * 100)
-//
-//
-////            if (prevLat != 0.0) {
-//                prevLat = lat
-//                prevLon = lon
-////            }
-//        }
+        p0!!.currentLocationTrackingMode =
+            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -586,6 +500,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     override fun onMapViewInitialized(p0: MapView?) {
+        mapView?.setMapRotationAngle(0.0f, false)
     }
 
     override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
@@ -690,7 +605,11 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             dialogPolyline.addPoints(polylinePoints)
 
             dialogMapView.addPolyline(dialogPolyline)
-            dialogMapView.setMapRotationAngle(0.0f, false)
+
+            //카카오맵 자동회전 방지
+            dialogMapView!!.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+            dialogMapView!!.setMapRotationAngle(0.0f, false)
 
             Log.d("ROUTE",route.toString())
             saveRoute()

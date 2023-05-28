@@ -349,19 +349,7 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         currentLocation = p1
 
-//        if (!isStart || isPause) {
-//            return
-//        }
-//        val lat = p1!!.mapPointGeoCoord.latitude
-//        val lon = p1!!.mapPointGeoCoord.longitude
-
         mainActivity.setCurrentLocation(p1!!.mapPointGeoCoord.latitude, p1.mapPointGeoCoord.longitude)
-
-//        route.add(arrayListOf(lat, lon))
-//
-//        polyline!!.addPoint(p1)
-//        p0!!.removePolyline(polyline)
-//        p0.addPolyline(polyline)
 
 //         변환 주소 가져오기
         if (!getAddress) {
