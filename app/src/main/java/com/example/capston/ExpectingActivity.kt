@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -305,6 +306,8 @@ class ExpectingActivity : AppCompatActivity(), MapView.CurrentLocationEventListe
                 }
                 .addOnFailureListener {
                     Log.d("expectLocation","FAIL")
+                    Toast.makeText(this,"추정 실패",Toast.LENGTH_SHORT)
+                    loading!!.dismiss()
                 }
         }
     }
