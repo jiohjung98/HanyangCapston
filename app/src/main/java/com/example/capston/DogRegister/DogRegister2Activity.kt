@@ -28,14 +28,12 @@ import java.util.ArrayList
 
 class DogRegister2Activity : AppCompatActivity() {
 
-    private final val REQUEST_FIRST = 1010
+    private var validSpinner: Boolean = false
+    private var validGender: Boolean = false
 
-    var validSpinner: Boolean= false
-    var validGender: Boolean = false
-
-    private lateinit var dogName : String
-    private var dogGender : Int? = null
-    private lateinit var dogAge : String
+    private lateinit var dogName: String
+    private var dogGender: Int? = null
+    private lateinit var dogAge: String
 
     private lateinit var viewBinding: ActivityDogRegister2Binding
 
@@ -54,7 +52,7 @@ class DogRegister2Activity : AppCompatActivity() {
         viewBinding.nextBtn.setOnClickListener {
             val intent = Intent(this, DogRegister3Activity::class.java)
             intent.putExtra("DogName", dogName)
-            intent.putExtra("Gender",dogGender)
+            intent.putExtra("Gender", dogGender)
             intent.putExtra("Born", dogAge)
             startActivity(intent)
         }
@@ -64,23 +62,23 @@ class DogRegister2Activity : AppCompatActivity() {
         }
 
         // 성별 남 버튼
-        viewBinding.genderBoy.setOnClickListener{
+        viewBinding.genderBoy.setOnClickListener {
             validGender = true
-            checkValid(validSpinner, validGender)
+            validSpinner = false
+            checkValid()
             dogGender = 0
         }
+
         // 성별 여 버튼
-        viewBinding.genderGirl.setOnClickListener{
+        viewBinding.genderGirl.setOnClickListener {
             validGender = true
-            checkValid(validSpinner, validGender)
+            validSpinner = false
+            checkValid()
             dogGender = 1
         }
-
         setupAgeData()
         setupAgeHandler()
     }
-
-
 
     private fun setupAgeData() {
         val ageData = resources.getStringArray(R.array.spinner_age)
@@ -94,8 +92,9 @@ class DogRegister2Activity : AppCompatActivity() {
                 }
                 return v
             }
+
             override fun getCount(): Int {
-                //마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
+                // 마지막 아이템은 힌트용으로만 사용하기 때문에 getCount에 1을 빼줍니다.
                 return super.getCount() - 1
             }
         }
@@ -106,7 +105,6 @@ class DogRegister2Activity : AppCompatActivity() {
 
         viewBinding.dogAgeSpinner.setSelection(ageAdapter.count)
         viewBinding.dogAgeSpinner.dropDownVerticalOffset = dipToPixels(90f).toInt()
-
     }
 
     private fun setupAgeHandler() {
@@ -118,16 +116,15 @@ class DogRegister2Activity : AppCompatActivity() {
                     }
                     else -> {
                         validSpinner = true
-                        Log.d("스피너3", "$validSpinner")
                     }
                 }
-                checkValid(validSpinner, validGender)
-                // 출생년도 저장
+                checkValid()
                 dogAge = viewBinding.dogAgeSpinner.selectedItem.toString()
-//                Log.d("BORN YEAR", "${pet_info.born}")
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 validSpinner = false
+                checkValid()
             }
         }
     }
@@ -140,6 +137,11 @@ class DogRegister2Activity : AppCompatActivity() {
         )
     }
 
+    private fun checkValid() {
+        viewBinding.nextBtn.isEnabled = validGender && validSpinner
+        viewBinding.nextBtn.isClickable = validGender && validSpinner
+    }
+
     // 화면 클릭하여 키보드 숨기기 및 포커스 제거
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action === MotionEvent.ACTION_DOWN) {
@@ -150,23 +152,11 @@ class DogRegister2Activity : AppCompatActivity() {
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     val imm: InputMethodManager =
                         getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
                 }
             }
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    private fun checkValid(v1:Boolean, v2:Boolean){
-//        Log.d("Valid", (v1 && v2).toString())
-        if(v1 && v2){
-            next_btn.isEnabled = true
-            next_btn.isClickable = true
-        }
-        else {
-            next_btn.isEnabled = false
-            next_btn.isClickable = false
-        }
     }
 
     // 뒤로가기 -> 건너뛰기
