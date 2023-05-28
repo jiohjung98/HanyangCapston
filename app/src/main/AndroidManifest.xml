@@ -229,6 +229,9 @@
         <activity
             android:name=".TrackingActivity"
             android:exported="true" />
+        <activity
+            android:name=".ExpectingActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
