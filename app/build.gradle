@@ -83,6 +83,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'com.google.firebase:firebase-functions-ktx'
     implementation files('libs\\jxl-2.6.12.jar')
+    implementation 'com.google.firebase:firebase-messaging:21.1.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

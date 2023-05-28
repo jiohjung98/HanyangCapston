@@ -20,6 +20,7 @@ import com.example.capston.databinding.ActivityMainBinding
 import com.example.capston.homepackage.CustomDialog
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -77,6 +78,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        // Firebase 앱 초기화
+        FirebaseApp.initializeApp(this)
 
         // 로컬에 저장된 현재 반려견 인덱스
         sharedPreferences = getSharedPreferences("CUR_PET", MODE_PRIVATE);

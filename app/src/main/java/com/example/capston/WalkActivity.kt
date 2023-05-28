@@ -29,6 +29,7 @@ import androidx.core.app.ActivityCompat
 import com.example.capston.databinding.ActivityWalkBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.activity_missing.*
 import kotlinx.android.synthetic.main.activity_walk.*
 import net.daum.mf.map.api.*
 import retrofit2.Call
@@ -134,7 +135,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             }
         }
         camera_btn.setOnClickListener {
-            goToMain()
+            endWalk()
         }
 
     }
@@ -560,6 +561,31 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     fun goToMain() {
+        val dialog = Dialog(this)
+        // 다이얼로그 테두리 둥글게 만들기
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)   //타이틀바 제거
+        dialog.setCancelable(false)    //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히지 않도록 함
+        dialog.setContentView(R.layout.backtomain_dialog)
+
+        val btnOk = dialog.findViewById<TextView>(R.id.yes_btn)
+        val btnCancel = dialog.findViewById<TextView>(R.id.no_btn)
+
+        btnOk.setOnClickListener {
+            // 아래 removeAllViews() 안넣어주면 튕김
+            kakaoMapView2.removeAllViews()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    fun endWalk() {
         isPause = true
         pauseTimer()
         pauseFab.visibility = View.GONE
@@ -668,7 +694,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     private fun saveRoute(){
-
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
         val database = FirebaseDatabase.getInstance().reference.child("route").child(uid)
         database.get().addOnCompleteListener { task ->
