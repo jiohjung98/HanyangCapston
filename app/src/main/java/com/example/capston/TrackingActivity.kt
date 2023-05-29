@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide
 import com.example.capston.data.UserPost
 import com.example.capston.databinding.ActivityTrackingBinding
 import com.example.capston.databinding.MarkerclickSpotdogBinding
+import com.example.capston.databinding.SpotBalloonLayout2Binding
 import com.example.capston.databinding.SpotBalloonLayoutBinding
 import com.example.capston.homepackage.NaviHomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -363,7 +364,7 @@ class TrackingActivity : AppCompatActivity(), MapView.CurrentLocationEventListen
         val time = snapshot.child("time").getValue(String::class.java)
 
         // set text
-        val view = SpotBalloonLayoutBinding.inflate(layoutInflater)
+        val view = SpotBalloonLayout2Binding.inflate(layoutInflater)
         view.timeText.text = "시간: " + date+ " " + time
         view.breedText.text = "견종: " + snapshot.child("pet_info").child("breed").getValue(String::class.java)
 //        Log.d("MAKE MAKER", view.toString())

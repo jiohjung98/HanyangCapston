@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/balloon_bubble_bg"
+    android:id="@+id/ball_view"
+    android:layout_width="300sp"
+    android:layout_height="100sp"
+    android:layout_margin="4px"
+    app:cardCornerRadius="8px"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="300sp"
+        android:layout_height="100sp"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/card"
+            android:layout_width="300sp"
+            android:layout_height="100sp"
+            android:layout_gravity="center"
+            android:background="@drawable/balloon_bubble_bg"
+            android:elevation="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ball_tv_name1"
+                android:layout_width="wrap_content"
+                android:layout_height="24sp"
+                android:text="실종 정보"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:fontFamily="@font/real"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linearLayoutCompat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/balloon_bubble_in"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5sp"
+                android:weightSum="2"
+                app:layout_constraintStart_toStartOf="@id/parent"
+                app:layout_constraintTop_toBottomOf="@id/ball_tv_name1">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/enter_image"
+                    android:layout_width="70sp"
+                    android:layout_height="70sp"
+                    android:padding="1sp"
+                    android:layout_weight="1"
+                    android:gravity="center">
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+                <View
+                    android:layout_width="1sp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:background="#999999" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/delete_btn"
+                    android:layout_width="150sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:layout_marginTop="1sp"
+                    android:layout_marginBottom="1sp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="15sp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="2sp"
+                        android:text="이름: "
+                        android:textStyle="bold"
+                        android:textSize="11sp" />
+                    <TextView
+                        android:id="@+id/breed_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="15sp"
+                        android:layout_marginLeft="3dp"
+                        android:text="견종: "
+                        android:textStyle="bold"
+                        android:layout_marginTop="1sp"
+                        android:textSize="11sp" />
+                    <TextView
+                        android:id="@+id/time_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="15sp"
+                        android:layout_marginLeft="3dp"
+                        android:text="시간: "
+                        android:textStyle="bold"
+                        android:layout_marginTop="1sp"
+                        android:textSize="11sp" />
+                    <TextView
+                        android:id="@+id/content_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="15sp"
+                        android:layout_marginLeft="3sp"
+                        android:layout_marginTop="3sp"
+                        android:textStyle="bold"
+                        android:text="상세내용을 보려면 클릭해주세요"
+                        android:textColor="@color/skyblue"
+                        android:textSize="11sp" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
+</androidx.appcompat.widget.LinearLayoutCompat>
