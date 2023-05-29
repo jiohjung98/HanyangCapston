@@ -136,14 +136,16 @@ class MainActivity : AppCompatActivity() {
                             kakaoMapView3.removeAllViews()
                         }
                         item.setIcon(R.drawable.home_color)
-                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.walk)
+                        binding.mainBnv.menu.findItem(R.id.navigation_walk)?.setIcon(R.drawable.walk)
                         binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.mypage)
                         NaviHomeFragment()
                     }
-                    R.id.navigation_community -> {
+                    R.id.navigation_walk -> {
                         if (kakaoMapView != null) {
                         kakaoMapView!!.removeAllViews()
                         }
+                        Log.d("homemap", "$kakaoMapView")
+                        Log.d("homemap", "$kakaoMapView3")
                         item.setIcon(R.drawable.walk_color)
                         binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.home)
                         binding.mainBnv.menu.findItem(R.id.navigation_mypage)?.setIcon(R.drawable.mypage)
@@ -158,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         item.setIcon(R.drawable.mypage_color)
                         binding.mainBnv.menu.findItem(R.id.navigation_home)?.setIcon(R.drawable.home)
-                        binding.mainBnv.menu.findItem(R.id.navigation_community)?.setIcon(R.drawable.walk)
+                        binding.mainBnv.menu.findItem(R.id.navigation_walk)?.setIcon(R.drawable.walk)
                         NaviMypageFragment()
                     }
                 }
@@ -179,7 +181,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun replaceFragment(naviCommunityFragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment?) {
         if (kakaoMapView != null) {
             kakaoMapView!!.removeAllViews()
         }
@@ -188,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         }
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frm, naviCommunityFragment)
+        fragmentTransaction.replace(R.id.main_frm, fragment!!)
         fragmentTransaction.commit()
     }
 

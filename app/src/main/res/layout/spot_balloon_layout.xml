@@ -1,129 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/balloon_bubble_bg2"
-    android:id="@+id/ball_view"
-    android:layout_width="300sp"
-    android:layout_height="100sp"
-    android:layout_margin="4px"
-    app:cardCornerRadius="8px"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frame"
         android:layout_width="300sp"
-        android:layout_height="100sp"
-        android:layout_gravity="center"
-        android:background="@color/white"
-        android:elevation="20dp"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="110sp"
+        android:background="@drawable/balloon_back">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/card"
-            android:layout_width="300sp"
-            android:layout_height="100sp"
-            android:layout_gravity="center"
-            android:background="@drawable/balloon_bubble_bg2"
-            android:elevation="20dp"
-            android:gravity="center"
-            android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="30sp"
+            app:layout_constraintStart_toStartOf="@+id/frame"
+            app:layout_constraintTop_toTopOf="@+id/frame"
+            app:layout_constraintEnd_toEndOf="@+id/frame"
+            android:background="@drawable/balloon_top2" >
 
             <TextView
-                android:id="@+id/ball_tv_name1"
-                android:layout_width="wrap_content"
-                android:layout_height="24sp"
-                android:text="목격 정보"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:fontFamily="@font/real"
-                android:textStyle="bold"
-                android:gravity="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutCompat"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/balloon_bubble_in"
+                android:text="목격 정보"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:fontFamily="@font/real"
+                android:gravity="center" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomView"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            app:layout_constraintTop_toBottomOf="@+id/topView"
+            app:layout_constraintBottom_toBottomOf="@+id/frame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/enter_image"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:padding="1sp"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="5sp"
-                android:weightSum="2"
-                app:layout_constraintStart_toStartOf="@id/parent"
-                app:layout_constraintTop_toBottomOf="@id/ball_tv_name1">
+                android:layout_margin="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bottomView"
+                app:layout_constraintBottom_toBottomOf="parent">
+            </de.hdodenhof.circleimageview.CircleImageView>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/enter_image"
-                    android:layout_width="70sp"
-                    android:layout_height="70sp"
-                    android:padding="1sp"
-                    android:layout_weight="1"
-                    android:gravity="center">
-                </de.hdodenhof.circleimageview.CircleImageView>
+            <View
+                android:id="@+id/line"
+                android:layout_width="1sp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="10sp"
+                android:background="#999999"
+                app:layout_constraintStart_toEndOf="@+id/enter_image"/>
 
-                <View
-                    android:layout_width="1sp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:background="#999999" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:weightSum="4"
+                android:orientation="vertical"
+                android:layout_marginStart="15sp"
+                app:layout_constraintStart_toEndOf="@+id/line"
+                app:layout_constraintTop_toTopOf="@+id/enter_image"
+                app:layout_constraintBottom_toBottomOf="@+id/enter_image" >
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/delete_btn"
-                    android:layout_width="150sp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:layout_marginTop="1sp"
-                    android:layout_marginBottom="1sp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/blank"
-                        android:layout_width="match_parent"
-                        android:layout_height="15sp"
-                        android:layout_marginLeft="3dp"
-                        android:layout_marginTop="2sp"
-                        android:text="이름: 알 수 없음"
-                        android:textStyle="bold"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/breed_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="15sp"
-                        android:layout_marginLeft="3sp"
-                        android:layout_marginTop="1sp"
-                        android:text="견종: "
-                        android:textStyle="bold"
-                        android:textSize="11sp" />
-                    <TextView
-                        android:id="@+id/time_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="15sp"
-                        android:layout_marginLeft="3sp"
-                        android:layout_marginTop="1sp"
-                        android:text="시간: "
-                        android:textStyle="bold"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/content_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="15sp"
-                        android:layout_marginLeft="3sp"
-                        android:layout_marginTop="3sp"
-                        android:textStyle="bold"
-                        android:text="상세내용을 보려면 클릭해주세요"
-                        android:textColor="@color/skyblue"
-                        android:textSize="11sp" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.cardview.widget.CardView>
-</androidx.appcompat.widget.LinearLayoutCompat>
+                <TextView
+                    android:id="@+id/blank"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
+                    android:text="이름: 알 수 없음"
+                    android:textStyle="bold"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/breed_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
+                    android:text="견종: "
+                    android:textStyle="bold"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/time_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
+                    android:text="시간: "
+                    android:textStyle="bold"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/content_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="15sp"
+                    android:layout_marginTop="2sp"
+                    android:textStyle="bold"
+                    android:text="상세내용을 보려면 클릭해주세요"
+                    android:textColor="@color/skyblue"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -257,8 +257,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         mapView!!.removeAllPOIItems()
         kakaoMapView!!.removeAllViews()
         kakaoMapViewContainer?.removeAllViews() // 맵뷰가 들어있는 ViewGroup에서 모든 뷰를 제거
-//        mapView?.onPause() // 맵뷰를 일시정지
-//        mapView = null // 맵뷰 변수를 null로 설정
     }
 
     override fun onResume() {
@@ -266,7 +264,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
         if (mapView != null) {
             mapView!!.onResume()
         }
-//        binding.kakaoMapViewContainer.addView(mapView)
         this._binding = null
     }
 
@@ -285,7 +282,6 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
     override fun onStop() {
         super.onStop()
         kakaoMapView!!.removeAllViews()
-//        binding.kakaoMapViewContainer?.removeAllViews()
     }
 
     fun findAddress(p1:MapPoint) {
