@@ -3,6 +3,5 @@
     <string-array name="spinner_gender_spot">
         <item>여아</item>
         <item>남아</item>
-        <item>알 수 없음</item>
     </string-array>
 </resources>
