@@ -67,6 +67,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     // 시작 버튼을 눌렀을 때 한 번만 실행될 변수 추가
     private var isStartButtonClicked = false
     private val START_MARKER_TAG = 1000
+    private var isSetStartMarker = false
 
     lateinit var viewBinding: ActivityWalkBinding
 
@@ -122,7 +123,7 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         }
 
         playFab.setOnClickListener {
-            startWalkMarker()
+//            startWalkMarker()
             if (!isPause) {
                 isStart = true
             } else {
@@ -233,6 +234,11 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             locationLatQueue.offer(p1.mapPointGeoCoord.latitude)
             locationLongQueue.offer(p1.mapPointGeoCoord.longitude)
             lastestPoint = p1
+
+            if(!isSetStartMarker){
+                startWalkMarker(p1)
+            }
+
             updateUI(p1.mapPointGeoCoord.latitude,p1.mapPointGeoCoord.longitude)
         }
     }
@@ -240,6 +246,8 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     private fun updateUI(lat: Double, lon: Double){
         val smoothPt = MapPoint.mapPointWithGeoCoord(lat,lon)
+
+
 
 //            val lat = mapPoint!!.mapPointGeoCoord.latitude
 //            val lon = mapPoint!!.mapPointGeoCoord.longitude
@@ -304,22 +312,23 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         })
     }
 
-    private fun startWalkMarker() {
-        if (mapView != null && !isStartButtonClicked) {
-            val startMarker = MapPOIItem()
-            startMarker.itemName = "시작점"
-            startMarker.markerType = MapPOIItem.MarkerType.CustomImage
-            startMarker.customImageResourceId = R.drawable.start_walking_icon
-            startMarker.setCustomImageAnchor(0.5f, 0.5f)
-            startMarker.isCustomImageAutoscale = false
-            startMarker.isShowCalloutBalloonOnTouch = false
-            startMarker.tag = START_MARKER_TAG // START_MARKER_TAG 값 설정
+    private fun startWalkMarker(p1: MapPoint) {
+            val startMarker = MapPOIItem().apply{
+                mapPoint = p1
+                itemName = "시작점"
+                markerType = MapPOIItem.MarkerType.CustomImage
+                customImageResourceId = R.drawable.start_walking_icon
+                setCustomImageAnchor(0.5f, 0.5f)
+                isCustomImageAutoscale = false
+                isShowCalloutBalloonOnTouch = false
+                tag = START_MARKER_TAG // START_MARKER_TAG 값 설정
+            }
             mapView!!.addPOIItem(startMarker)
 
             // 현재 위치를 가져오기 위한 코드를 제거합니다.
 
-            isStartButtonClicked = true // 시작 버튼을 눌렀음을 표시
-        }
+            isSetStartMarker = true // 시작 버튼을 눌렀음을 표시
+
     }
 
 
