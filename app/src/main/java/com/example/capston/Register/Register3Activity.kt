@@ -95,7 +95,6 @@ class Register3Activity : AppCompatActivity() {
         }
 
         viewBinding.nextBtn!!.setOnClickListener {
-            // 이름, 이메일 받아오는 것 해주세요
             pw1 = binding.editTextTextPassword1.text.toString().trim() // 비밀번호
             pw2 = binding.editTextTextPassword2.text.toString().trim() // 비밀번호 확인
 

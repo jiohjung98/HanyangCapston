@@ -71,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="20sp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="인증 확인" />
 
 
@@ -106,7 +106,7 @@
     <android.widget.Button
         android:id="@+id/next_btn"
         android:layout_width="match_parent"
-        android:layout_height="55sp"
+        android:layout_height="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

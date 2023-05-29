@@ -280,6 +280,13 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+
+        val window: Window? = dialog.window
+        val layoutParams: WindowManager.LayoutParams = window?.attributes!!
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM // 중앙 아래로 위치 설정
+        layoutParams.y = 400 // 원하는 Y 좌표로 위치 조정
+        window.attributes = layoutParams
+
         dialog.show()
     }
 

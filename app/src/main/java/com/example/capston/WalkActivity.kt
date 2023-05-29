@@ -16,10 +16,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -401,13 +398,24 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
 
+//    private fun timerSet() {
+//        isTimerRunning = !isTimerRunning
+//        if (isTimerRunning)
+//            startTimer()
+//        else
+//            pauseTimer()
+//    }
+
     private fun timerSet() {
-        isTimerRunning = !isTimerRunning
-        if (isTimerRunning)
+        if (!isTimerRunning && isStart) {
             startTimer()
-        else
+            isTimerRunning = true
+        } else {
             pauseTimer()
+            isTimerRunning = false
+        }
     }
+
 
     private fun startTimer() {
         walkingTimer = timer(period = 10) {
@@ -605,9 +613,9 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             // 다이얼로그 크기 조정
             val params: WindowManager.LayoutParams = dialog2.window!!.attributes
             params?.width = WindowManager.LayoutParams.MATCH_PARENT
-            params?.y = 500
+            params.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+            params.y = 250 // 다이얼로그의 아래 여백을 설정합니다
             dialog2.window?.attributes = params as WindowManager.LayoutParams
-
 
             val distanceView = dialog2.findViewById<TextView>(R.id.distance)
             val calorieView = dialog2.findViewById<TextView>(R.id.calorie)
@@ -643,12 +651,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         }
 
         btnCancel.setOnClickListener {
-            startTimer()
+//            startTimer()
             runningDog()
-            pauseFab.visibility = View.VISIBLE
-            toiletFab.visibility = View.VISIBLE
-            playFab.visibility = View.GONE
-            resetFab.visibility = View.GONE
+            pauseFab.visibility = View.GONE
+            toiletFab.visibility = View.GONE
+            playFab.visibility = View.VISIBLE
+            resetFab.visibility = View.VISIBLE
             dialog.dismiss()
         }
 

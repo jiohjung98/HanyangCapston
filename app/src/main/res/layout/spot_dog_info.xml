@@ -20,24 +20,25 @@
             android:id="@+id/Dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="정보 입력"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/layout"
+            app:layout_constraintEnd_toEndOf="@+id/layout"
             app:layout_constraintTop_toTopOf="@+id/layout" />
 
         <TextView
             android:id="@+id/Dialog_explain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0sp"
+            android:layout_marginTop="2sp"
             android:text="사진을 업로드하면 견종이 자동으로 선택됩니다"
             android:textColor="@color/gray"
             android:textSize="11sp"
-            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintStart_toStartOf="@+id/layout"
+            app:layout_constraintEnd_toEndOf="@+id/layout"
             app:layout_constraintTop_toBottomOf="@+id/Dialog_title" />
 
         <!--        <TextView-->
@@ -74,7 +75,8 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginTop="0sp"
-            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            android:layout_marginStart="20sp"
+            app:layout_constraintStart_toStartOf="@+id/layout"
             app:layout_constraintTop_toBottomOf="@+id/lost_image_area" />
 
         <androidx.appcompat.widget.SearchView
@@ -188,7 +190,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="연락처"
-            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintStart_toStartOf="@+id/breed_title"
             app:layout_constraintTop_toBottomOf="@+id/time_input"
             android:textColor="@color/black"
             android:textSize="12sp"
@@ -230,7 +232,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="상세 정보"
-            app:layout_constraintStart_toStartOf="@+id/Dialog_title"
+            app:layout_constraintStart_toStartOf="@+id/breed_title"
             app:layout_constraintTop_toBottomOf="@+id/phone_explain"
             android:textColor="@color/black"
             android:textSize="12sp"
