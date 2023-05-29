@@ -91,6 +91,8 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
     // 1. currentLocation 변수 정의 및 MapView.CurrentLocationEventListener 인터페이스 구현
     private var currentLocation: MapPoint? = null
+    private var initCurLocUpdate: Boolean = false
+    private var firstMoveFinished : Boolean = false
 
     // 초기값 서울시청
     private var curLat : Double = 37.5667297
@@ -137,11 +139,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
         temperature = binding.temperatureTv
         weatherLocaction = binding.locTxt
 
-        binding.locationBtn.setOnClickListener {
-            if (mapView != null) {
-                mapView!!.setMapCenterPoint(currentLocation, true)
-            }
-        }
         return binding.root
     }
 
@@ -158,7 +155,6 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         isSetLocationPermission()
         mapView!!.setMapViewEventListener(this)
-
 
         mapView!!.setZoomLevel(0, true)
         mapView!!.setCustomCurrentLocationMarkerTrackingImage(
@@ -187,6 +183,12 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         binding.addingBtn.setOnClickListener {
             onClickRegister(view)
+        }
+
+        binding.locationBtn.setOnClickListener {
+            if (mapView != null && currentLocation != null) {
+                mapView?.setMapCenterPoint(currentLocation, true)
+            }
         }
 
         // 현재 반려견 인덱스 불러오기
@@ -688,12 +690,18 @@ class NaviWalkFragment : Fragment(), MapView.CurrentLocationEventListener,
     }
 
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+        if(!initCurLocUpdate) {
+            initCurLocUpdate = true
+        } else{
+            if (p0!!.currentLocationTrackingMode.toString() != "TrackingModeOnWithoutHeadingWithoutMapMoving") {
+                p0!!.currentLocationTrackingMode =
+                    MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+            }
+        }
 
         currentLocation = p1
 
-        p0!!.currentLocationTrackingMode =
-            MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
-//        Log.i("onCurrentLocationUpdate","Call")
+        mainActivity.setCurrentLocation(p1!!.mapPointGeoCoord.latitude, p1.mapPointGeoCoord.longitude)
 
         this.curLat = p1?.mapPointGeoCoord!!.latitude
         this.curLon = p1.mapPointGeoCoord!!.longitude
