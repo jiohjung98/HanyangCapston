@@ -17,10 +17,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.airbnb.lottie.model.Marker
@@ -67,7 +64,9 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     private var isTimerRunning: Boolean = false
     private var fullAmount = ArrayList<Double>()
 
-    private var isStartMarkerDisplayed = false // 시작 마커 표시 여부를 나타내는 플래그
+    // 시작 버튼을 눌렀을 때 한 번만 실행될 변수 추가
+    private var isStartButtonClicked = false
+    private val START_MARKER_TAG = 1000
 
     lateinit var viewBinding: ActivityWalkBinding
 
@@ -92,23 +91,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         // 현재 위치
         initView()
 
-        playFab.setOnClickListener {
-            if (!isStartMarkerDisplayed) { // 시작 마커가 표시되지 않은 경우에만 실행
-                startWalkMarker()
-                isStartMarkerDisplayed = true // 시작 마커 표시 상태로 변경
-            }
-            if (!isPause) {
-                isStart = true
-            } else {
-                isPause = false
-            }
-            timerSet()
-            runningDog()
-            pauseFab.visibility = View.VISIBLE
-            toiletFab.visibility = View.VISIBLE
-            playFab.visibility = View.GONE
-            resetFab.visibility = View.GONE
-        }
         pauseFab.setOnClickListener {
             isPause = true
             stopRunningDog()
@@ -138,6 +120,21 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
                 toiletActivity()
             }
         }
+
+        playFab.setOnClickListener {
+            startWalkMarker()
+            if (!isPause) {
+                isStart = true
+            } else {
+                isPause = false
+            }
+            timerSet()
+            runningDog()
+            pauseFab.visibility = View.VISIBLE
+            toiletFab.visibility = View.VISIBLE
+            playFab.visibility = View.GONE
+            resetFab.visibility = View.GONE
+        }
         camera_btn.setOnClickListener {
             endWalk()
         }
@@ -148,8 +145,12 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
         // 위치 권한 설정 확인
         isSetLocationPermission()
 
+//        mapView = MapView(this)
+//        val mapViewContainer = kakaoMapView2 as ViewGroup
+//        mapViewContainer.addView(mapView)
+
+        val mapViewContainer = findViewById<RelativeLayout>(R.id.kakaoMapView2)
         mapView = MapView(this)
-        val mapViewContainer = kakaoMapView2 as ViewGroup
         mapViewContainer.addView(mapView)
 
         mapView!!.setMapViewEventListener(this)
@@ -304,24 +305,23 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
     }
 
     private fun startWalkMarker() {
-        if (mapView == null) {
-            initView()
-        }
-
-        // 시작 지점 표시
-        if (mapPoint != null) {
+        if (mapView != null && !isStartButtonClicked) {
             val startMarker = MapPOIItem()
             startMarker.itemName = "시작점"
-            startMarker.mapPoint = mapPoint
             startMarker.markerType = MapPOIItem.MarkerType.CustomImage
-            startMarker.customImageResourceId =
-                R.drawable.start_walking_icon
+            startMarker.customImageResourceId = R.drawable.start_walking_icon
             startMarker.setCustomImageAnchor(0.5f, 0.5f)
             startMarker.isCustomImageAutoscale = false
             startMarker.isShowCalloutBalloonOnTouch = false
+            startMarker.tag = START_MARKER_TAG // START_MARKER_TAG 값 설정
             mapView!!.addPOIItem(startMarker)
+
+            // 현재 위치를 가져오기 위한 코드를 제거합니다.
+
+            isStartButtonClicked = true // 시작 버튼을 눌렀음을 표시
         }
     }
+
 
     // 배변활동 표시
     private fun toiletActivity() {
@@ -370,8 +370,22 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
             return
         }
         mapPoint = p1
+
         p0!!.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+
+        // 시작 버튼을 눌렀을 때만 마커를 업데이트합니다.
+        if (isStartButtonClicked) {
+            // 시작 마커의 위치 업데이트
+            val startMarker = mapView?.findPOIItemByTag(START_MARKER_TAG) as? MapPOIItem
+            startMarker?.mapPoint = mapPoint
+
+            p0?.currentLocationTrackingMode =
+                MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving
+
+            // 마커를 한 번만 업데이트한 후 더 이상 업데이트하지 않도록 플래그를 변경합니다.
+            isStartButtonClicked = false
+        }
     }
 
     override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
@@ -508,7 +522,6 @@ class WalkActivity : AppCompatActivity(), MapView.CurrentLocationEventListener,
 
     override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
     }
-
 //    override fun onReverseGeoCoderFailedToFindAddress(p0: MapReverseGeoCoder?) {
 //    }
 //
