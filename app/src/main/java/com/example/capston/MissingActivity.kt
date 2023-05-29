@@ -90,6 +90,9 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         witDialog = DogInfoEnterDialog2(this)
         witDialog.setLauncher()
 
+        currentLocation = MapPoint.mapPointWithGeoCoord(intent.getDoubleExtra("curLat", 0.0)
+            ,intent.getDoubleExtra("curLon",0.0))
+
 
         listen = MarkerEventListener(this, lostDialog, witDialog)
 
@@ -124,11 +127,11 @@ class MissingActivity : AppCompatActivity(), MapView.CurrentLocationEventListene
         polyline!!.lineColor = Color.argb(255, 103, 114, 241)
 
 
-//        binding.locationBtn.setOnClickListener {
-//            if (mapView != null) {
-//                mapView!!.setMapCenterPoint(currentLocation, true)
-//            }
-//        }
+        binding.locationBtn.setOnClickListener {
+            if (mapView != null) {
+                mapView!!.setMapCenterPoint(currentLocation, true)
+            }
+        }
 
         // 좌측 뒤로가기 버튼
         binding.backBtn.setOnClickListener {

@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
 
     // 현재위치 - 초기값 서울시청
     private var curLat : Double = 37.5667297
+    val _curLat get() = this.curLat
     private var curLon : Double = 126.9782551
+    val _curLon get() = this.curLon
 
     // 날씨 관련
     private var temp : Any? = null

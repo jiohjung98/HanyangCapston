@@ -134,6 +134,8 @@ class NaviHomeFragment : Fragment(), MapView.CurrentLocationEventListener,
 
         binding.lostBtn.setOnClickListener {
             val intent = Intent(context, MissingActivity::class.java)
+            intent.putExtra("curLat",mainActivity._curLat)
+            intent.putExtra("curLon",mainActivity._curLon)
             mapView?.removeAllPOIItems()
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
             activity?.startActivity(intent)
