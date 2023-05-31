@@ -9,4 +9,4 @@ AI 기술을 활용해 실종 반려견 찾는 어플리케이션
 접근방법: 기록된 산책 경로를 통한 잠재적 위치 추정, AI 기술을 통해 사진 및 입력정보로 실종견 중 유사견 반환
 
 ### 기술 스택
-<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"> <img src="https://img.shields.io/badge/firebase-#FFCA28?style=for-the-badge&logo=kotlin&logoColor=white"> <img src="https://img.shields.io/badge/CNN-#CC0000?style=for-the-badge&logo=CNN&logoColor=white">
+<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"> <img src="https://img.shields.io/badge/firebase-#FFCA28?style=for-the-badge&logo=firebase&logoColor=white"> <img src="https://img.shields.io/badge/CNN-#CC0000?style=for-the-badge&logo=CNN&logoColor=white">
