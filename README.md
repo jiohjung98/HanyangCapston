@@ -12,8 +12,6 @@ AI 기술을 활용한 실종 반려견 찾기 어플리케이션
 
 역할: 디자이너, 프론트엔드 개발자
 
-<img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/857ba7da-999d-43d6-805b-e1337caf8a25"/>   <img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/7ee95757-d295-41f7-b02e-088a63cad7e5"/> 
-
 
 ### 개발 동기
 배경: 반려견을 키우는 가구 수는 해를 거듭할수록 계속해서 증가 하지만, 유실되는 반려견 수 또한 계속해서 증가하는 추세
