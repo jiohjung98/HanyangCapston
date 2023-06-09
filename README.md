@@ -1,11 +1,18 @@
 # PawPaw
 
 ### About the Project
+
+
+<img width="495" alt="PawPaw졸업캡스톤 판넬" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/56938dba-865a-4cb7-a81b-db858c60e75e">
+
+
 한양대학교 ERICA 졸업캡스톤
 
 AI 기술을 활용한 실종 반려견 찾기 어플리케이션
 
 역할: 디자이너, 프론트엔드 개발자
+
+<img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/857ba7da-999d-43d6-805b-e1337caf8a25"/>   <img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/7ee95757-d295-41f7-b02e-088a63cad7e5"/> 
 
 
 ### 개발 동기
