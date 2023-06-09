@@ -26,7 +26,8 @@ AI 기술을 활용한 실종 반려견 찾기 어플리케이션
 
 
 ### 기술 스택
-<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">    <img src="https://img.shields.io/badge/Android Studio-3DDC84?style=flat-square&logo=Android Studio&logoColor=white"/>  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black"/>  <img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white"/> <img src="https://img.shields.io/badge/adobephotoshop-31A8FF?style=flat-square&logo=adobephotoshop&logoColor=white"/>
+<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">    <img src="https://img.shields.io/badge/Android Studio-3DDC84?style=flat-square&logo=Android Studio&logoColor=white"/>  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black"/>  <img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white"/>    <img src="https://img.shields.io/badge/Adobe-FF0000?style=flat-square&logo=Adobe&logoColor=white">     <img src="https://img.shields.io/badge/Adobe-F24E1E?style=flat-square&logo=Adobe&logoColor=white">
+
 
 ### 결과물(어플리케이션)
 <img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/857ba7da-999d-43d6-805b-e1337caf8a25"/>   <img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/7ee95757-d295-41f7-b02e-088a63cad7e5"/>   <img width="25%" src="https://github.com/jiohjung98/HanyangCapston/assets/104253583/00930e43-4c87-45cc-aa1b-915790362053"/>   
